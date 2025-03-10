@@ -1,4 +1,4 @@
-package com.example.chataloka
+package com.rakafebriansy.chataloka
 
 import io.flutter.embedding.android.FlutterActivity
 
