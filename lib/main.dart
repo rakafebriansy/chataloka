@@ -1,5 +1,5 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
-import 'package:chataloka/screens/home_screen.dart';
+import 'package:chataloka/screens/auth/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
             title: 'Chataloka',
             theme: theme,
             darkTheme: darkTheme,
-            home: const HomeScreen(),
+            home: const LoginScreen(),
           ),
     );
   }
