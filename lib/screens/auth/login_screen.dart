@@ -85,7 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   hintText: 'Phone Number',
                   prefixIcon: Container(
-                    padding: const EdgeInsets.all(10),
+                    padding: const EdgeInsets.fromLTRB(8,12,8,12),
                     child: InkWell(
                       onTap: () {
                         showCountryPicker(
