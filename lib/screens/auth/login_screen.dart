@@ -1,9 +1,12 @@
+import 'package:chataloka/providers/authentication_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:chataloka/utilities/assets_manager.dart';
 import 'package:country_picker/country_picker.dart';
-// import 'package:rounded_loading_button/rounded_loading_button.dart';
+import 'package:provider/provider.dart';
+import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,9 +17,8 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _phoneNumberController = TextEditingController();
-
-  // final RoundedLoadingButtonController _buttonController =
-  //     RoundedLoadingButtonController();
+  final RoundedLoadingButtonController _btnController =
+      RoundedLoadingButtonController();
 
   Country selectedCountry = Country(
     phoneCode: "62",
@@ -40,7 +42,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(_phoneNumberController.text.length);
+    final authProvider = context.watch<AuthenticationProvider>();
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       body: Center(
         child: Padding(
@@ -70,7 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
               TextFormField(
                 controller: _phoneNumberController,
                 maxLength: 15,
-                keyboardType: TextInputType.phone,
+                keyboardType: TextInputType.number,
                 textInputAction: TextInputAction.done,
                 onChanged: (value) {
                   setState(() {
@@ -85,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   hintText: 'Phone Number',
                   prefixIcon: Container(
-                    padding: const EdgeInsets.fromLTRB(8,12,8,12),
+                    padding: const EdgeInsets.fromLTRB(8, 12, 8, 12),
                     child: InkWell(
                       onTap: () {
                         showCountryPicker(
@@ -113,25 +117,45 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   suffixIcon:
                       _phoneNumberController.text.length > 5
-                          ? Container(
-                            height: 20,
-                            width: 20,
-                            margin: const EdgeInsets.all(10),
-                            decoration: const BoxDecoration(
-                              color: Colors.green,
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Icon(
-                              Icons.done,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                          )
+                          ? authProvider.isLoading
+                              ? Transform.scale(
+                                scale:
+                                    0.5, // 50% lebih kecil dari ukuran aslinya
+                                child: CircularProgressIndicator(),
+                              )
+                              : Container(
+                                height: 20,
+                                width: 20,
+                                margin: const EdgeInsets.all(10),
+                                decoration: const BoxDecoration(
+                                  color: Colors.green,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.done,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                              )
                           : null,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
+              ),
+              const SizedBox(height: 20),
+              RoundedLoadingButton(
+                controller: _btnController,
+                onPressed: () async {
+                  await authProvider.signInWithPhoneNumber(
+                    phoneNumber:
+                        '+${selectedCountry.phoneCode}${_phoneNumberController.text}',
+                    context: context,
+                  );
+                },
+                child: Text('Send Code', style: TextStyle(color: Colors.white)),
+                borderRadius: 10,
+                width: screenWidth - 40,
               ),
             ],
           ),
