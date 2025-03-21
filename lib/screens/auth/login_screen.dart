@@ -120,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ? authProvider.isLoading
                               ? Transform.scale(
                                 scale:
-                                    0.5, // 50% lebih kecil dari ukuran aslinya
+                                    0.5,
                                 child: CircularProgressIndicator(),
                               )
                               : Container(
