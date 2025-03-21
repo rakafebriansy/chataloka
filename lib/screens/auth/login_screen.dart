@@ -1,5 +1,4 @@
 import 'package:chataloka/providers/authentication_provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
@@ -119,8 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       _phoneNumberController.text.length > 5
                           ? authProvider.isLoading
                               ? Transform.scale(
-                                scale:
-                                    0.5,
+                                scale: 0.5,
                                 child: CircularProgressIndicator(),
                               )
                               : Container(
@@ -147,11 +145,17 @@ class _LoginScreenState extends State<LoginScreen> {
               RoundedLoadingButton(
                 controller: _btnController,
                 onPressed: () async {
-                  await authProvider.signInWithPhoneNumber(
-                    phoneNumber:
-                        '+${selectedCountry.phoneCode}${_phoneNumberController.text}',
-                    context: context,
-                  );
+                  try {
+                    await authProvider.signInWithPhoneNumber(
+                      phoneNumber:
+                          '+${selectedCountry.phoneCode}${_phoneNumberController.text}',
+                      context: context,
+                    );
+                    _btnController.success();
+                  } catch (error) {
+                    print(error.toString());
+                    _btnController.error();
+                  }
                 },
                 child: Text('Send Code', style: TextStyle(color: Colors.white)),
                 borderRadius: 10,

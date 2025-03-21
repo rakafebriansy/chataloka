@@ -1,7 +1,6 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:chataloka/providers/authentication_provider.dart';
-import 'package:chataloka/screens/auth/login_screen.dart';
-import 'package:chataloka/screens/auth/otp_screen.dart';
+import 'package:chataloka/screens/auth/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
@@ -46,7 +45,7 @@ class MyApp extends StatelessWidget {
             title: 'Chataloka',
             theme: theme,
             darkTheme: darkTheme,
-            home: const OTPScreen(),
+            home: const ProfileScreen(),
           ),
     );
   }
