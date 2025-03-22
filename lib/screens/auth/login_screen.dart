@@ -1,4 +1,5 @@
 import 'package:chataloka/providers/authentication_provider.dart';
+import 'package:chataloka/utilities/global_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
@@ -154,6 +155,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     _btnController.success();
                   } catch (error) {
                     print(error.toString());
+                    showSnackBar(
+                      context: context,
+                      message: "Something went wrong.",
+                    );
+
                     _btnController.error();
                   }
                 },

@@ -1,6 +1,6 @@
 import 'package:chataloka/constants/user.dart';
 
-class User {
+class UserModel {
   String uid;
   String name;
   String phoneNumber;
@@ -14,7 +14,7 @@ class User {
   List<String> friendRequestsUIDs;
   List<String> sentFriendRequestUIDs;
 
-  User({
+  UserModel({
     required this.uid,
     required this.name,
     required this.phoneNumber,
@@ -29,8 +29,8 @@ class User {
     required this.sentFriendRequestUIDs,
   });
 
-  factory User.fromMap(Map<String, dynamic> map) {
-    return User(
+  factory UserModel.fromMap(Map<String, dynamic> map) {
+    return UserModel(
       uid: map[UserConstant.uid] ?? '',
       name: map[UserConstant.name] ?? '',
       phoneNumber: map[UserConstant.phoneNumber] ?? '',

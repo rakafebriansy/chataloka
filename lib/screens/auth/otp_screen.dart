@@ -1,6 +1,7 @@
 import 'package:chataloka/constants/route.dart';
 import 'package:chataloka/constants/user.dart';
 import 'package:chataloka/providers/authentication_provider.dart';
+import 'package:chataloka/utilities/global_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinput/pinput.dart';
@@ -29,13 +30,32 @@ class _OTPScreenState extends State<OTPScreen> {
     required String verificationId,
     required String otpCode,
   }) async {
-    final authProvider = context.read<AuthenticationProvider>();
-    authProvider.verifyOTPCode(
-      verificationId: verificationId,
-      otpCode: otpCode,
-      context: context,
-      onSuccessHandler: () {},
-    );
+    try {
+      final authProvider = context.read<AuthenticationProvider>();
+      authProvider.verifyOTPCode(
+        verificationId: verificationId,
+        otpCode: otpCode,
+        context: context,
+        onSuccessHandler: () async {
+          final bool userExists = await authProvider.checkUserExists();
+          if (userExists) {
+            await authProvider.getUserDataFromFirestore();
+            await authProvider.saveUserDataToSharedPreferences();
+            Navigator.of(context).pushNamedAndRemoveUntil(
+              RouteConstant.homeScreen,
+              (route) => false,
+            );
+          } else {
+            Navigator.of(
+              context,
+            ).pushNamed(RouteConstant.userInformationScreen);
+          }
+        },
+      );
+    } catch (error) {
+      print(error.toString());
+      showSnackBar(context: context, message: "Something went wrong.");
+    }
   }
 
   @override
@@ -43,6 +63,8 @@ class _OTPScreenState extends State<OTPScreen> {
     final args = ModalRoute.of(context)!.settings.arguments as Map;
     final verificationId = args[UserConstant.verificationId] as String;
     final phoneNumber = args[UserConstant.phoneNumber] as String;
+
+    final authProvider = context.watch<AuthenticationProvider>();
 
     final defaultPinTheme = PinTheme(
       width: 50,
@@ -103,6 +125,16 @@ class _OTPScreenState extends State<OTPScreen> {
                       setState(() {
                         otpCode = pin;
                       });
+                      if (otpCode == null) {
+                        showSnackBar(
+                          context: context,
+                          message: "OTP Code is invalid.",
+                        );
+                      }
+                      verifyOTPCode(
+                        verificationId: verificationId,
+                        otpCode: otpCode!,
+                      );
                     },
                     focusedPinTheme: defaultPinTheme.copyWith(
                       height: 68,
@@ -116,21 +148,43 @@ class _OTPScreenState extends State<OTPScreen> {
                   ),
                 ),
                 const SizedBox(height: 30),
-                Text(
-                  'Didn\'t receive the code?',
-                  style: GoogleFonts.openSans(fontSize: 16),
-                ),
-                const SizedBox(height: 10),
-                TextButton(
-                  onPressed: () {},
-                  child: Text(
-                    'Resend Code',
-                    style: GoogleFonts.openSans(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
+                authProvider.isLoading
+                    ? const CircularProgressIndicator()
+                    : SizedBox.shrink(),
+                authProvider.isSuccess
+                    ? Container(
+                      height: 50,
+                      width: 50,
+                      decoration: const BoxDecoration(
+                        color: Colors.green,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.done,
+                        color: Colors.white,
+                        size: 30,
+                      ),
+                    )
+                    : const SizedBox.shrink(),
+                authProvider.isLoading
+                    ? SizedBox.shrink()
+                    : Text(
+                      'Didn\'t receive the code?',
+                      style: GoogleFonts.openSans(fontSize: 16),
                     ),
-                  ),
-                ),
+                const SizedBox(height: 10),
+                authProvider.isLoading
+                    ? SizedBox.shrink()
+                    : TextButton(
+                      onPressed: () {},
+                      child: Text(
+                        'Resend Code',
+                        style: GoogleFonts.openSans(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
               ],
             ),
           ),

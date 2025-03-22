@@ -14,4 +14,5 @@ class UserConstant {
 
   static const String verificationId = 'verificationId';
   static const String users = 'users';
+  static const String userModel = 'userModel';
 }
