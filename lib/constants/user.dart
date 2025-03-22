@@ -1,4 +1,4 @@
-class Constants {
+class User {
   static const String uid = 'uid';
   static const String name = 'name';
   static const String phoneNumber = 'phoneNumber';

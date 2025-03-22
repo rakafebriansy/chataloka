@@ -2,14 +2,14 @@ import 'package:chataloka/utilities/assets_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+class UserInformationScreen extends StatefulWidget {
+  const UserInformationScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  State<UserInformationScreen> createState() => _UserInformationScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _UserInformationScreenState extends State<UserInformationScreen> {
   final RoundedLoadingButtonController _btnController =
       RoundedLoadingButtonController();
   final _nameController = TextEditingController();
