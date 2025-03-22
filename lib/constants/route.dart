@@ -1,4 +1,4 @@
-class Route {
+class RouteConstant {
   static const String loginScreen = '/loginScreen';
   static const String otpScreen = '/otpScreen';
   static const String userInformationScreen = '/userInformationScreen';

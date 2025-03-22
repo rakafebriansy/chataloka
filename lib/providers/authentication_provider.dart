@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:chataloka/constants/route.dart';
+import 'package:chataloka/constants/user.dart';
 
 class AuthenticationProvider extends ChangeNotifier {
   bool _isLoading = false;
@@ -52,12 +54,52 @@ class AuthenticationProvider extends ChangeNotifier {
         codeSent: (String verificationId, int? resendToken) async {
           _isLoading = false;
           notifyListeners();
-          // navigate
-          print('navigate');
+          Navigator.of(context).pushNamed(
+            RouteConstant.otpScreen,
+            arguments: {
+              UserConstant.verificationId: verificationId,
+              UserConstant.phoneNumber: phoneNumber,
+            },
+          );
         },
         codeAutoRetrievalTimeout: (String verificationId) {},
       );
     } catch (error) {
+      print((error as FirebaseAuthException).message);
+      showSnackBar(context: context, message: "Something went wrong.");
+    }
+  }
+
+  Future<void> verifyOTPCode({
+    required String verificationId,
+    required String otpCode,
+    required BuildContext context,
+    required Function onSuccessHandler,
+  }) async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+
+      final PhoneAuthCredential credential = PhoneAuthProvider.credential(
+        verificationId: verificationId,
+        smsCode: otpCode,
+      );
+
+      final UserCredential result = await _auth.signInWithCredential(
+        credential,
+      );
+
+      _uid = result.user!.uid;
+      _phoneNumber = result.user!.phoneNumber;
+      _isSuccess = true;
+      _isLoading = false;
+      onSuccessHandler();
+      notifyListeners();
+    } catch (error) {
+      _isSuccess = false;
+      _isLoading = false;
+      notifyListeners();
+
       print((error as FirebaseAuthException).message);
       showSnackBar(context: context, message: "Something went wrong.");
     }

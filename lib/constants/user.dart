@@ -1,4 +1,4 @@
-class User {
+class UserConstant {
   static const String uid = 'uid';
   static const String name = 'name';
   static const String phoneNumber = 'phoneNumber';
@@ -11,4 +11,7 @@ class User {
   static const String friendsUIDs = 'friendsUIDs';
   static const String friendRequestsUIDs = 'friendRequestsUIDs';
   static const String sentFriendRequestsUIDs = 'sentFriendRequestsUIDs';
+
+  static const String verificationId = 'verificationId';
+  static const String users = 'users';
 }

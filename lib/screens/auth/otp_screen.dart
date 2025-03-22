@@ -1,6 +1,10 @@
+import 'package:chataloka/constants/route.dart';
+import 'package:chataloka/constants/user.dart';
+import 'package:chataloka/providers/authentication_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinput/pinput.dart';
+import 'package:provider/provider.dart';
 
 class OTPScreen extends StatefulWidget {
   const OTPScreen({super.key});
@@ -21,8 +25,25 @@ class _OTPScreenState extends State<OTPScreen> {
     super.dispose();
   }
 
+  void verifyOTPCode({
+    required String verificationId,
+    required String otpCode,
+  }) async {
+    final authProvider = context.read<AuthenticationProvider>();
+    authProvider.verifyOTPCode(
+      verificationId: verificationId,
+      otpCode: otpCode,
+      context: context,
+      onSuccessHandler: () {},
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments as Map;
+    final verificationId = args[UserConstant.verificationId] as String;
+    final phoneNumber = args[UserConstant.phoneNumber] as String;
+
     final defaultPinTheme = PinTheme(
       width: 50,
       height: 60,
@@ -63,7 +84,7 @@ class _OTPScreenState extends State<OTPScreen> {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  '+62 81233405169',
+                  phoneNumber,
                   textAlign: TextAlign.center,
                   style: GoogleFonts.openSans(
                     fontSize: 18,

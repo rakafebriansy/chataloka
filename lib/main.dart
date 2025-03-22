@@ -1,5 +1,5 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
-import 'package:chataloka/constants/route.dart' as RouteConstant;
+import 'package:chataloka/constants/route.dart';
 import 'package:chataloka/providers/authentication_provider.dart';
 import 'package:chataloka/screens/auth/login_screen.dart';
 import 'package:chataloka/screens/auth/otp_screen.dart';
@@ -49,12 +49,12 @@ class MyApp extends StatelessWidget {
             title: 'Chataloka',
             theme: theme,
             darkTheme: darkTheme,
-            initialRoute: RouteConstant.Route.loginScreen,
+            initialRoute: RouteConstant.loginScreen,
             routes: {
-              RouteConstant.Route.loginScreen: (context) => const LoginScreen(),
-              RouteConstant.Route.otpScreen: (context) => const OTPScreen(),
-              RouteConstant.Route.userInformationScreen: (context) => const UserInformationScreen(),
-              RouteConstant.Route.homeScreen: (context) => const HomeScreen(),
+              RouteConstant.loginScreen: (context) => const LoginScreen(),
+              RouteConstant.otpScreen: (context) => const OTPScreen(),
+              RouteConstant.userInformationScreen: (context) => const UserInformationScreen(),
+              RouteConstant.homeScreen: (context) => const HomeScreen(),
             },
           ),
     );

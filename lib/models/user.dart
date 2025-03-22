@@ -1,4 +1,4 @@
-import 'package:chataloka/constants/user.dart' as UserConstant;
+import 'package:chataloka/constants/user.dart';
 
 class User {
   String uid;
@@ -31,35 +31,35 @@ class User {
 
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
-      uid: map[UserConstant.User.uid] ?? '',
-      name: map[UserConstant.User.name] ?? '',
-      phoneNumber: map[UserConstant.User.phoneNumber] ?? '',
-      image: map[UserConstant.User.image] ?? '',
-      token: map[UserConstant.User.token] ?? '',
-      aboutMe: map[UserConstant.User.aboutMe] ?? '',
-      lastSeen: map[UserConstant.User.lastSeen] ?? '',
-      createdAt: map[UserConstant.User.createdAt] ?? '',
-      isOnline: map[UserConstant.User.isOnline] ?? '',
-      friendsUIDs: List<String>.from(map[UserConstant.User.friendsUIDs] ?? []),
-      friendRequestsUIDs: List<String>.from(map[UserConstant.User.friendRequestsUIDs] ?? []),
-      sentFriendRequestUIDs: List<String>.from(map[UserConstant.User.sentFriendRequestsUIDs] ?? []),
+      uid: map[UserConstant.uid] ?? '',
+      name: map[UserConstant.name] ?? '',
+      phoneNumber: map[UserConstant.phoneNumber] ?? '',
+      image: map[UserConstant.image] ?? '',
+      token: map[UserConstant.token] ?? '',
+      aboutMe: map[UserConstant.aboutMe] ?? '',
+      lastSeen: map[UserConstant.lastSeen] ?? '',
+      createdAt: map[UserConstant.createdAt] ?? '',
+      isOnline: map[UserConstant.isOnline] ?? '',
+      friendsUIDs: List<String>.from(map[UserConstant.friendsUIDs] ?? []),
+      friendRequestsUIDs: List<String>.from(map[UserConstant.friendRequestsUIDs] ?? []),
+      sentFriendRequestUIDs: List<String>.from(map[UserConstant.sentFriendRequestsUIDs] ?? []),
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      UserConstant.User.uid: uid,
-      UserConstant.User.name: name,
-      UserConstant.User.phoneNumber: phoneNumber,
-      UserConstant.User.image: image,
-      UserConstant.User.token: token,
-      UserConstant.User.aboutMe: aboutMe,
-      UserConstant.User.lastSeen: lastSeen,
-      UserConstant.User.createdAt: createdAt,
-      UserConstant.User.isOnline: isOnline,
-      UserConstant.User.friendsUIDs: friendsUIDs,
-      UserConstant.User.friendRequestsUIDs: friendRequestsUIDs,
-      UserConstant.User.sentFriendRequestsUIDs: sentFriendRequestUIDs,
+      UserConstant.uid: uid,
+      UserConstant.name: name,
+      UserConstant.phoneNumber: phoneNumber,
+      UserConstant.image: image,
+      UserConstant.token: token,
+      UserConstant.aboutMe: aboutMe,
+      UserConstant.lastSeen: lastSeen,
+      UserConstant.createdAt: createdAt,
+      UserConstant.isOnline: isOnline,
+      UserConstant.friendsUIDs: friendsUIDs,
+      UserConstant.friendRequestsUIDs: friendRequestsUIDs,
+      UserConstant.sentFriendRequestsUIDs: sentFriendRequestUIDs,
     };
   }
 }
