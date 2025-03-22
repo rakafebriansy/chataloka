@@ -1,6 +1,10 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:chataloka/constants/route.dart' as RouteConstant;
 import 'package:chataloka/providers/authentication_provider.dart';
+import 'package:chataloka/screens/auth/login_screen.dart';
+import 'package:chataloka/screens/auth/otp_screen.dart';
 import 'package:chataloka/screens/auth/user_information.dart';
+import 'package:chataloka/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
@@ -45,7 +49,13 @@ class MyApp extends StatelessWidget {
             title: 'Chataloka',
             theme: theme,
             darkTheme: darkTheme,
-            home: const UserInformationScreen(),
+            initialRoute: RouteConstant.Route.loginScreen,
+            routes: {
+              RouteConstant.Route.loginScreen: (context) => const LoginScreen(),
+              RouteConstant.Route.otpScreen: (context) => const OTPScreen(),
+              RouteConstant.Route.userInformationScreen: (context) => const UserInformationScreen(),
+              RouteConstant.Route.homeScreen: (context) => const HomeScreen(),
+            },
           ),
     );
   }

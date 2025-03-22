@@ -1,4 +1,4 @@
-class Routes {
+class Route {
   static const String loginScreen = '/loginScreen';
   static const String otpScreen = '/otpScreen';
   static const String userInformationScreen = '/userInformationScreen';
