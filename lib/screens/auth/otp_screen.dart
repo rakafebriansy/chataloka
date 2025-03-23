@@ -36,7 +36,7 @@ class _OTPScreenState extends State<OTPScreen> {
         verificationId: verificationId,
         otpCode: otpCode,
         context: context,
-        onSuccessHandler: () async {
+        onSuccess: () async {
           final bool userExists = await authProvider.checkUserExists();
           if (userExists) {
             await authProvider.getUserDataFromFirestore();

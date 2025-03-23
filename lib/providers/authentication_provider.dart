@@ -106,7 +106,7 @@ class AuthenticationProvider extends ChangeNotifier {
     required String verificationId,
     required String otpCode,
     required BuildContext context,
-    required Function onSuccessHandler,
+    required Function onSuccess,
   }) async {
     try {
       _isLoading = true;
@@ -131,7 +131,7 @@ class AuthenticationProvider extends ChangeNotifier {
       _phoneNumber = result.user!.phoneNumber;
       _isSuccess = true;
       _isLoading = false;
-      onSuccessHandler();
+      onSuccess();
       notifyListeners();
     } catch (error) {
       _isSuccess = false;

@@ -1,4 +1,5 @@
 import 'package:chataloka/utilities/assets_manager.dart';
+import 'package:chataloka/widgets/app_bar_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
@@ -26,7 +27,15 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      appBar: AppBar(centerTitle: true, title: const Text('Profile')),
+      appBar: AppBar(
+        leading: AppBarBackButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        centerTitle: true,
+        title: const Text('Profile'),
+      ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
