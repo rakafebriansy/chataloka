@@ -3,7 +3,7 @@ import 'package:chataloka/constants/route.dart';
 import 'package:chataloka/providers/authentication_provider.dart';
 import 'package:chataloka/screens/auth/login_screen.dart';
 import 'package:chataloka/screens/auth/otp_screen.dart';
-import 'package:chataloka/screens/auth/user_information.dart';
+import 'package:chataloka/screens/auth/user_information_screen.dart';
 import 'package:chataloka/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';

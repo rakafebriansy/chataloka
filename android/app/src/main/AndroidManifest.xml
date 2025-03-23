@@ -31,9 +31,19 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+
+        <!-- Firebase  -->
         <meta-data
             android:name="com.google.firebase.auth.API_KEY"
             android:value="AIzaSyAP3KaMZXSnM6Muah8RPczR3A4wQkc_4JA"/>
+        <!-- Firebase  -->
+
+        <!-- Image Cropper  -->
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <!-- Image Cropper  -->
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

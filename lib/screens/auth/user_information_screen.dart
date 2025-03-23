@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:chataloka/utilities/assets_manager.dart';
+import 'package:chataloka/utilities/global_methods.dart';
 import 'package:chataloka/widgets/app_bar_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
@@ -15,11 +18,25 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
       RoundedLoadingButtonController();
   final _nameController = TextEditingController();
 
+  File? finalFileImage;
+  String? userImage;
+
   @override
   void dispose() {
     _btnController.stop();
     _nameController.dispose();
     super.dispose();
+  }
+
+  void selectImage(bool fromCamera) async {
+    try {
+      finalFileImage = await pickImage(fromCamera: fromCamera);
+
+      
+    } catch (error) {
+      print(error.toString());
+      showSnackBar(context: context, message: "Something went wrong.");
+    }
   }
 
   @override

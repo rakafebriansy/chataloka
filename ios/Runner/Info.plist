@@ -2,6 +2,15 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<!-- Image Picker -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This permission is required to grant access to your image library.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>This permission is required to grant access to your camera.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This permission is required to grant access to your microphone.</string>
+	<!-- Image Picker -->
+
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
