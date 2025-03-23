@@ -112,7 +112,7 @@ class AuthenticationProvider extends ChangeNotifier {
       _isLoading = true;
       notifyListeners();
 
-      final PhoneAuthCredential credential = PhoneAuthProvider.credential(
+      final credential = PhoneAuthProvider.credential(
         verificationId: verificationId,
         smsCode: otpCode,
       );
@@ -121,7 +121,7 @@ class AuthenticationProvider extends ChangeNotifier {
         credential,
       );
 
-      if (user == null) {
+      if (result.user == null) {
         throw Exception(
           'AuthenticationProvider/verifyOTPCode: Invalid Credentials.',
         );

@@ -166,6 +166,7 @@ class _OTPScreenState extends State<OTPScreen> {
                       ),
                     )
                     : const SizedBox.shrink(),
+                authProvider.isSuccess || authProvider.isLoading ?const SizedBox(height: 10) : SizedBox.shrink(),
                 authProvider.isLoading
                     ? SizedBox.shrink()
                     : Text(
