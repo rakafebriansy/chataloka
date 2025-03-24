@@ -4,6 +4,7 @@ import 'package:chataloka/utilities/assets_manager.dart';
 import 'package:chataloka/utilities/global_methods.dart';
 import 'package:chataloka/widgets/app_bar_back_button.dart';
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
 class UserInformationScreen extends StatefulWidget {
@@ -32,11 +33,59 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
     try {
       finalFileImage = await pickImage(fromCamera: fromCamera);
 
-      
+      if (finalFileImage == null) {
+        throw Exception('No image selected');
+      }
+      cropImage(finalFileImage!.path);
     } catch (error) {
-      print(error.toString());
-      showSnackBar(context: context, message: "Something went wrong.");
+      showErrorSnackbar(context, error as Exception);
     }
+  }
+
+  void cropImage(String filePath) async {
+    final CroppedFile? croppedFile = await ImageCropper().cropImage(
+      sourcePath: filePath,
+      maxHeight: 800,
+      maxWidth: 800,
+      compressQuality: 90,
+    );
+
+    if (croppedFile == null) {
+      throw Exception('Failed to crop image');
+    }
+    setState(() {
+      finalFileImage = File(croppedFile.path);
+    });
+  }
+
+  void showImagePicker() {
+    showModalBottomSheet(
+      context: context,
+      builder:
+          (context) => SizedBox(
+            height: MediaQuery.of(context).size.height / 7,
+            child: Column(
+              children: [
+                ListTile(
+                  onTap: () {
+                    selectImage(true);
+                    Navigator.of(context).pop();
+                  },
+                  leading: const Icon(Icons.camera_alt),
+                  title: const Text('Camera'),
+                ),
+                ListTile(
+                  onTap: () {
+                    selectImage(false);
+                    Navigator.of(context).pop();
+                  },
+                  leading: const Icon(Icons.image),
+                  title: const Text('Gallery'),
+                ),
+              ],
+            ),
+          ),
+    );
   }
 
   @override
@@ -51,34 +100,66 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
           },
         ),
         centerTitle: true,
-        title: const Text('Profile'),
+        title: const Text('User Information'),
       ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             children: [
-              Stack(
-                children: [
-                  CircleAvatar(
-                    radius: 60,
-                    backgroundImage: AssetImage(AssetsManager.userImage),
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: CircleAvatar(
-                      radius: 20,
-                      backgroundColor: Colors.green,
-                      child: Icon(
-                        Icons.camera_alt,
-                        color: Colors.white,
-                        size: 20,
+              finalFileImage == null
+                  ? Stack(
+                    children: [
+                      const CircleAvatar(
+                        radius: 60,
+                        backgroundImage: AssetImage(AssetsManager.userImage),
                       ),
-                    ),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: InkWell(
+                          onTap: () {
+                            showImagePicker();
+                          },
+                          child: const CircleAvatar(
+                            radius: 20,
+                            backgroundColor: Colors.green,
+                            child: Icon(
+                              Icons.camera_alt,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                  : Stack(
+                    children: [
+                      CircleAvatar(
+                        radius: 60,
+                        backgroundImage: FileImage(File(finalFileImage!.path)),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: InkWell(
+                          onTap: () {
+                            showImagePicker();
+                          },
+                          child: const CircleAvatar(
+                            radius: 20,
+                            backgroundColor: Colors.green,
+                            child: Icon(
+                              Icons.camera_alt,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
               const SizedBox(height: 30),
               TextField(
                 controller: _nameController,

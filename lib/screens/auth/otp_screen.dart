@@ -53,8 +53,7 @@ class _OTPScreenState extends State<OTPScreen> {
         },
       );
     } catch (error) {
-      print(error.toString());
-      showSnackBar(context: context, message: "Something went wrong.");
+      showErrorSnackbar(context, error as Exception);
     }
   }
 
@@ -122,14 +121,15 @@ class _OTPScreenState extends State<OTPScreen> {
                     focusNode: focusNode,
                     defaultPinTheme: defaultPinTheme,
                     onCompleted: (pin) {
-                      setState(() {
-                        otpCode = pin;
-                      });
-                      if (otpCode == null) {
-                        showSnackBar(
-                          context: context,
-                          message: "OTP Code is invalid.",
-                        );
+                      try {
+                        setState(() {
+                          otpCode = pin;
+                        });
+                        if (otpCode == null) {
+                          throw Exception('OTP code is invalid');
+                        }
+                      } catch (error) {
+                        showErrorSnackbar(context, error as Exception);
                       }
                       verifyOTPCode(
                         verificationId: verificationId,
@@ -166,7 +166,9 @@ class _OTPScreenState extends State<OTPScreen> {
                       ),
                     )
                     : const SizedBox.shrink(),
-                authProvider.isSuccess || authProvider.isLoading ?const SizedBox(height: 10) : SizedBox.shrink(),
+                authProvider.isSuccess || authProvider.isLoading
+                    ? const SizedBox(height: 10)
+                    : SizedBox.shrink(),
                 authProvider.isLoading
                     ? SizedBox.shrink()
                     : Text(

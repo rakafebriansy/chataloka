@@ -154,11 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     );
                     _btnController.success();
                   } catch (error) {
-                    print(error.toString());
-                    showSnackBar(
-                      context: context,
-                      message: "Something went wrong.",
-                    );
+                    showErrorSnackbar(context, error as Exception);
 
                     _btnController.error();
                   }
