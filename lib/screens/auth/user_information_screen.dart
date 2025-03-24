@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:chataloka/utilities/assets_manager.dart';
 import 'package:chataloka/utilities/global_methods.dart';
 import 'package:chataloka/widgets/app_bar_back_button.dart';
+import 'package:chataloka/widgets/display_user_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
@@ -107,59 +108,13 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             children: [
-              finalFileImage == null
-                  ? Stack(
-                    children: [
-                      const CircleAvatar(
-                        radius: 60,
-                        backgroundImage: AssetImage(AssetsManager.userImage),
-                      ),
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: InkWell(
-                          onTap: () {
-                            showImagePicker();
-                          },
-                          child: const CircleAvatar(
-                            radius: 20,
-                            backgroundColor: Colors.green,
-                            child: Icon(
-                              Icons.camera_alt,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  )
-                  : Stack(
-                    children: [
-                      CircleAvatar(
-                        radius: 60,
-                        backgroundImage: FileImage(File(finalFileImage!.path)),
-                      ),
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: InkWell(
-                          onTap: () {
-                            showImagePicker();
-                          },
-                          child: const CircleAvatar(
-                            radius: 20,
-                            backgroundColor: Colors.green,
-                            child: Icon(
-                              Icons.camera_alt,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+              DisplayUserImage(
+                finalFileImage: finalFileImage,
+                radius: 60,
+                onPressed: () {
+                  showImagePicker();
+                },
+              ),
               const SizedBox(height: 30),
               TextField(
                 controller: _nameController,
@@ -175,12 +130,15 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
                 child: RoundedLoadingButton(
                   controller: _btnController,
                   onPressed: () {
+                    
                     _btnController.success();
                   },
                   successIcon: Icons.check,
                   successColor: Colors.green,
                   errorColor: Colors.red,
                   color: Theme.of(context).primaryColor,
+                  borderRadius: 10,
+                  width: screenWidth - 40,
                   child: const Text(
                     'Continue',
                     style: TextStyle(
@@ -189,8 +147,6 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  borderRadius: 10,
-                  width: screenWidth - 40,
                 ),
               ),
             ],
