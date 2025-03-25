@@ -1,12 +1,12 @@
-// import 'dart:ui_web';
-
-// import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:chataloka/constants/route.dart';
+import 'package:chataloka/providers/authentication_provider.dart';
 import 'package:chataloka/screens/chat_list_screen.dart';
 import 'package:chataloka/screens/groups.dart';
 import 'package:chataloka/screens/people_screen.dart';
-import 'package:chataloka/utilities/assets_manager.dart';
+import 'package:chataloka/widgets/user_image_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -26,16 +26,34 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final authProvider = context.read<AuthenticationProvider>();
+    if (authProvider.userModel == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.of(
+          context,
+        ).pushNamedAndRemoveUntil(RouteConstant.loginScreen, (route) => false);
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final authProvider = context.watch<AuthenticationProvider>();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Chataloka'),
-        actions: const [
+        actions: [
           Padding(
             padding: EdgeInsets.all(8.0),
-            child: CircleAvatar(
+            child: UserImageButton(
+              imageUrl: authProvider.userModel!.image,
               radius: 20,
-              backgroundImage: AssetImage(AssetsManager.userImage),
+              onTap: () {
+                // Navigator.of(context).pushNamed(RouteConstant.userProfile)
+              },
             ),
           ),
         ],
