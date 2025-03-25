@@ -167,7 +167,7 @@ class AuthenticationProvider extends ChangeNotifier {
           .doc(userModel.uid)
           .set(userModel.toMap());
       _isSuccess = true;
-    } on FirebaseAuthException catch (error) {
+    } on FirebaseAuthException catch (_) {
       _isSuccess = false;
       rethrow;
     } finally {

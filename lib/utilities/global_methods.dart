@@ -36,5 +36,5 @@ Future<File?> pickImage({required bool fromCamera}) async {
 
 String generateFileName({required String fileName, String? extension}) {
   String timestamp = DateTime.now().toIso8601String().replaceAll(":", "-");
-  return "${timestamp}_$fileName.$extension";
+  return "${timestamp}_$fileName.${extension ?? ''}";
 }

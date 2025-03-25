@@ -49,11 +49,12 @@ class MyApp extends StatelessWidget {
             title: 'Chataloka',
             theme: theme,
             darkTheme: darkTheme,
-            initialRoute: RouteConstant.userInformationScreen,
+            initialRoute: RouteConstant.loginScreen,
             routes: {
               RouteConstant.loginScreen: (context) => const LoginScreen(),
               RouteConstant.otpScreen: (context) => const OTPScreen(),
-              RouteConstant.userInformationScreen: (context) => const UserInformationScreen(),
+              RouteConstant.userInformationScreen:
+                  (context) => const UserInformationScreen(),
               RouteConstant.homeScreen: (context) => const HomeScreen(),
             },
           ),

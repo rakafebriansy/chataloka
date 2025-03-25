@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:chataloka/constants/route.dart';
 import 'package:chataloka/models/user.dart';
 import 'package:chataloka/providers/authentication_provider.dart';
-import 'package:chataloka/utilities/assets_manager.dart';
 import 'package:chataloka/utilities/global_methods.dart';
 import 'package:chataloka/widgets/app_bar_back_button.dart';
 import 'package:chataloka/widgets/display_user_image.dart';
@@ -34,20 +33,22 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
     super.dispose();
   }
 
-  void selectImage(bool fromCamera) async {
+  Future<void> selectImage(bool fromCamera) async {
     try {
       finalFileImage = await pickImage(fromCamera: fromCamera);
 
       if (finalFileImage == null) {
         throw Exception('No image selected');
       }
-      cropImage(finalFileImage!.path);
+
+      await cropImage(finalFileImage!.path);
+      Navigator.of(context).pop();
     } catch (error) {
       showErrorSnackbar(context, error as Exception);
     }
   }
 
-  void cropImage(String filePath) async {
+  Future<void> cropImage(String filePath) async {
     final CroppedFile? croppedFile = await ImageCropper().cropImage(
       sourcePath: filePath,
       maxHeight: 800,
@@ -72,17 +73,15 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
             child: Column(
               children: [
                 ListTile(
-                  onTap: () {
-                    selectImage(true);
-                    Navigator.of(context).pop();
+                  onTap: () async {
+                    await selectImage(true);
                   },
                   leading: const Icon(Icons.camera_alt),
                   title: const Text('Camera'),
                 ),
                 ListTile(
-                  onTap: () {
-                    selectImage(false);
-                    Navigator.of(context).pop();
+                  onTap: () async {
+                    await selectImage(false);
                   },
                   leading: const Icon(Icons.image),
                   title: const Text('Gallery'),
@@ -99,7 +98,7 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
         throw Exception('Name is required');
       } else if (_nameController.text.length < 3) {
         throw Exception('Name must be at least 3 characters');
-      } else if (userImage == null) {
+      } else if (finalFileImage == null) {
         throw Exception('No image selected');
       }
       final authProvider = context.read<AuthenticationProvider>();
