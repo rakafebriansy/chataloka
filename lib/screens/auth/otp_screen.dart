@@ -26,32 +26,37 @@ class _OTPScreenState extends State<OTPScreen> {
     super.dispose();
   }
 
-  void verifyOTPCode({
+  Future<void> verifyOTPCode({
     required String verificationId,
     required String otpCode,
   }) async {
+    final authProvider = context.read<AuthenticationProvider>();
+    await authProvider.verifyOTPCode(
+      verificationId: verificationId,
+      otpCode: otpCode,
+      context: context,
+    );
+    final bool userExists = await authProvider.checkUserExists();
+    if (userExists) {
+      await authProvider.getUserDataFromFirestore();
+      await authProvider.saveUserDataToSharedPreferences();
+      Navigator.of(
+        context,
+      ).pushNamedAndRemoveUntil(RouteConstant.homeScreen, (route) => false);
+    } else {
+      Navigator.of(context).pushNamed(RouteConstant.userInformationScreen);
+    }
+  }
+
+  Future<void> submitOTPCode(String pin, String verificationId) async {
     try {
-      final authProvider = context.read<AuthenticationProvider>();
-      authProvider.verifyOTPCode(
-        verificationId: verificationId,
-        otpCode: otpCode,
-        context: context,
-        onSuccess: () async {
-          final bool userExists = await authProvider.checkUserExists();
-          if (userExists) {
-            await authProvider.getUserDataFromFirestore();
-            await authProvider.saveUserDataToSharedPreferences();
-            Navigator.of(context).pushNamedAndRemoveUntil(
-              RouteConstant.homeScreen,
-              (route) => false,
-            );
-          } else {
-            Navigator.of(
-              context,
-            ).pushNamed(RouteConstant.userInformationScreen);
-          }
-        },
-      );
+      setState(() {
+        otpCode = pin;
+      });
+      if (otpCode == null) {
+        throw Exception('OTP code is invalid');
+      }
+      await verifyOTPCode(verificationId: verificationId, otpCode: otpCode!);
     } catch (error) {
       showErrorSnackbar(context, error as Exception);
     }
@@ -59,9 +64,9 @@ class _OTPScreenState extends State<OTPScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as Map;
-    final verificationId = args[UserConstant.verificationId] as String;
-    final phoneNumber = args[UserConstant.phoneNumber] as String;
+    final Map args = ModalRoute.of(context)!.settings.arguments as Map;
+    final String verificationId = args[UserConstant.verificationId] as String;
+    final String phoneNumber = args[UserConstant.phoneNumber] as String;
 
     final authProvider = context.watch<AuthenticationProvider>();
 
@@ -121,20 +126,7 @@ class _OTPScreenState extends State<OTPScreen> {
                     focusNode: focusNode,
                     defaultPinTheme: defaultPinTheme,
                     onCompleted: (pin) {
-                      try {
-                        setState(() {
-                          otpCode = pin;
-                        });
-                        if (otpCode == null) {
-                          throw Exception('OTP code is invalid');
-                        }
-                      } catch (error) {
-                        showErrorSnackbar(context, error as Exception);
-                      }
-                      verifyOTPCode(
-                        verificationId: verificationId,
-                        otpCode: otpCode!,
-                      );
+                      submitOTPCode(pin, verificationId);
                     },
                     focusedPinTheme: defaultPinTheme.copyWith(
                       height: 68,

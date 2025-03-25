@@ -1,11 +1,15 @@
 import 'dart:io';
 
+import 'package:chataloka/constants/route.dart';
+import 'package:chataloka/models/user.dart';
+import 'package:chataloka/providers/authentication_provider.dart';
 import 'package:chataloka/utilities/assets_manager.dart';
 import 'package:chataloka/utilities/global_methods.dart';
 import 'package:chataloka/widgets/app_bar_back_button.dart';
 import 'package:chataloka/widgets/display_user_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:provider/provider.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
 class UserInformationScreen extends StatefulWidget {
@@ -89,6 +93,52 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
     );
   }
 
+  Future<void> submitUserInformation() async {
+    try {
+      if (_nameController.text.isEmpty) {
+        throw Exception('Name is required');
+      } else if (_nameController.text.length < 3) {
+        throw Exception('Name must be at least 3 characters');
+      } else if (userImage == null) {
+        throw Exception('No image selected');
+      }
+      final authProvider = context.read<AuthenticationProvider>();
+      UserModel userModel = UserModel(
+        uid: authProvider.uid!,
+        name: _nameController.text.trim(),
+        phoneNumber: authProvider.phoneNumber!,
+        image: '',
+        token: '',
+        aboutMe: 'Hey there, I\'m using Chataloka',
+        lastSeen: '',
+        createdAt: '',
+        isOnline: true,
+        friendsUIDs: [],
+        friendRequestsUIDs: [],
+        sentFriendRequestUIDs: [],
+      );
+
+      await authProvider.saveUserDataToFirestore(
+        userModel: userModel,
+        imageFile: finalFileImage,
+      );
+
+      _btnController.success();
+
+      await authProvider.saveUserDataToSharedPreferences();
+
+      Navigator.of(
+        context,
+      ).pushNamedAndRemoveUntil(RouteConstant.homeScreen, (route) => false);
+    } catch (error) {
+      showErrorSnackbar(context, error as Exception);
+      _btnController.error();
+    } finally {
+      await Future.delayed(const Duration(seconds: 1));
+      _btnController.reset();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -129,9 +179,8 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
                 width: double.infinity,
                 child: RoundedLoadingButton(
                   controller: _btnController,
-                  onPressed: () {
-                    
-                    _btnController.success();
+                  onPressed: () async {
+                    submitUserInformation();
                   },
                   successIcon: Icons.check,
                   successColor: Colors.green,
