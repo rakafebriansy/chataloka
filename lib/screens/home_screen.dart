@@ -3,6 +3,7 @@ import 'package:chataloka/providers/authentication_provider.dart';
 import 'package:chataloka/screens/chat_list_screen.dart';
 import 'package:chataloka/screens/groups.dart';
 import 'package:chataloka/screens/people_screen.dart';
+import 'package:chataloka/utilities/assets_manager.dart';
 import 'package:chataloka/widgets/user_image_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +50,8 @@ class _HomeScreenState extends State<HomeScreen> {
           Padding(
             padding: EdgeInsets.all(8.0),
             child: UserImageButton(
-              imageUrl: authProvider.userModel!.image,
+              imageUrl:
+                  authProvider.userModel?.image,
               radius: 20,
               onTap: () {
                 // Navigator.of(context).pushNamed(RouteConstant.userProfile)

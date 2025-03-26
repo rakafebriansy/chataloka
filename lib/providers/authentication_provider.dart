@@ -29,6 +29,20 @@ class AuthenticationProvider extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
+  Future<bool> checkAuthenticationState() async {
+    bool isSignedIn = _auth.currentUser != null;
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    if (isSignedIn) {
+      _uid = _auth.currentUser!.uid;
+      await getUserDataFromFirestore();
+      await saveUserDataToSharedPreferences();
+      notifyListeners();
+    }
+
+    return isSignedIn;
+  }
+
   Future<bool> checkUserExists() async {
     final DocumentSnapshot documentSnapshot =
         await _firestore.collection(UserConstant.users).doc(_uid).get();
