@@ -199,4 +199,15 @@ class AuthenticationProvider extends ChangeNotifier {
     String fileUrl = await taskSnapshot.ref.getDownloadURL();
     return fileUrl;
   }
+
+  Stream<DocumentSnapshot> getUserStream({required String userId}) {
+    return _firestore.collection(UserConstant.users).doc(_uid).snapshots();
+  }
+
+  Future<void> logout() async {
+    await _auth.signOut();
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    await sharedPreferences.clear();
+    notifyListeners();
+  }
 }
