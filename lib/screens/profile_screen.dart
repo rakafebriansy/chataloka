@@ -1,8 +1,7 @@
-import 'package:chataloka/builders/build_elevate_button.dart';
+import 'package:chataloka/builders/build_elevated_button.dart';
 import 'package:chataloka/constants/route.dart';
 import 'package:chataloka/models/user.dart';
 import 'package:chataloka/providers/authentication_provider.dart';
-import 'package:chataloka/utilities/global_methods.dart';
 import 'package:chataloka/widgets/app_bar_back_button.dart';
 import 'package:chataloka/widgets/user_image_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -38,7 +37,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = context.read<AuthenticationProvider>();
+    final currentUser = context.read<AuthenticationProvider>().userModel;
 
     if (uid == null) {
       Navigator.of(context).pop();
@@ -54,51 +53,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
         centerTitle: true,
         title: const Text('Profile'),
         actions: [
-          authProvider.userModel?.uid == uid
+          currentUser?.uid == uid
               ? IconButton(
-                onPressed: () async {
-                  showDialog(
-                    context: context,
-                    builder:
-                        (context) => AlertDialog(
-                          title: const Text('Log Out'),
-                          content: const Text('Are you sure want to logput?'),
-                          actions: [
-                            TextButton(
-                              style: TextButton.styleFrom(
-                                foregroundColor: Colors.red,
-                                textStyle: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              onPressed: () async {
-                                try {
-                                  await authProvider.logout();
-                                  Navigator.pushNamedAndRemoveUntil(
-                                    context,
-                                    RouteConstant.loginScreen,
-                                    (route) => false,
-                                  );
-                                } catch (error) {
-                                  showErrorSnackbar(
-                                    context,
-                                    error as Exception,
-                                  );
-                                }
-                              },
-                              child: const Text('Log Out'),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: const Text('Cancel'),
-                            ),
-                          ],
-                        ),
+                onPressed: () {
+                  Navigator.pushNamed(
+                    context,
+                    RouteConstant.settingsScreen,
+                    arguments: uid,
                   );
                 },
-                icon: const Icon(Icons.logout),
+                icon: const Icon(Icons.settings),
               )
               : SizedBox.shrink(),
         ],
@@ -122,8 +86,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   final UserModel userModel = UserModel.fromMap(
                     snapshot.data?.data() as Map<String, dynamic>,
                   );
-
-                  final currentUser = authProvider.userModel;
 
                   final List<Widget> buttons = [
                     if (currentUser != null)
@@ -170,7 +132,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            if(buttons.isNotEmpty) SizedBox(height: 10),
+                            if (buttons.isNotEmpty) SizedBox(height: 10),
                             SizedBox(
                               width: MediaQuery.of(context).size.width * 0.7,
                               child: Column(children: buttons),
