@@ -18,7 +18,7 @@ class UserImageButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: CircleAvatar(
-        radius: 20,
+        radius: radius,
         backgroundImage:
             imageUrl != null
                 ? NetworkImage(imageUrl!)

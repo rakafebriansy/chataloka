@@ -3,8 +3,11 @@ import 'package:chataloka/models/user.dart';
 import 'package:chataloka/providers/authentication_provider.dart';
 import 'package:chataloka/utilities/global_methods.dart';
 import 'package:chataloka/widgets/app_bar_back_button.dart';
+import 'package:chataloka/widgets/friend_request_button.dart';
+import 'package:chataloka/widgets/user_image_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -20,9 +23,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final authProvider = context.read<AuthenticationProvider>();
 
     final String? uid = ModalRoute.of(context)?.settings.arguments as String?;
+    final UserModel? currentUser = authProvider.userModel;
 
     if (uid == null) {
-      Navigator.of(context).pop();
+      Future.microtask(() => Navigator.of(context).pop());
+      return Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return Scaffold(
@@ -35,17 +40,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
         centerTitle: true,
         title: const Text('Profile'),
         actions: [
-          authProvider.userModel?.uid == uid
+          currentUser?.uid == uid
               ? IconButton(
                 onPressed: () async {
                   showDialog(
                     context: context,
                     builder:
                         (context) => AlertDialog(
-                          title: const Text('Logout'),
-                          content: const Text('Are you sure want to logout?'),
+                          title: Text('Logout'),
+                          content: Text('Are you sure want to logout?'),
                           actions: [
-                            TextButton(
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red,
+                                foregroundColor: Colors.white,
+                              ),
                               onPressed: () async {
                                 try {
                                   await authProvider.logout();
@@ -63,7 +72,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               },
                               child: const Text('Logout'),
                             ),
-                            TextButton(
+                            ElevatedButton(
                               onPressed: () {
                                 Navigator.pop(context);
                               },
@@ -79,7 +88,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ],
       ),
       body: StreamBuilder<DocumentSnapshot>(
-        stream: authProvider.getUserStream(userId: uid!),
+        stream: authProvider.getUserStream(userId: uid),
         builder: (
           BuildContext context,
           AsyncSnapshot<DocumentSnapshot> snapshot,
@@ -92,17 +101,53 @@ class _ProfileScreenState extends State<ProfileScreen> {
             return const Center(child: CircularProgressIndicator());
           }
 
+          if (!snapshot.hasData || snapshot.data?.data() == null) {
+            return const Center(child: Text('User not found'));
+          }
+
           final UserModel userModel = UserModel.fromMap(
             snapshot.data?.data() as Map<String, dynamic>,
           );
 
-          return ListTile(
-            leading: CircleAvatar(
-              radius: 30,
-              backgroundImage: NetworkImage(userModel.image),
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+            child: Column(
+              children: [
+                Center(
+                  child: UserImageButton(
+                    radius: 60,
+                    onTap: () {},
+                    imageUrl: userModel.image,
+                  ),
+                ),
+                Column(
+                  children: [
+                    const SizedBox(height: 20),
+                    Text(
+                      userModel.name,
+                      style: GoogleFonts.openSans(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    if (currentUser != null)
+                      FriendRequestButton(
+                        currentUser: currentUser,
+                        userModel: userModel,
+                      ),
+                    const SizedBox(height: 10),
+                    Text(
+                      'Hey there',
+                      style: GoogleFonts.openSans(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-            title: Text(userModel.name),
-            subtitle: Text(userModel.aboutMe),
           );
         },
       ),
