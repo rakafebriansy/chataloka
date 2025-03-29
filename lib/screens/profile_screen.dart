@@ -18,16 +18,30 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  late final String? uid;
+  late final Stream<DocumentSnapshot>? userStream;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final authProvider = context.read<AuthenticationProvider>();
+      setState(() {
+        uid = ModalRoute.of(context)?.settings.arguments as String?;
+      });
+      if (uid != null) {
+        userStream = authProvider.getUserStream(userId: uid!);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final authProvider = context.read<AuthenticationProvider>();
 
-    final String? uid = ModalRoute.of(context)?.settings.arguments as String?;
-    final UserModel? currentUser = authProvider.userModel;
-
     if (uid == null) {
-      Future.microtask(() => Navigator.of(context).pop());
-      return Scaffold(body: Center(child: CircularProgressIndicator()));
+      Navigator.of(context).pop();
     }
 
     return Scaffold(
@@ -40,20 +54,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
         centerTitle: true,
         title: const Text('Profile'),
         actions: [
-          currentUser?.uid == uid
+          authProvider.userModel?.uid == uid
               ? IconButton(
                 onPressed: () async {
                   showDialog(
                     context: context,
                     builder:
                         (context) => AlertDialog(
-                          title: Text('Logout'),
-                          content: Text('Are you sure want to logout?'),
+                          title: const Text('Log Out'),
+                          content: const Text('Are you sure want to logput?'),
                           actions: [
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.red,
-                                foregroundColor: Colors.white,
+                            TextButton(
+                              style: TextButton.styleFrom(
+                                foregroundColor: Colors.red,
+                                textStyle: TextStyle(fontWeight: FontWeight.bold)
                               ),
                               onPressed: () async {
                                 try {
@@ -70,9 +84,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   );
                                 }
                               },
-                              child: const Text('Logout'),
+                              child: const Text('Log Out'),
                             ),
-                            ElevatedButton(
+                            TextButton(
                               onPressed: () {
                                 Navigator.pop(context);
                               },
@@ -87,70 +101,72 @@ class _ProfileScreenState extends State<ProfileScreen> {
               : SizedBox.shrink(),
         ],
       ),
-      body: StreamBuilder<DocumentSnapshot>(
-        stream: authProvider.getUserStream(userId: uid),
-        builder: (
-          BuildContext context,
-          AsyncSnapshot<DocumentSnapshot> snapshot,
-        ) {
-          if (snapshot.hasError) {
-            return const Center(child: Text('Something went wrong'));
-          }
+      body:
+          uid != null
+              ? StreamBuilder<DocumentSnapshot>(
+                stream: userStream,
+                builder: (
+                  BuildContext context,
+                  AsyncSnapshot<DocumentSnapshot> snapshot,
+                ) {
+                  if (snapshot.hasError) {
+                    return const Center(child: Text('Something went wrong'));
+                  }
 
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
 
-          if (!snapshot.hasData || snapshot.data?.data() == null) {
-            return const Center(child: Text('User not found'));
-          }
+                  final UserModel userModel = UserModel.fromMap(
+                    snapshot.data?.data() as Map<String, dynamic>,
+                  );
 
-          final UserModel userModel = UserModel.fromMap(
-            snapshot.data?.data() as Map<String, dynamic>,
-          );
-
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
-            child: Column(
-              children: [
-                Center(
-                  child: UserImageButton(
-                    radius: 60,
-                    onTap: () {},
-                    imageUrl: userModel.image,
-                  ),
-                ),
-                Column(
-                  children: [
-                    const SizedBox(height: 20),
-                    Text(
-                      userModel.name,
-                      style: GoogleFonts.openSans(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 20,
+                      horizontal: 30,
                     ),
-                    const SizedBox(height: 10),
-                    if (currentUser != null)
-                      FriendRequestButton(
-                        currentUser: currentUser,
-                        userModel: userModel,
-                      ),
-                    const SizedBox(height: 10),
-                    Text(
-                      'Hey there',
-                      style: GoogleFonts.openSans(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
+                    child: Column(
+                      children: [
+                        Center(
+                          child: UserImageButton(
+                            radius: 60,
+                            onTap: () {},
+                            imageUrl: userModel.image,
+                          ),
+                        ),
+                        Column(
+                          children: [
+                            const SizedBox(height: 20),
+                            Text(
+                              userModel.name,
+                              style: GoogleFonts.openSans(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            if (authProvider.userModel != null)
+                              FriendRequestButton(
+                                currentUser: authProvider.userModel!,
+                                userModel: userModel,
+                              ),
+                            const SizedBox(height: 10),
+                            Text(
+                              userModel.aboutMe,
+                              style: GoogleFonts.openSans(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ],
-            ),
-          );
-        },
-      ),
+                  );
+                },
+              )
+              : SizedBox(),
     );
   }
 }
