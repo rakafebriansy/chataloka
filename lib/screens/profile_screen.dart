@@ -3,7 +3,9 @@ import 'package:chataloka/models/user.dart';
 import 'package:chataloka/providers/authentication_provider.dart';
 import 'package:chataloka/utilities/global_methods.dart';
 import 'package:chataloka/widgets/app_bar_back_button.dart';
-import 'package:chataloka/widgets/friend_request_button.dart';
+import 'package:chataloka/widgets/friends_button.dart';
+import 'package:chataloka/widgets/friend_requests_button.dart';
+import 'package:chataloka/widgets/send_friend_requests_button.dart';
 import 'package:chataloka/widgets/user_image_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -67,7 +69,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             TextButton(
                               style: TextButton.styleFrom(
                                 foregroundColor: Colors.red,
-                                textStyle: TextStyle(fontWeight: FontWeight.bold)
+                                textStyle: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                               onPressed: () async {
                                 try {
@@ -146,11 +150,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ),
                             const SizedBox(height: 10),
-                            if (authProvider.userModel != null)
-                              FriendRequestButton(
-                                currentUser: authProvider.userModel!,
-                                userModel: userModel,
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.7,
+                              child: Column(
+                                children: [
+                                  if (authProvider.userModel != null)
+                                    FriendsRequestButton(
+                                      currentUser: authProvider.userModel!,
+                                      userModel: userModel,
+                                    ),
+                                  if (authProvider.userModel != null)
+                                    FriendsButton(
+                                      currentUser: authProvider.userModel!,
+                                      userModel: userModel,
+                                    ),
+                                  if (authProvider.userModel != null)
+                                    SendFriendsRequestButton(
+                                      currentUser: authProvider.userModel!,
+                                      userModel: userModel,
+                                    ),
+                                ],
                               ),
+                            ),
                             const SizedBox(height: 10),
                             Text(
                               userModel.aboutMe,
