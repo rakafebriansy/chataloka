@@ -1,11 +1,9 @@
+import 'package:chataloka/builders/build_elevate_button.dart';
 import 'package:chataloka/constants/route.dart';
 import 'package:chataloka/models/user.dart';
 import 'package:chataloka/providers/authentication_provider.dart';
 import 'package:chataloka/utilities/global_methods.dart';
 import 'package:chataloka/widgets/app_bar_back_button.dart';
-import 'package:chataloka/widgets/friends_button.dart';
-import 'package:chataloka/widgets/friend_requests_button.dart';
-import 'package:chataloka/widgets/send_friend_requests_button.dart';
 import 'package:chataloka/widgets/user_image_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -125,6 +123,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     snapshot.data?.data() as Map<String, dynamic>,
                   );
 
+                  final currentUser = authProvider.userModel;
+
+                  final List<Widget> buttons = [
+                    if (currentUser != null)
+                      if (currentUser.uid == userModel.uid &&
+                          userModel.friendRequestsUIDs.isNotEmpty)
+                        buildElevatedButton(
+                          onPressed: () {},
+                          label: 'View Friend Requests',
+                        )
+                      else if (currentUser.uid == userModel.uid &&
+                          userModel.friendsUIDs.isNotEmpty)
+                        buildElevatedButton(
+                          onPressed: () {},
+                          label: 'View Friends',
+                        )
+                      else if (currentUser.uid != userModel.uid)
+                        buildElevatedButton(
+                          onPressed: () {},
+                          label: 'Send Friend Request',
+                        ),
+                  ];
+
                   return Padding(
                     padding: const EdgeInsets.symmetric(
                       vertical: 20,
@@ -149,30 +170,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            const SizedBox(height: 10),
+                            if(buttons.isNotEmpty) SizedBox(height: 10),
                             SizedBox(
                               width: MediaQuery.of(context).size.width * 0.7,
-                              child: Column(
-                                children: [
-                                  if (authProvider.userModel != null)
-                                    FriendsRequestButton(
-                                      currentUser: authProvider.userModel!,
-                                      userModel: userModel,
-                                    ),
-                                  if (authProvider.userModel != null)
-                                    FriendsButton(
-                                      currentUser: authProvider.userModel!,
-                                      userModel: userModel,
-                                    ),
-                                  if (authProvider.userModel != null)
-                                    SendFriendsRequestButton(
-                                      currentUser: authProvider.userModel!,
-                                      userModel: userModel,
-                                    ),
-                                ],
-                              ),
+                              child: Column(children: buttons),
                             ),
                             const SizedBox(height: 10),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const SizedBox(
+                                  height: 40,
+                                  width: 40,
+                                  child: Divider(
+                                    color: Colors.grey,
+                                    thickness: 1,
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Text(
+                                  'About Me',
+                                  style: GoogleFonts.openSans(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                const SizedBox(
+                                  height: 40,
+                                  width: 40,
+                                  child: Divider(
+                                    color: Colors.grey,
+                                    thickness: 1,
+                                  ),
+                                ),
+                              ],
+                            ),
                             Text(
                               userModel.aboutMe,
                               style: GoogleFonts.openSans(
