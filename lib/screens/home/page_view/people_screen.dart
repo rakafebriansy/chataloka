@@ -1,7 +1,7 @@
 import 'package:chataloka/builders/build_rounded_image.dart';
 import 'package:chataloka/constants/route.dart';
 import 'package:chataloka/constants/user.dart';
-import 'package:chataloka/providers/authentication_provider.dart';
+import 'package:chataloka/providers/user_provider.dart';
 import 'package:chataloka/utilities/global_methods.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -24,9 +24,9 @@ class _PeopleScreenState extends State<PeopleScreen> {
     super.initState();
 
     try {
-      final authProvider = context.read<AuthenticationProvider>();
-      _userStream = authProvider.getAllUsersStream(
-        userId: authProvider.userModel!.uid,
+      final userProvider = context.read<UserProvider>();
+      _userStream = userProvider.getAllUsersStream(
+        userId: userProvider.userModel!.uid,
       );
     } catch (error) {
       WidgetsBinding.instance.addPostFrameCallback((_) {

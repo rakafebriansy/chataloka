@@ -1,7 +1,7 @@
 import 'package:chataloka/builders/build_elevated_button.dart';
 import 'package:chataloka/constants/route.dart';
 import 'package:chataloka/models/user.dart';
-import 'package:chataloka/providers/authentication_provider.dart';
+import 'package:chataloka/providers/user_provider.dart';
 import 'package:chataloka/utilities/global_methods.dart';
 import 'package:chataloka/widgets/app_bar_back_button.dart';
 import 'package:chataloka/widgets/user_image_button.dart';
@@ -25,13 +25,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final authProvider = context.read<AuthenticationProvider>();
+      final userProvider = context.read<UserProvider>();
       final args = ModalRoute.of(context)?.settings.arguments;
 
       if (args is String) {
         setState(() {
           uid = args;
-          _userStream = authProvider.getUserStream(userId: args);
+          _userStream = userProvider.getUserStream(userId: args);
         });
       } else {
         showErrorSnackbar(context, Exception("Invalid arguments"));
@@ -41,7 +41,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final currentUser = context.read<AuthenticationProvider>().userModel;
+    final currentUser = context.read<UserProvider>().userModel;
 
     if (uid == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));

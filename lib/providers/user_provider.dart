@@ -11,7 +11,7 @@ import 'package:chataloka/constants/route.dart';
 import 'package:chataloka/constants/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class AuthenticationProvider extends ChangeNotifier {
+class UserProvider extends ChangeNotifier {
   bool _isLoading = false;
   bool _isSuccess = false;
   String? _uid;

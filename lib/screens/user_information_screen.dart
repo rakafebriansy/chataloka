@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:chataloka/constants/route.dart';
 import 'package:chataloka/models/user.dart';
-import 'package:chataloka/providers/authentication_provider.dart';
+import 'package:chataloka/providers/user_provider.dart';
 import 'package:chataloka/utilities/global_methods.dart';
 import 'package:chataloka/widgets/app_bar_back_button.dart';
 import 'package:chataloka/widgets/display_user_image.dart';
@@ -101,11 +101,11 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
       } else if (finalFileImage == null) {
         throw Exception('No image selected');
       }
-      final authProvider = context.read<AuthenticationProvider>();
+      final userProvider = context.read<UserProvider>();
       UserModel userModel = UserModel(
-        uid: authProvider.uid!,
+        uid: userProvider.uid!,
         name: _nameController.text.trim(),
-        phoneNumber: authProvider.phoneNumber!,
+        phoneNumber: userProvider.phoneNumber!,
         image: '',
         token: '',
         aboutMe: 'Hey there, I\'m using Chataloka',
@@ -117,14 +117,14 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
         sentFriendRequestUIDs: [],
       );
 
-      await authProvider.saveUserDataToFirestore(
+      await userProvider.saveUserDataToFirestore(
         userModel: userModel,
         imageFile: finalFileImage,
       );
 
       _btnController.success();
 
-      await authProvider.saveUserDataToSharedPreferences();
+      await userProvider.saveUserDataToSharedPreferences();
 
       Navigator.of(
         context,

@@ -1,4 +1,4 @@
-import 'package:chataloka/providers/authentication_provider.dart';
+import 'package:chataloka/providers/user_provider.dart';
 import 'package:chataloka/utilities/global_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -42,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = context.watch<AuthenticationProvider>();
+    final userProvider = context.watch<UserProvider>();
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
@@ -117,7 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   suffixIcon:
                       _phoneNumberController.text.length > 5
-                          ? authProvider.isLoading
+                          ? userProvider.isLoading
                               ? Transform.scale(
                                 scale: 0.5,
                                 child: CircularProgressIndicator(),
@@ -147,7 +147,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: _btnController,
                 onPressed: () async {
                   try {
-                    await authProvider.signInWithPhoneNumber(
+                    await userProvider.signInWithPhoneNumber(
                       phoneNumber:
                           '+${selectedCountry.phoneCode}${_phoneNumberController.text}',
                       context: context,

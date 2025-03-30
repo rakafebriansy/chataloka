@@ -1,5 +1,5 @@
 import 'package:chataloka/constants/route.dart';
-import 'package:chataloka/providers/authentication_provider.dart';
+import 'package:chataloka/providers/user_provider.dart';
 import 'package:chataloka/utilities/assets_manager.dart';
 import 'package:chataloka/utilities/global_methods.dart';
 import 'package:flutter/material.dart';
@@ -16,8 +16,8 @@ class LandingScreen extends StatefulWidget {
 class _LandingScreenState extends State<LandingScreen> {
   Future<void> checkAuthentication() async {
     try {
-      final authProvider = context.read<AuthenticationProvider>();
-      bool isAuthenticated = await authProvider.checkAuthenticationState();
+      final userProvider = context.read<UserProvider>();
+      bool isAuthenticated = await userProvider.checkAuthenticationState();
 
       Navigator.of(context).pushReplacementNamed(
         !isAuthenticated ? RouteConstant.loginScreen : RouteConstant.homeScreen,

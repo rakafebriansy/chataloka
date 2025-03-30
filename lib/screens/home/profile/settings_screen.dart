@@ -1,6 +1,6 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:chataloka/constants/route.dart';
-import 'package:chataloka/providers/authentication_provider.dart';
+import 'package:chataloka/providers/user_provider.dart';
 import 'package:chataloka/widgets/app_bar_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:chataloka/utilities/global_methods.dart';
@@ -39,7 +39,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final String? uid = ModalRoute.of(context)?.settings.arguments as String?;
-    final authProvider = context.read<AuthenticationProvider>();
+    final userProvider = context.read<UserProvider>();
 
     return Scaffold(
       appBar: AppBar(
@@ -51,7 +51,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         centerTitle: true,
         title: const Text('Settings'),
         actions: [
-          authProvider.userModel?.uid == uid
+          userProvider.userModel?.uid == uid
               ? IconButton(
                 onPressed: () async {
                   showDialog(
@@ -70,7 +70,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               ),
                               onPressed: () async {
                                 try {
-                                  await authProvider.logout();
+                                  await userProvider.logout();
                                   Navigator.pushNamedAndRemoveUntil(
                                     context,
                                     RouteConstant.loginScreen,

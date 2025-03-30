@@ -1,6 +1,6 @@
 import 'package:chataloka/constants/route.dart';
 import 'package:chataloka/constants/user.dart';
-import 'package:chataloka/providers/authentication_provider.dart';
+import 'package:chataloka/providers/user_provider.dart';
 import 'package:chataloka/utilities/global_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -30,16 +30,16 @@ class _OTPScreenState extends State<OTPScreen> {
     required String verificationId,
     required String otpCode,
   }) async {
-    final authProvider = context.read<AuthenticationProvider>();
-    await authProvider.verifyOTPCode(
+    final userProvider = context.read<UserProvider>();
+    await userProvider.verifyOTPCode(
       verificationId: verificationId,
       otpCode: otpCode,
       context: context,
     );
-    final bool userExists = await authProvider.checkUserExists();
+    final bool userExists = await userProvider.checkUserExists();
     if (userExists) {
-      await authProvider.getUserDataFromFirestore();
-      await authProvider.saveUserDataToSharedPreferences();
+      await userProvider.getUserDataFromFirestore();
+      await userProvider.saveUserDataToSharedPreferences();
       Navigator.of(
         context,
       ).pushNamedAndRemoveUntil(RouteConstant.homeScreen, (route) => false);
@@ -68,7 +68,7 @@ class _OTPScreenState extends State<OTPScreen> {
     final String verificationId = args[UserConstant.verificationId] as String;
     final String phoneNumber = args[UserConstant.phoneNumber] as String;
 
-    final authProvider = context.watch<AuthenticationProvider>();
+    final userProvider = context.watch<UserProvider>();
 
     final defaultPinTheme = PinTheme(
       width: 50,
@@ -140,10 +140,10 @@ class _OTPScreenState extends State<OTPScreen> {
                   ),
                 ),
                 const SizedBox(height: 30),
-                authProvider.isLoading
+                userProvider.isLoading
                     ? const CircularProgressIndicator()
                     : SizedBox.shrink(),
-                authProvider.isSuccess
+                userProvider.isSuccess
                     ? Container(
                       height: 50,
                       width: 50,
@@ -158,17 +158,17 @@ class _OTPScreenState extends State<OTPScreen> {
                       ),
                     )
                     : const SizedBox.shrink(),
-                authProvider.isSuccess || authProvider.isLoading
+                userProvider.isSuccess || userProvider.isLoading
                     ? const SizedBox(height: 10)
                     : SizedBox.shrink(),
-                authProvider.isLoading
+                userProvider.isLoading
                     ? SizedBox.shrink()
                     : Text(
                       'Didn\'t receive the code?',
                       style: GoogleFonts.openSans(fontSize: 16),
                     ),
                 const SizedBox(height: 10),
-                authProvider.isLoading
+                userProvider.isLoading
                     ? SizedBox.shrink()
                     : TextButton(
                       onPressed: () {},

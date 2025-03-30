@@ -1,5 +1,5 @@
 import 'package:chataloka/constants/route.dart';
-import 'package:chataloka/providers/authentication_provider.dart';
+import 'package:chataloka/providers/user_provider.dart';
 import 'package:chataloka/screens/home/page_view/chat_list_screen.dart';
 import 'package:chataloka/screens/home/page_view/groups_screen.dart';
 import 'package:chataloka/screens/home/page_view/people_screen.dart';
@@ -28,8 +28,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final authProvider = context.read<AuthenticationProvider>();
-    if (authProvider.userModel == null) {
+    final userProvider = context.read<UserProvider>();
+    if (userProvider.userModel == null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.of(
           context,
@@ -40,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = context.watch<AuthenticationProvider>();
+    final userProvider = context.watch<UserProvider>();
 
     return Scaffold(
       appBar: AppBar(
@@ -49,13 +49,13 @@ class _HomeScreenState extends State<HomeScreen> {
           Padding(
             padding: EdgeInsets.all(8.0),
             child: UserImageButton(
-              imageUrl: authProvider.userModel?.image,
+              imageUrl: userProvider.userModel?.image,
               side: 40,
               onTap: () {
-                if (authProvider.userModel != null) {
+                if (userProvider.userModel != null) {
                   Navigator.of(context).pushNamed(
                     RouteConstant.profileScreen,
-                    arguments: authProvider.userModel!.uid,
+                    arguments: userProvider.userModel!.uid,
                   );
                 }
               },
