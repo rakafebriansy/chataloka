@@ -4,6 +4,7 @@ import 'package:chataloka/providers/user_provider.dart';
 import 'package:chataloka/widgets/app_bar_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:chataloka/utilities/global_methods.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -54,45 +55,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
           userProvider.userModel?.uid == uid
               ? IconButton(
                 onPressed: () async {
-                  showDialog(
+                  showChatalokaDialog(
                     context: context,
-                    builder:
-                        (context) => AlertDialog(
-                          title: const Text('Log Out'),
-                          content: const Text('Are you sure want to logput?'),
-                          actions: [
-                            TextButton(
-                              style: TextButton.styleFrom(
-                                foregroundColor: Colors.red,
-                                textStyle: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              onPressed: () async {
-                                try {
-                                  await userProvider.logout();
-                                  Navigator.pushNamedAndRemoveUntil(
-                                    context,
-                                    RouteConstant.loginScreen,
-                                    (route) => false,
-                                  );
-                                } catch (error) {
-                                  showErrorSnackbar(
-                                    context,
-                                    error,
-                                  );
-                                }
-                              },
-                              child: const Text('Log Out'),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: const Text('Cancel'),
-                            ),
-                          ],
-                        ),
+                    content: Text(
+                      'Are you sure want to logout?',
+                      style: GoogleFonts.openSans(),
+                    ),
+                    confirmLabel: 'Log Out',
+                    cancelLabel: 'Cancel',
+                    confirmColor: Colors.red,
+                    onConfirm: () async {
+                      try {
+                        await userProvider.logout();
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          RouteConstant.loginScreen,
+                          (route) => false,
+                        );
+                      } catch (error) {
+                        showErrorSnackbar(context, error);
+                      }
+                    },
+                    onCancel: () {
+                      Navigator.pop(context);
+                    },
                   );
                 },
                 icon: const Icon(Icons.logout),

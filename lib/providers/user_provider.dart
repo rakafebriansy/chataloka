@@ -211,6 +211,20 @@ class UserProvider extends ChangeNotifier {
         .snapshots();
   }
 
+  Future<void> sendFriendRequest({required String friendId}) async {
+    final senderRef = _firestore.collection(UserConstant.users).doc(_uid);
+    final receiverRef = _firestore.collection(UserConstant.users).doc(friendId);
+
+    await _firestore.runTransaction((transaction) async {
+      transaction.update(receiverRef, {
+        UserConstant.sentFriendRequestsUIDs: FieldValue.arrayUnion([_uid]),
+      });
+      transaction.update(senderRef, {
+        UserConstant.sentFriendRequestsUIDs: FieldValue.arrayUnion([friendId]),
+      });
+    });
+  }
+
   Future<void> logout() async {
     await _auth.signOut();
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();

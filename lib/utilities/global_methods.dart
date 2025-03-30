@@ -1,7 +1,57 @@
 import 'dart:io';
 
+import 'package:chataloka/utilities/assets_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+
+void showChatalokaDialog({
+  required BuildContext context,
+  required Widget content,
+  String? confirmLabel,
+  String? cancelLabel,
+  VoidCallback? onConfirm,
+  VoidCallback? onCancel,
+  Color? confirmColor,
+}) {
+  showDialog(
+    context: context,
+    builder:
+        (context) => AlertDialog(
+          title: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image.asset(AssetsManager.chataloka, height: 30),
+              SizedBox(width: 10),
+              Text(
+                'Chataloka',
+                style: GoogleFonts.openSans(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          content: content,
+          actions: [
+            if (confirmLabel != null)
+              TextButton(
+                style: TextButton.styleFrom(
+                  foregroundColor: confirmColor ?? Colors.black,
+                  textStyle: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                onPressed: onConfirm,
+                child: Text(confirmLabel, style: GoogleFonts.openSans()),
+              ),
+            if (cancelLabel != null)
+              TextButton(
+                onPressed: onCancel ?? () {},
+                child: Text(cancelLabel, style: GoogleFonts.openSans()),
+              ),
+          ],
+        ),
+  );
+}
 
 void showErrorSnackbar(BuildContext context, dynamic error) {
   final String errorString = error.toString();

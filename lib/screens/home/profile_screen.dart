@@ -41,7 +41,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final currentUser = context.read<UserProvider>().userModel;
+    final userProvider = context.read<UserProvider>();
 
     if (uid == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
@@ -57,7 +57,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         centerTitle: true,
         title: const Text('Profile'),
         actions: [
-          currentUser?.uid == uid
+          userProvider.userModel?.uid == uid
               ? IconButton(
                 onPressed: () {
                   Navigator.pushNamed(
@@ -90,18 +90,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
           );
 
           final List<Widget> buttons = [
-            if (currentUser?.uid == userModel.uid &&
+            if (userProvider.userModel?.uid == userModel.uid &&
                 userModel.friendRequestsUIDs.isNotEmpty)
               buildElevatedButton(
                 onPressed: () {},
                 label: 'View Friend Requests',
               )
-            else if (currentUser?.uid == userModel.uid &&
+            else if (userProvider.userModel?.uid == userModel.uid &&
                 userModel.friendsUIDs.isNotEmpty)
               buildElevatedButton(onPressed: () {}, label: 'View Friends')
-            else if (currentUser?.uid != userModel.uid)
+            else if (userProvider.userModel?.uid != userModel.uid)
               buildElevatedButton(
-                onPressed: () {},
+                onPressed: () async {
+                  try {
+                    await userProvider.sendFriendRequest(
+                      friendId: userModel.uid,
+                    );
+                    showChatalokaDialog(
+                      context: context,
+                      content: Text(
+                        'Request sent successfully.',
+                        style: GoogleFonts.openSans(),
+                      ),
+                      cancelLabel: 'Close',
+                      onCancel: () {
+                        Navigator.of(context).pop();
+                      },
+                    );
+                  } catch (error) {
+                    showErrorSnackbar(context, error);
+                  }
+                },
                 label: 'Send Friend Request',
               ),
           ];
