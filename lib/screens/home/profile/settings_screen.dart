@@ -79,7 +79,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 } catch (error) {
                                   showErrorSnackbar(
                                     context,
-                                    error as Exception,
+                                    error,
                                   );
                                 }
                               },

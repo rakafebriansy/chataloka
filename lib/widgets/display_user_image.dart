@@ -29,9 +29,9 @@ class DisplayUserImage extends StatelessWidget {
               right: 0,
               child: InkWell(
                 onTap: onPressed,
-                child: const CircleAvatar(
+                child: CircleAvatar(
                   radius: 20,
-                  backgroundColor: Colors.green,
+                  backgroundColor: Colors.purple[600],
                   child: Icon(Icons.camera_alt, color: Colors.white, size: 20),
                 ),
               ),
@@ -49,9 +49,9 @@ class DisplayUserImage extends StatelessWidget {
               right: 0,
               child: InkWell(
                 onTap: onPressed,
-                child: const CircleAvatar(
+                child: CircleAvatar(
                   radius: 20,
-                  backgroundColor: Colors.green,
+                  backgroundColor: Colors.purple[600],
                   child: Icon(Icons.camera_alt, color: Colors.white, size: 20),
                 ),
               ),

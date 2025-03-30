@@ -29,7 +29,7 @@ class _PeopleScreenState extends State<PeopleScreen> {
         );
     } catch (error) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        showErrorSnackbar(context, error as Exception);
+        showErrorSnackbar(context, error);
       });
     }
   }

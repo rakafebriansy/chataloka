@@ -58,7 +58,7 @@ class _OTPScreenState extends State<OTPScreen> {
       }
       await verifyOTPCode(verificationId: verificationId, otpCode: otpCode!);
     } catch (error) {
-      showErrorSnackbar(context, error as Exception);
+      showErrorSnackbar(context, error);
     }
   }
 

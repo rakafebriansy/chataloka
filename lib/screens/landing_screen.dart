@@ -23,7 +23,7 @@ class _LandingScreenState extends State<LandingScreen> {
         !isAuthenticated ? RouteConstant.loginScreen : RouteConstant.homeScreen,
       );
     } catch (error) {
-      showErrorSnackbar(context, error as Exception);
+      showErrorSnackbar(context, error);
     }
   }
 

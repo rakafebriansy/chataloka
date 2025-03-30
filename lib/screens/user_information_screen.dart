@@ -44,7 +44,7 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
       await cropImage(finalFileImage!.path);
       Navigator.of(context).pop();
     } catch (error) {
-      showErrorSnackbar(context, error as Exception);
+      showErrorSnackbar(context, error);
     }
   }
 
@@ -130,7 +130,7 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
         context,
       ).pushNamedAndRemoveUntil(RouteConstant.homeScreen, (route) => false);
     } catch (error) {
-      showErrorSnackbar(context, error as Exception);
+      showErrorSnackbar(context, error);
       _btnController.error();
     } finally {
       await Future.delayed(const Duration(seconds: 1));

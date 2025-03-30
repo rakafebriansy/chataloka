@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-void showErrorSnackbar(BuildContext context, Exception error) {
+void showErrorSnackbar(BuildContext context, dynamic error) {
   final String errorString = error.toString();
-  print(errorString);
+  print(error);
   showSnackBar(
     context: context,
     message: errorString.length < 50 ? errorString : 'Something went wrong.',

@@ -154,7 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     );
                     _btnController.success();
                   } catch (error) {
-                    showErrorSnackbar(context, error as Exception);
+                    showErrorSnackbar(context, error);
 
                     _btnController.error();
                   }

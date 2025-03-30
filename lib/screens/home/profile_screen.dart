@@ -35,7 +35,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _userStream = authProvider.getUserStream(userId: uid!);
         }
       } catch (error) {
-        showErrorSnackbar(context, error as Exception);
+        showErrorSnackbar(context, error);
       }
     });
   }
