@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 
 void showErrorSnackbar(BuildContext context, Exception error) {
   final String errorString = error.toString();
+  print(errorString);
   showSnackBar(
     context: context,
     message: errorString.length < 50 ? errorString : 'Something went wrong.',

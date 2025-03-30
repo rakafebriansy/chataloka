@@ -2,6 +2,7 @@ import 'package:chataloka/builders/build_elevated_button.dart';
 import 'package:chataloka/constants/route.dart';
 import 'package:chataloka/models/user.dart';
 import 'package:chataloka/providers/authentication_provider.dart';
+import 'package:chataloka/utilities/global_methods.dart';
 import 'package:chataloka/widgets/app_bar_back_button.dart';
 import 'package:chataloka/widgets/user_image_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -18,19 +19,23 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   late final String? uid;
-  late final Stream<DocumentSnapshot>? userStream;
+  late final Stream<DocumentSnapshot>? _userStream;
 
   @override
   void initState() {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final authProvider = context.read<AuthenticationProvider>();
-      setState(() {
-        uid = ModalRoute.of(context)?.settings.arguments as String?;
-      });
-      if (uid != null) {
-        userStream = authProvider.getUserStream(userId: uid!);
+      try {
+        final authProvider = context.read<AuthenticationProvider>();
+        setState(() {
+          uid = ModalRoute.of(context)?.settings.arguments as String?;
+        });
+        if (uid != null) {
+          _userStream = authProvider.getUserStream(userId: uid!);
+        }
+      } catch (error) {
+        showErrorSnackbar(context, error as Exception);
       }
     });
   }
@@ -70,7 +75,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body:
           uid != null
               ? StreamBuilder<DocumentSnapshot>(
-                stream: userStream,
+                stream: _userStream,
                 builder: (
                   BuildContext context,
                   AsyncSnapshot<DocumentSnapshot> snapshot,

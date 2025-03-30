@@ -204,6 +204,13 @@ class AuthenticationProvider extends ChangeNotifier {
     return _firestore.collection(UserConstant.users).doc(_uid).snapshots();
   }
 
+  Stream<QuerySnapshot> getAllUsersStream({required String userId}) {
+    return _firestore
+        .collection(UserConstant.users)
+        .where(UserConstant.uid, isNotEqualTo: userId)
+        .snapshots();
+  }
+
   Future<void> logout() async {
     await _auth.signOut();
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
