@@ -122,7 +122,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       children: [
                         Center(
                           child: UserImageButton(
-                            radius: 60,
+                            side: 120,
                             onTap: () {},
                             imageUrl: userModel.image,
                           ),

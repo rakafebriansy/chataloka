@@ -50,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: EdgeInsets.all(8.0),
             child: UserImageButton(
               imageUrl: authProvider.userModel?.image,
-              radius: 20,
+              side: 40,
               onTap: () {
                 if (authProvider.userModel != null) {
                   Navigator.of(context).pushNamed(
