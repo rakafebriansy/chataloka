@@ -1,8 +1,8 @@
 import 'package:chataloka/constants/route.dart';
 import 'package:chataloka/providers/authentication_provider.dart';
-import 'package:chataloka/screens/chat_list_screen.dart';
-import 'package:chataloka/screens/groups.dart';
-import 'package:chataloka/screens/people_screen.dart';
+import 'package:chataloka/screens/home/page_view/chat_list_screen.dart';
+import 'package:chataloka/screens/home/page_view/groups_screen.dart';
+import 'package:chataloka/screens/home/page_view/people_screen.dart';
 import 'package:chataloka/widgets/user_image_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
