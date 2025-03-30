@@ -1,3 +1,4 @@
+import 'package:chataloka/builders/build_rounded_image.dart';
 import 'package:chataloka/constants/route.dart';
 import 'package:chataloka/constants/user.dart';
 import 'package:chataloka/providers/authentication_provider.dart';
@@ -24,9 +25,9 @@ class _PeopleScreenState extends State<PeopleScreen> {
 
     try {
       final authProvider = context.read<AuthenticationProvider>();
-        _userStream = authProvider.getAllUsersStream(
-          userId: authProvider.userModel!.uid,
-        );
+      _userStream = authProvider.getAllUsersStream(
+        userId: authProvider.userModel!.uid,
+      );
     } catch (error) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         showErrorSnackbar(context, error);
@@ -55,7 +56,10 @@ class _PeopleScreenState extends State<PeopleScreen> {
                         ) {
                           if (snapshot.hasError) {
                             return Center(
-                              child: Text('Something went wrong.', style: GoogleFonts.openSans(),),
+                              child: Text(
+                                'Something went wrong.',
+                                style: GoogleFonts.openSans(),
+                              ),
                             );
                           }
 
@@ -68,7 +72,12 @@ class _PeopleScreenState extends State<PeopleScreen> {
 
                           if (!snapshot.hasData ||
                               snapshot.data!.docs.isEmpty) {
-                            return Center(child: Text('No users found.', style: GoogleFonts.openSans(),));
+                            return Center(
+                              child: Text(
+                                'No users found.',
+                                style: GoogleFonts.openSans(),
+                              ),
+                            );
                           }
 
                           return ListView(
@@ -79,22 +88,21 @@ class _PeopleScreenState extends State<PeopleScreen> {
                                   Map<String, dynamic> user =
                                       document.data() as Map<String, dynamic>;
                                   return ListTile(
-                                    leading: CircleAvatar(
-                                      radius: 25,
-                                      backgroundImage: NetworkImage(
-                                        user[UserConstant.image],
-                                      ),
+                                    leading: buildRoundedImage(imageUrl: user[UserConstant.image], side: 50),
+                                    title: Text(
+                                      user[UserConstant.name],
+                                      style: GoogleFonts.openSans(),
                                     ),
-                                    title: Text(user[UserConstant.name], style: GoogleFonts.openSans(),),
                                     subtitle: Text(
-                                      user[UserConstant.aboutMe], style: GoogleFonts.openSans(),
+                                      user[UserConstant.aboutMe],
+                                      style: GoogleFonts.openSans(),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                     onTap: () {
                                       Navigator.of(context).pushNamed(
                                         RouteConstant.profileScreen,
-                                        arguments: document.id,
+                                        arguments: user['uid'],
                                       );
                                     },
                                   );
