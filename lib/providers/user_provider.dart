@@ -259,6 +259,20 @@ class UserProvider extends ChangeNotifier {
     });
   }
 
+  Future<void> removeFriend({required String friendId}) async {
+    final userRef = _firestore.collection(UserConstant.users).doc(_uid);
+    final friendRef = _firestore.collection(UserConstant.users).doc(friendId);
+
+    await _firestore.runTransaction((transaction) async {
+      transaction.update(userRef, {
+        UserConstant.friendsUIDs: FieldValue.arrayRemove([friendId]),
+      });
+      transaction.update(friendRef, {
+        UserConstant.friendsUIDs: FieldValue.arrayRemove([_uid]),
+      });
+    });
+  }
+
   Future<void> logout() async {
     await _auth.signOut();
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();

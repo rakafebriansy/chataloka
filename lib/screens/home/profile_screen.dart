@@ -117,6 +117,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                    SizedBox(height: 30),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -128,12 +129,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 buildElevatedButton(
                                   context: context,
                                   width: screenWidth * 0.7,
+                                  fontSize: 12,
                                   onPressed: () {},
                                   label: 'View Friend Requests',
                                 ),
                               SizedBox(width: 20),
                               if (userModel.friendsUIDs.isNotEmpty)
                                 buildElevatedButton(
+                                  fontSize: 12,
                                   context: context,
                                   width: screenWidth * 0.7,
                                   onPressed: () {},
@@ -144,28 +147,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         if (currentUser.uid != userModel.uid)
                           userModel.friendsUIDs.contains(currentUser.uid)
                               ? SizedBox(
-                                width: screenWidth * 0.7,
+                                width: screenWidth * 0.8,
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     buildElevatedButton(
                                       context: context,
-                                      width: screenWidth * 0.3,
+                                      width: screenWidth * 0.38,
                                       fontSize: 12,
                                       backgroundColor: Colors.red,
                                       onPressed: () async {
                                         try {
-                                          // await userProvider.removeFriend(
-                                          //   friendId: userModel.uid,
-                                          // );
                                           showChatalokaDialog(
                                             context: context,
                                             content: Text(
-                                              'You are no longer friend with ${userModel.name}.',
-                                              style: GoogleFonts.openSans(),
+                                              'Are you sure want to remove ${userModel.name} from friend?',
                                             ),
-                                            cancelLabel: 'Close',
+                                            confirmColor: Colors.red,
+                                            confirmLabel: 'Remove',
+                                            cancelLabel: 'Cancel',
+                                            onConfirm: () async {
+                                              await userProvider.removeFriend(
+                                                friendId: userModel.uid,
+                                              );
+                                              Navigator.of(context).pop();
+                                              showChatalokaDialog(
+                                                context: context,
+                                                content: Text(
+                                                  'You are no longer friend with ${userModel.name}.',
+                                                  style: GoogleFonts.openSans(),
+                                                ),
+                                                cancelLabel: 'Close',
+                                                onCancel: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                              );
+                                            },
                                             onCancel: () {
                                               Navigator.of(context).pop();
                                             },
@@ -179,7 +197,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     buildElevatedButton(
                                       context: context,
                                       fontSize: 12,
-                                      width: screenWidth * 0.3,
+                                      width: screenWidth * 0.38,
                                       onPressed: () async {
                                         try {
                                           // await userProvider.removeFriend(

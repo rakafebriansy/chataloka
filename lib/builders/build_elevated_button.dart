@@ -16,6 +16,9 @@ Widget buildElevatedButton({
     width: width ?? double.infinity,
     child: ElevatedButton(
       style: ElevatedButton.styleFrom(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10)
+        ),
         backgroundColor: backgroundColor ?? colorScheme.primary,
       ),
       onPressed: onPressed,
