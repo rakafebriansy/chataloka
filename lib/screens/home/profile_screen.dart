@@ -42,6 +42,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final userProvider = context.read<UserProvider>();
+    final screenWidth = MediaQuery.of(context).size.width;
 
     if (uid == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
@@ -95,128 +96,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             return const Center(child: CircularProgressIndicator());
           }
 
-          final List<Widget> buttons = [
-            if (currentUser.uid == userModel.uid &&
-                userModel.friendRequestsUIDs.isNotEmpty)
-              buildElevatedButton(
-                context: context,
-                onPressed: () {},
-                label: 'View Friend Requests',
-              )
-            else if (currentUser.uid == userModel.uid &&
-                userModel.friendsUIDs.isNotEmpty)
-              buildElevatedButton(
-                context: context,
-                onPressed: () {},
-                label: 'View Friends',
-              )
-            else if (currentUser.uid != userModel.uid)
-              userModel.friendsUIDs.contains(currentUser.uid)
-                  ? buildElevatedButton(
-                    context: context,
-                    backgroundColor: Colors.red,
-                    onPressed: () async {
-                      try {
-                        // await userProvider.cancelFriendRequest(
-                        //   friendId: userModel.uid,
-                        // );
-                        // showChatalokaDialog(
-                        //   context: context,
-                        //   content: Text(
-                        //     '${userModel.name} has removed from friend list.',
-                        //     style: GoogleFonts.openSans(),
-                        //   ),
-                        //   cancelLabel: 'Close',
-                        //   onCancel: () {
-                        //     Navigator.of(context).pop();
-                        //   },
-                        // );
-                        print('no implementation');
-                      } catch (error) {
-                        showErrorSnackbar(context, error);
-                      }
-                    },
-                    label: 'Remove Friend',
-                  )
-                  : userModel.friendRequestsUIDs.contains(currentUser.uid)
-                  ? buildElevatedButton(
-                    context: context,
-                    backgroundColor: Colors.red,
-                    onPressed: () async {
-                      try {
-                        await userProvider.cancelFriendRequest(
-                          friendId: userModel.uid,
-                        );
-                        showChatalokaDialog(
-                          context: context,
-                          content: Text(
-                            'Friend request has been canceled.',
-                            style: GoogleFonts.openSans(),
-                          ),
-                          cancelLabel: 'Close',
-                          onCancel: () {
-                            Navigator.of(context).pop();
-                          },
-                        );
-                      } catch (error) {
-                        showErrorSnackbar(context, error);
-                      }
-                    },
-                    label: 'Cancel Friend Request',
-                  )
-                  : userModel.sentFriendRequestUIDs.contains(currentUser.uid)
-                  ? buildElevatedButton(
-                    context: context,
-                    onPressed: () async {
-                      try {
-                        await userProvider.acceptFriendRequest(
-                          friendId: userModel.uid,
-                        );
-                        showChatalokaDialog(
-                          context: context,
-                          content: Text(
-                            'You are now friend with ${userModel.name}.',
-                            style: GoogleFonts.openSans(),
-                          ),
-                          cancelLabel: 'Close',
-                          onCancel: () {
-                            Navigator.of(context).pop();
-                          },
-                        );
-                      } catch (error) {
-                        showErrorSnackbar(context, error);
-                      }
-                    },
-                    label: 'Accept Friend Request',
-                  )
-                  : buildElevatedButton(
-                    context: context,
-                    onPressed: () async {
-                      try {
-                        await userProvider.sendFriendRequest(
-                          friendId: userModel.uid,
-                        );
-                        showChatalokaDialog(
-                          context: context,
-                          content: Text(
-                            'Request sent successfully.',
-                            style: GoogleFonts.openSans(),
-                          ),
-                          cancelLabel: 'Close',
-                          onCancel: () {
-                            Navigator.of(context).pop();
-                          },
-                        );
-                      } catch (error) {
-                        showErrorSnackbar(context, error);
-                      }
-                    },
-                    label: 'Send Friend Request',
-                  ),
-          ];
-
           return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
             child: Column(
               children: [
                 Center(
@@ -236,10 +117,177 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    if (buttons.isNotEmpty) SizedBox(height: 10),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.7,
-                      child: Column(children: buttons),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        if (currentUser.uid == userModel.uid)
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              if (userModel.friendRequestsUIDs.isNotEmpty)
+                                buildElevatedButton(
+                                  context: context,
+                                  width: screenWidth * 0.7,
+                                  onPressed: () {},
+                                  label: 'View Friend Requests',
+                                ),
+                              SizedBox(width: 20),
+                              if (userModel.friendsUIDs.isNotEmpty)
+                                buildElevatedButton(
+                                  context: context,
+                                  width: screenWidth * 0.7,
+                                  onPressed: () {},
+                                  label: 'View Friends',
+                                ),
+                            ],
+                          ),
+                        if (currentUser.uid != userModel.uid)
+                          userModel.friendsUIDs.contains(currentUser.uid)
+                              ? SizedBox(
+                                width: screenWidth * 0.7,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    buildElevatedButton(
+                                      context: context,
+                                      width: screenWidth * 0.3,
+                                      fontSize: 12,
+                                      backgroundColor: Colors.red,
+                                      onPressed: () async {
+                                        try {
+                                          // await userProvider.removeFriend(
+                                          //   friendId: userModel.uid,
+                                          // );
+                                          showChatalokaDialog(
+                                            context: context,
+                                            content: Text(
+                                              'You are no longer friend with ${userModel.name}.',
+                                              style: GoogleFonts.openSans(),
+                                            ),
+                                            cancelLabel: 'Close',
+                                            onCancel: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          );
+                                        } catch (error) {
+                                          showErrorSnackbar(context, error);
+                                        }
+                                      },
+                                      label: 'Unfriend',
+                                    ),
+                                    buildElevatedButton(
+                                      context: context,
+                                      fontSize: 12,
+                                      width: screenWidth * 0.3,
+                                      onPressed: () async {
+                                        try {
+                                          // await userProvider.removeFriend(
+                                          //   friendId: userModel.uid,
+                                          // );
+                                          showChatalokaDialog(
+                                            context: context,
+                                            content: Text(
+                                              'You are no longer friend with ${userModel.name}.',
+                                              style: GoogleFonts.openSans(),
+                                            ),
+                                            cancelLabel: 'Close',
+                                            onCancel: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          );
+                                        } catch (error) {
+                                          showErrorSnackbar(context, error);
+                                        }
+                                      },
+                                      label: 'Chat',
+                                    ),
+                                  ],
+                                ),
+                              )
+                              : userModel.friendRequestsUIDs.contains(
+                                currentUser.uid,
+                              )
+                              ? buildElevatedButton(
+                                context: context,
+                                width: screenWidth * 0.7,
+                                backgroundColor: Colors.red,
+                                onPressed: () async {
+                                  try {
+                                    await userProvider.cancelFriendRequest(
+                                      friendId: userModel.uid,
+                                    );
+                                    showChatalokaDialog(
+                                      context: context,
+                                      content: Text(
+                                        'Friend request has been canceled.',
+                                        style: GoogleFonts.openSans(),
+                                      ),
+                                      cancelLabel: 'Close',
+                                      onCancel: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    );
+                                  } catch (error) {
+                                    showErrorSnackbar(context, error);
+                                  }
+                                },
+                                label: 'Cancel Friend Request',
+                              )
+                              : userModel.sentFriendRequestUIDs.contains(
+                                currentUser.uid,
+                              )
+                              ? buildElevatedButton(
+                                context: context,
+                                width: screenWidth * 0.7,
+                                onPressed: () async {
+                                  try {
+                                    await userProvider.acceptFriendRequest(
+                                      friendId: userModel.uid,
+                                    );
+                                    showChatalokaDialog(
+                                      context: context,
+                                      content: Text(
+                                        'You are now friend with ${userModel.name}.',
+                                        style: GoogleFonts.openSans(),
+                                      ),
+                                      cancelLabel: 'Close',
+                                      onCancel: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    );
+                                  } catch (error) {
+                                    showErrorSnackbar(context, error);
+                                  }
+                                },
+                                label: 'Accept Friend Request',
+                              )
+                              : buildElevatedButton(
+                                context: context,
+                                width: screenWidth * 0.7,
+                                onPressed: () async {
+                                  try {
+                                    await userProvider.sendFriendRequest(
+                                      friendId: userModel.uid,
+                                    );
+                                    showChatalokaDialog(
+                                      context: context,
+                                      content: Text(
+                                        'Request sent successfully.',
+                                        style: GoogleFonts.openSans(),
+                                      ),
+                                      cancelLabel: 'Close',
+                                      onCancel: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    );
+                                  } catch (error) {
+                                    showErrorSnackbar(context, error);
+                                  }
+                                },
+                                label: 'Send Friend Request',
+                              ),
+                      ],
                     ),
                     const SizedBox(height: 10),
                     Row(

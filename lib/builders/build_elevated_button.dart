@@ -7,11 +7,13 @@ Widget buildElevatedButton({
   required String label,
   Color? backgroundColor,
   Color? foregroundColor,
+  double? width,
+  double? fontSize
 }) {
   final colorScheme = Theme.of(context).colorScheme;
 
   return SizedBox(
-    width: double.infinity,
+    width: width ?? double.infinity,
     child: ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: backgroundColor ?? colorScheme.primary,
@@ -19,8 +21,10 @@ Widget buildElevatedButton({
       onPressed: onPressed,
       child: Text(
         label.toUpperCase(),
+        textAlign: TextAlign.center,
         style: GoogleFonts.openSans(
           fontWeight: FontWeight.bold,
+          fontSize: fontSize ?? 14,
           color: foregroundColor ?? Colors.white,
         ),
       ),
