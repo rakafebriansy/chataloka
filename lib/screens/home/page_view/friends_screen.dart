@@ -1,5 +1,4 @@
 import 'package:chataloka/builders/build_rounded_image.dart';
-import 'package:chataloka/builders/build_text_button_icon.dart';
 import 'package:chataloka/constants/route.dart';
 import 'package:chataloka/models/user.dart';
 import 'package:chataloka/providers/user_provider.dart';
@@ -25,7 +24,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
     super.initState();
 
     try {
-      final userProvider = context.read<UserProvider>();
+      final UserProvider userProvider = context.read<UserProvider>();
       _friendsStream = userProvider.getAllFriendsStream(
         userId: userProvider.userModel!.uid,
       );
@@ -38,9 +37,6 @@ class _FriendsScreenState extends State<FriendsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = context.read<UserProvider>();
-    final screenWidth = MediaQuery.of(context).size.width;
-
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -52,15 +48,16 @@ class _FriendsScreenState extends State<FriendsScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      buildTextButtonIcon(
-                        context: context,
-                        label: 'Friend Requests',
+                      TextButton(
+                        child: Text(
+                          'Friend Requests',
+                          style: GoogleFonts.openSans(fontSize: 12),
+                        ),
                         onPressed: () {
                           Navigator.of(
                             context,
                           ).pushNamed(RouteConstant.friendRequestsScreen);
                         },
-                        icon: Icons.notification_add,
                       ),
                     ],
                   ),
@@ -98,7 +95,6 @@ class _FriendsScreenState extends State<FriendsScreen> {
                           AsyncSnapshot<QuerySnapshot> snapshot,
                         ) {
                           if (snapshot.hasError) {
-                            print(snapshot.error.toString());
                             return Center(
                               child: Text(
                                 'Something went wrong.',
@@ -153,14 +149,13 @@ class _FriendsScreenState extends State<FriendsScreen> {
                                         arguments: userModel.uid,
                                       );
                                     },
-                                    trailing: SizedBox(
-                                      width: screenWidth * 0.4,
+                                    trailing: FittedBox(
                                       child: Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.end,
                                         children: [
                                           IconButton(
-                                            iconSize: 16,
+                                            iconSize: 18,
                                             icon: Icon(
                                               Icons.chat_bubble_outline,
                                             ),
@@ -176,45 +171,12 @@ class _FriendsScreenState extends State<FriendsScreen> {
                                             },
                                           ),
                                           IconButton(
-                                            icon: Icon(Icons.delete),
+                                            icon: Icon(Icons.favorite),
                                             color: Colors.red,
-                                            iconSize: 16,
+                                            iconSize: 18,
                                             onPressed: () async {
                                               try {
-                                                showChatalokaDialog(
-                                                  context: context,
-                                                  content: Text(
-                                                    'Are you sure want to remove ${userModel.name} from friend?',
-                                                  ),
-                                                  confirmColor: Colors.red,
-                                                  confirmLabel: 'Remove',
-                                                  cancelLabel: 'Cancel',
-                                                  onConfirm: () async {
-                                                    await userProvider
-                                                        .removeFriend(
-                                                          friendId:
-                                                              userModel.uid,
-                                                        );
-                                                    Navigator.of(context).pop();
-                                                    showChatalokaDialog(
-                                                      context: context,
-                                                      content: Text(
-                                                        'You are no longer friend with ${userModel.name}.',
-                                                        style:
-                                                            GoogleFonts.openSans(),
-                                                      ),
-                                                      cancelLabel: 'Close',
-                                                      onCancel: () {
-                                                        Navigator.of(
-                                                          context,
-                                                        ).pop();
-                                                      },
-                                                    );
-                                                  },
-                                                  onCancel: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                );
+                                                //
                                               } catch (error) {
                                                 showErrorSnackbar(
                                                   context,

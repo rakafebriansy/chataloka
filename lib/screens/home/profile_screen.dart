@@ -46,93 +46,82 @@ class _ProfileScreenState extends State<ProfileScreen> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        leading: AppBarBackButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        centerTitle: true,
-        title: const Text('Profile'),
-        actions: [
-          userProvider.userModel?.uid == uid
-              ? IconButton(
-                onPressed: () {
-                  Navigator.pushNamed(
-                    context,
-                    RouteConstant.settingsScreen,
-                    arguments: uid,
-                  );
-                },
-                icon: const Icon(Icons.settings),
-              )
-              : IconButton(
-                icon: Icon(Icons.delete),
-                color: Colors.red,
-                onPressed: () async {
-                  try {
-                    showChatalokaDialog(
-                      context: context,
-                      content: Text(
-                        'Are you sure want to remove ${userProvider.userModel?.name} from friend?',
-                      ),
-                      confirmColor: Colors.red,
-                      confirmLabel: 'Remove',
-                      cancelLabel: 'Cancel',
-                      onConfirm: () async {
-                        await userProvider.removeFriend(
-                          friendId: userProvider.userModel!.uid,
-                        );
-                        Navigator.of(context).pop();
+    return StreamBuilder<DocumentSnapshot>(
+      stream: _userStream,
+      builder: (
+        BuildContext context,
+        AsyncSnapshot<DocumentSnapshot> snapshot,
+      ) {
+        if (snapshot.hasError) {
+          return const Center(child: Text('Something went wrong'));
+        }
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        final UserModel userModel = UserModel.fromMap(
+          snapshot.data?.data() as Map<String, dynamic>,
+        );
+
+        final UserModel? currentUser = userProvider.userModel;
+
+        if (currentUser == null) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        return Scaffold(
+          appBar: AppBar(
+            leading: AppBarBackButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            centerTitle: true,
+            title: const Text('Profile'),
+            actions: [
+              userProvider.userModel?.uid == uid
+                  ? IconButton(
+                    onPressed: () {
+                      Navigator.pushNamed(
+                        context,
+                        RouteConstant.settingsScreen,
+                        arguments: uid,
+                      );
+                    },
+                    icon: const Icon(Icons.settings),
+                  )
+                  : IconButton(
+                    icon: Icon(Icons.delete),
+                    color: Colors.red,
+                    onPressed: () async {
+                      try {
                         showChatalokaDialog(
                           context: context,
                           content: Text(
-                            'You are no longer friend with ${userProvider.userModel?.name}.',
-                            style: GoogleFonts.openSans(),
+                            'Are you sure want to remove ${userModel.name} from friend?',
                           ),
-                          cancelLabel: 'Close',
+                          confirmColor: Colors.red,
+                          confirmLabel: 'Remove',
+                          cancelLabel: 'Cancel',
+                          onConfirm: () async {
+                            await userProvider.removeFriend(
+                              friendId: userModel.uid,
+                            );
+                            Navigator.of(context).pop();
+                          },
                           onCancel: () {
                             Navigator.of(context).pop();
                           },
                         );
-                      },
-                      onCancel: () {
-                        Navigator.of(context).pop();
-                      },
-                    );
-                  } catch (error) {
-                    showErrorSnackbar(context, error);
-                  }
-                },
-              ),
-        ],
-      ),
-      body: StreamBuilder<DocumentSnapshot>(
-        stream: _userStream,
-        builder: (
-          BuildContext context,
-          AsyncSnapshot<DocumentSnapshot> snapshot,
-        ) {
-          if (snapshot.hasError) {
-            return const Center(child: Text('Something went wrong'));
-          }
-
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          final UserModel userModel = UserModel.fromMap(
-            snapshot.data?.data() as Map<String, dynamic>,
-          );
-
-          final UserModel? currentUser = userProvider.userModel;
-
-          if (currentUser == null) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          return Padding(
+                      } catch (error) {
+                        showErrorSnackbar(context, error);
+                      }
+                    },
+                  ),
+            ],
+          ),
+          body: Padding(
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
             child: Column(
               children: [
@@ -154,159 +143,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                     Text(userModel.phoneNumber, style: GoogleFonts.openSans()),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        // if (currentUser.uid != userModel.uid)
-                        //   userModel.friendsUIDs.contains(currentUser.uid)
-                        //       ? SizedBox(
-                        //         width: screenWidth * 0.8,
-                        //         child: Row(
-                        //           mainAxisAlignment:
-                        //               MainAxisAlignment.spaceBetween,
-                        //           children: [
-                        //             buildElevatedButton(
-                        //               context: context,
-                        //               width: screenWidth * 0.38,
-                        //               fontSize: 12,
-                        //               backgroundColor: Colors.red,
-                        //               onPressed: () async {
-                        //                 try {
-                        //                   showChatalokaDialog(
-                        //                     context: context,
-                        //                     content: Text(
-                        //                       'Are you sure want to remove ${userModel.name} from friend?',
-                        //                     ),
-                        //                     confirmColor: Colors.red,
-                        //                     confirmLabel: 'Remove',
-                        //                     cancelLabel: 'Cancel',
-                        //                     onConfirm: () async {
-                        //                       await userProvider.removeFriend(
-                        //                         friendId: userModel.uid,
-                        //                       );
-                        //                       Navigator.of(context).pop();
-                        //                       showChatalokaDialog(
-                        //                         context: context,
-                        //                         content: Text(
-                        //                           'You are no longer friend with ${userModel.name}.',
-                        //                           style: GoogleFonts.openSans(),
-                        //                         ),
-                        //                         cancelLabel: 'Close',
-                        //                         onCancel: () {
-                        //                           Navigator.of(context).pop();
-                        //                         },
-                        //                       );
-                        //                     },
-                        //                     onCancel: () {
-                        //                       Navigator.of(context).pop();
-                        //                     },
-                        //                   );
-                        //                 } catch (error) {
-                        //                   showErrorSnackbar(context, error);
-                        //                 }
-                        //               },
-                        //               label: 'Unfriend',
-                        //             ),
-                        //             buildElevatedButton(
-                        //               context: context,
-                        //               fontSize: 12,
-                        //               width: screenWidth * 0.38,
-                        //               onPressed: () async {
-                        //                 try {
-                        //                   //
-                        //                 } catch (error) {
-                        //                   showErrorSnackbar(context, error);
-                        //                 }
-                        //               },
-                        //               label: 'Chat',
-                        //             ),
-                        //           ],
-                        //         ),
-                        //       )
-                        //       : userModel.friendRequestsUIDs.contains(
-                        //         currentUser.uid,
-                        //       )
-                        //       ? buildElevatedButton(
-                        //         context: context,
-                        //         width: screenWidth * 0.7,
-                        //         backgroundColor: Colors.red,
-                        //         onPressed: () async {
-                        //           try {
-                        //             await userProvider.cancelFriendRequest(
-                        //               friendId: userModel.uid,
-                        //             );
-                        //             showChatalokaDialog(
-                        //               context: context,
-                        //               content: Text(
-                        //                 'Friend request has been canceled.',
-                        //                 style: GoogleFonts.openSans(),
-                        //               ),
-                        //               cancelLabel: 'Close',
-                        //               onCancel: () {
-                        //                 Navigator.of(context).pop();
-                        //               },
-                        //             );
-                        //           } catch (error) {
-                        //             showErrorSnackbar(context, error);
-                        //           }
-                        //         },
-                        //         label: 'Cancel Friend Request',
-                        //       )
-                        //       : userModel.sentFriendRequestUIDs.contains(
-                        //         currentUser.uid,
-                        //       )
-                        //       ? buildElevatedButton(
-                        //         context: context,
-                        //         width: screenWidth * 0.7,
-                        //         onPressed: () async {
-                        //           try {
-                        //             await userProvider.acceptFriendRequest(
-                        //               friendId: userModel.uid,
-                        //             );
-                        //             showChatalokaDialog(
-                        //               context: context,
-                        //               content: Text(
-                        //                 'You are now friend with ${userModel.name}.',
-                        //                 style: GoogleFonts.openSans(),
-                        //               ),
-                        //               cancelLabel: 'Close',
-                        //               onCancel: () {
-                        //                 Navigator.of(context).pop();
-                        //               },
-                        //             );
-                        //           } catch (error) {
-                        //             showErrorSnackbar(context, error);
-                        //           }
-                        //         },
-                        //         label: 'Accept Friend Request',
-                        //       )
-                        //       : buildElevatedButton(
-                        //         context: context,
-                        //         width: screenWidth * 0.7,
-                        //         onPressed: () async {
-                        //           try {
-                        //             await userProvider.sendFriendRequest(
-                        //               friendId: userModel.uid,
-                        //             );
-                        //             showChatalokaDialog(
-                        //               context: context,
-                        //               content: Text(
-                        //                 'Request sent successfully.',
-                        //                 style: GoogleFonts.openSans(),
-                        //               ),
-                        //               cancelLabel: 'Close',
-                        //               onCancel: () {
-                        //                 Navigator.of(context).pop();
-                        //               },
-                        //             );
-                        //           } catch (error) {
-                        //             showErrorSnackbar(context, error);
-                        //           }
-                        //         },
-                        //         label: 'Send Friend Request',
-                        //       ),
-                      ],
-                    ),
                     const SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -343,9 +179,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ],
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

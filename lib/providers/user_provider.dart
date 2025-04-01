@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:chataloka/models/user.dart';
+import 'package:chataloka/utilities/firebase_mocks.dart';
 import 'package:chataloka/utilities/global_methods.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -205,40 +206,91 @@ class UserProvider extends ChangeNotifier {
   }
 
   Stream<QuerySnapshot> getAllStrangersStream({required String userId}) async* {
-    List<String> friendsList = await _getFriendUIDsList(userId);
+    await for (var userDoc
+        in _firestore.collection(UserConstant.users).doc(userId).snapshots()) {
+      if (!userDoc.exists || userDoc.data() == null) {
+        yield QuerySnapshotMock();
+        continue;
+      }
 
-    if (friendsList.isEmpty) {
-      yield* Stream.empty();
-    } else {
+      List<String> friendsList = List<String>.from(
+        userDoc[UserConstant.friendsUIDs] ?? [],
+      );
+
       yield* _firestore
           .collection(UserConstant.users)
-          .where(UserConstant.uid, whereNotIn: friendsList)
+          .where(UserConstant.uid, whereNotIn: [...friendsList, _uid])
           .snapshots();
+    }
+  }
+
+  Stream<QuerySnapshot> getAllFriendRequestsStream({
+    required String userId,
+  }) async* {
+    await for (var userDoc
+        in _firestore.collection(UserConstant.users).doc(userId).snapshots()) {
+      if (!userDoc.exists || userDoc.data() == null) {
+        yield QuerySnapshotMock();
+        continue;
+      }
+
+      List<String> friendRequestsList = List<String>.from(
+        userDoc[UserConstant.friendRequestsUIDs] ?? [],
+      );
+
+      if (friendRequestsList.isEmpty) {
+        yield QuerySnapshotMock();
+      } else {
+        yield* _firestore
+            .collection(UserConstant.users)
+            .where(UserConstant.uid, whereIn: friendRequestsList)
+            .snapshots();
+      }
     }
   }
 
   Stream<QuerySnapshot> getAllFriendsStream({required String userId}) async* {
-    List<String> friendsList = await _getFriendUIDsList(userId);
+    await for (var userDoc
+        in _firestore.collection(UserConstant.users).doc(userId).snapshots()) {
+      if (!userDoc.exists || userDoc.data() == null) {
+        yield QuerySnapshotMock();
+        continue;
+      }
 
-    if (friendsList.isEmpty) {
-      yield* Stream.empty();
-    } else {
-      yield* _firestore
-          .collection(UserConstant.users)
-          .where(UserConstant.uid, whereIn: friendsList)
-          .snapshots();
+      List<String> friendsList = List<String>.from(
+        userDoc[UserConstant.friendsUIDs] ?? [],
+      );
+
+      if (friendsList.isEmpty) {
+        yield QuerySnapshotMock();
+      } else {
+        yield* _firestore
+            .collection(UserConstant.users)
+            .where(UserConstant.uid, whereIn: friendsList)
+            .snapshots();
+      }
     }
   }
 
-  Future<List<String>> _getFriendUIDsList(String userId) async {
-    DocumentSnapshot userDoc =
-        await _firestore.collection(UserConstant.users).doc(userId).get();
+  // Future<List<String>> getFriendUIDsList(String userId) async {
+  //   DocumentSnapshot userDoc =
+  //       await _firestore.collection(UserConstant.users).doc(userId).get();
 
-    List<String> friendsList = List<String>.from(
-      userDoc[UserConstant.friendsUIDs] ?? [],
-    );
-    return friendsList;
-  }
+  //   List<String> friendsList = List<String>.from(
+  //     userDoc[UserConstant.friendsUIDs] ?? [],
+  //   );
+  //   return friendsList;
+  // }
+
+  // Future<List<String>> getFriendRequestsUIDsList(String userId) async {
+  //   DocumentSnapshot userDoc =
+  //       await _firestore.collection(UserConstant.users).doc(userId).get();
+
+  //   List<String> friendsList = List<String>.from(
+  //     userDoc[UserConstant.friendRequestsUIDs] ?? [],
+  //   );
+  //   return friendsList;
+  // }
 
   Future<void> sendFriendRequest({required String friendId}) async {
     final senderRef = _firestore.collection(UserConstant.users).doc(_uid);

@@ -25,7 +25,7 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
     super.initState();
 
     try {
-      final userProvider = context.read<UserProvider>();
+      final UserProvider userProvider = context.read<UserProvider>();
       _userStream = userProvider.getAllStrangersStream(
         userId: userProvider.userModel!.uid,
       );
