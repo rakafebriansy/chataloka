@@ -18,7 +18,7 @@ class AddFriendScreen extends StatefulWidget {
 }
 
 class _AddFriendScreenState extends State<AddFriendScreen> {
-  late final Stream<QuerySnapshot>? _userStream;
+  late final Future<QuerySnapshot>? _userDoc;
 
   @override
   void initState() {
@@ -26,7 +26,7 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
 
     try {
       final userProvider = context.read<UserProvider>();
-      _userStream = userProvider.getAllUsersStream(
+      _userDoc = userProvider.getAllUsersDoc(
         userId: userProvider.userModel!.uid,
       );
     } catch (error) {
@@ -53,15 +53,13 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: Expanded(
-                child: CupertinoSearchTextField(placeholder: 'Search'),
-              ),
+              child: CupertinoSearchTextField(placeholder: 'Search'),
             ),
             Expanded(
               child:
-                  _userStream != null
-                      ? StreamBuilder<QuerySnapshot>(
-                        stream: _userStream,
+                  _userDoc != null
+                      ? FutureBuilder<QuerySnapshot>(
+                        future: _userDoc,
                         builder: (
                           BuildContext context,
                           AsyncSnapshot<QuerySnapshot> snapshot,

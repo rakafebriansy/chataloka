@@ -113,7 +113,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                               snapshot.data!.docs.isEmpty) {
                             return Center(
                               child: Text(
-                                'No users found.',
+                                'No friends yet.',
                                 style: GoogleFonts.openSans(),
                               ),
                             );

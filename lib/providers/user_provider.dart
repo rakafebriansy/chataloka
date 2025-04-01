@@ -204,15 +204,15 @@ class UserProvider extends ChangeNotifier {
     return _firestore.collection(UserConstant.users).doc(userId).snapshots();
   }
 
-  Stream<QuerySnapshot> getAllUsersStream({required String userId}) {
+  Future<QuerySnapshot> getAllUsersDoc({required String userId}) async {
     return _firestore
         .collection(UserConstant.users)
         .where(UserConstant.uid, isNotEqualTo: userId)
-        .snapshots();
+        .get();
   }
 
   Stream<QuerySnapshot> getAllFriendsStream({required String userId}) async* {
-    List<String> friendsList = await getFriendUIDsList(userId);
+    List<String> friendsList = await _getFriendUIDsList(userId);
 
     if (friendsList.isEmpty) {
       yield* Stream.empty();
@@ -224,7 +224,7 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
-  Future<List<String>> getFriendUIDsList(String userId) async {
+  Future<List<String>> _getFriendUIDsList(String userId) async {
     DocumentSnapshot userDoc =
         await _firestore.collection(UserConstant.users).doc(userId).get();
 
