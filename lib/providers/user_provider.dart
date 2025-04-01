@@ -204,11 +204,17 @@ class UserProvider extends ChangeNotifier {
     return _firestore.collection(UserConstant.users).doc(userId).snapshots();
   }
 
-  Future<QuerySnapshot> getAllUsersDoc({required String userId}) async {
-    return _firestore
-        .collection(UserConstant.users)
-        .where(UserConstant.uid, isNotEqualTo: userId)
-        .get();
+  Stream<QuerySnapshot> getAllStrangersStream({required String userId}) async* {
+    List<String> friendsList = await _getFriendUIDsList(userId);
+
+    if (friendsList.isEmpty) {
+      yield* Stream.empty();
+    } else {
+      yield* _firestore
+          .collection(UserConstant.users)
+          .where(UserConstant.uid, whereNotIn: friendsList)
+          .snapshots();
+    }
   }
 
   Stream<QuerySnapshot> getAllFriendsStream({required String userId}) async* {
