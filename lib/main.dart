@@ -1,6 +1,8 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:chataloka/constants/route.dart';
 import 'package:chataloka/providers/user_provider.dart';
+import 'package:chataloka/screens/home/profile/friend_requests_screen.dart';
+import 'package:chataloka/screens/home/profile/add_friend_screen.dart';
 import 'package:chataloka/screens/landing_screen.dart';
 import 'package:chataloka/screens/login_screen.dart';
 import 'package:chataloka/screens/otp_screen.dart';
@@ -54,14 +56,16 @@ class MyApp extends StatelessWidget {
             darkTheme: darkTheme,
             initialRoute: RouteConstant.landingScreen,
             routes: {
+              RouteConstant.addFriendScreen: (context) => const AddFriendScreen(),
+              RouteConstant.friendRequestsScreen: (context) => const FriendRequestsScreen(),
+              RouteConstant.homeScreen: (context) => const HomeScreen(),
               RouteConstant.landingScreen: (context) => const LandingScreen(),
               RouteConstant.loginScreen: (context) => const LoginScreen(),
+              RouteConstant.profileScreen: (context) => const ProfileScreen(),
               RouteConstant.otpScreen: (context) => const OTPScreen(),
+              RouteConstant.settingsScreen: (context) => const SettingsScreen(),
               RouteConstant.userInformationScreen:
                   (context) => const UserInformationScreen(),
-              RouteConstant.homeScreen: (context) => const HomeScreen(),
-              RouteConstant.profileScreen: (context) => const ProfileScreen(),
-              RouteConstant.settingsScreen: (context) => const SettingsScreen(),
             },
           ),
     );

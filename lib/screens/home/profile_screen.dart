@@ -117,33 +117,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 30),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        if (currentUser.uid == userModel.uid)
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              if (userModel.friendRequestsUIDs.isNotEmpty)
-                                buildElevatedButton(
-                                  context: context,
-                                  width: screenWidth * 0.7,
-                                  fontSize: 12,
-                                  onPressed: () {},
-                                  label: 'View Friend Requests',
-                                ),
-                              SizedBox(width: 20),
-                              if (userModel.friendsUIDs.isNotEmpty)
-                                buildElevatedButton(
-                                  fontSize: 12,
-                                  context: context,
-                                  width: screenWidth * 0.7,
-                                  onPressed: () {},
-                                  label: 'View Friends',
-                                ),
-                            ],
-                          ),
                         if (currentUser.uid != userModel.uid)
                           userModel.friendsUIDs.contains(currentUser.uid)
                               ? SizedBox(
@@ -200,20 +176,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       width: screenWidth * 0.38,
                                       onPressed: () async {
                                         try {
-                                          // await userProvider.removeFriend(
-                                          //   friendId: userModel.uid,
-                                          // );
-                                          showChatalokaDialog(
-                                            context: context,
-                                            content: Text(
-                                              'You are no longer friend with ${userModel.name}.',
-                                              style: GoogleFonts.openSans(),
-                                            ),
-                                            cancelLabel: 'Close',
-                                            onCancel: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                          );
+                                          //
                                         } catch (error) {
                                           showErrorSnackbar(context, error);
                                         }

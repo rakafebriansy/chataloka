@@ -3,20 +3,21 @@ import 'package:chataloka/constants/route.dart';
 import 'package:chataloka/constants/user.dart';
 import 'package:chataloka/providers/user_provider.dart';
 import 'package:chataloka/utilities/global_methods.dart';
+import 'package:chataloka/widgets/app_bar_back_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-class PeopleScreen extends StatefulWidget {
-  const PeopleScreen({super.key});
+class AddFriendScreen extends StatefulWidget {
+  const AddFriendScreen({super.key});
 
   @override
-  State<PeopleScreen> createState() => _PeopleScreenState();
+  State<AddFriendScreen> createState() => _AddFriendScreenState();
 }
 
-class _PeopleScreenState extends State<PeopleScreen> {
+class _AddFriendScreenState extends State<AddFriendScreen> {
   late final Stream<QuerySnapshot>? _userStream;
 
   @override
@@ -38,12 +39,23 @@ class _PeopleScreenState extends State<PeopleScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: AppBarBackButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        centerTitle: true,
+        title: const Text('Add Friend'),
+      ),
       body: SafeArea(
         child: Column(
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: CupertinoSearchTextField(placeholder: 'Search'),
+              child: Expanded(
+                child: CupertinoSearchTextField(placeholder: 'Search'),
+              ),
             ),
             Expanded(
               child:
@@ -88,7 +100,10 @@ class _PeopleScreenState extends State<PeopleScreen> {
                                   Map<String, dynamic> user =
                                       document.data() as Map<String, dynamic>;
                                   return ListTile(
-                                    leading: buildRoundedImage(imageUrl: user[UserConstant.image], side: 50),
+                                    leading: buildRoundedImage(
+                                      imageUrl: user[UserConstant.image],
+                                      side: 50,
+                                    ),
                                     title: Text(
                                       user[UserConstant.name],
                                       style: GoogleFonts.openSans(),
