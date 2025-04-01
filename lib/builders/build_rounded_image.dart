@@ -20,13 +20,17 @@ Widget buildRoundedImage({required String? imageUrl, required double side}) {
                     return child;
                   }
                   return Center(
-                    child: CircularProgressIndicator(
-                      value:
-                          loadingProgress.expectedTotalBytes != null
-                              ? loadingProgress.cumulativeBytesLoaded /
-                                  (loadingProgress.expectedTotalBytes ?? 1)
-                              : null,
-                      strokeWidth: 2,
+                    child: SizedBox(
+                      height: side,
+                      width: side,
+                      child: CircularProgressIndicator(
+                        value:
+                            loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                    (loadingProgress.expectedTotalBytes ?? 1)
+                                : null,
+                        strokeWidth: 4,
+                      ),
                     ),
                   );
                 },

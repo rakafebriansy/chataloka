@@ -159,9 +159,19 @@ class _LoginScreenState extends State<LoginScreen> {
                     _btnController.error();
                   }
                 },
-                child: Text('Send Code', style: TextStyle(color: Colors.white)),
                 borderRadius: 10,
                 width: screenWidth - 40,
+                successColor: Colors.green,
+                errorColor: Colors.red,
+                color: Theme.of(context).colorScheme.primary,
+                child: Text(
+                  'Send Code',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
             ],
           ),

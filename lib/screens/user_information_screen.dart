@@ -158,6 +158,7 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
           child: Column(
             children: [
               DisplayUserImage(
+                context:context,
                 finalFileImage: finalFileImage,
                 radius: 60,
                 onPressed: () {
@@ -184,7 +185,7 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
                   successIcon: Icons.check,
                   successColor: Colors.green,
                   errorColor: Colors.red,
-                  color: Theme.of(context).primaryColor,
+                  color: Theme.of(context).colorScheme.primary,
                   borderRadius: 10,
                   width: screenWidth - 40,
                   child: const Text(

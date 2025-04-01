@@ -6,11 +6,13 @@ import 'package:chataloka/utilities/assets_manager.dart';
 class DisplayUserImage extends StatelessWidget {
   const DisplayUserImage({
     super.key,
+    required this.context,
     required this.finalFileImage,
     required this.radius,
     required this.onPressed,
   });
 
+  final BuildContext context;
   final File? finalFileImage;
   final double radius;
   final VoidCallback onPressed;
@@ -31,7 +33,7 @@ class DisplayUserImage extends StatelessWidget {
                 onTap: onPressed,
                 child: CircleAvatar(
                   radius: 20,
-                  backgroundColor: Colors.purple[600],
+                  backgroundColor: Theme.of(context).colorScheme.primary,
                   child: Icon(Icons.camera_alt, color: Colors.white, size: 20),
                 ),
               ),
@@ -51,7 +53,7 @@ class DisplayUserImage extends StatelessWidget {
                 onTap: onPressed,
                 child: CircleAvatar(
                   radius: 20,
-                  backgroundColor: Colors.purple[600],
+                  backgroundColor: Theme.of(context).colorScheme.primary,
                   child: Icon(Icons.camera_alt, color: Colors.white, size: 20),
                 ),
               ),
