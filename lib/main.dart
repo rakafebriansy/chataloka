@@ -1,8 +1,8 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:chataloka/constants/route.dart';
 import 'package:chataloka/providers/user_provider.dart';
-import 'package:chataloka/screens/home/profile/friend_requests_screen.dart';
-import 'package:chataloka/screens/home/profile/add_friend_screen.dart';
+import 'package:chataloka/screens/home/friends/friend_requests_screen.dart';
+import 'package:chataloka/screens/home/friends/add_friend_screen.dart';
 import 'package:chataloka/screens/landing_screen.dart';
 import 'package:chataloka/screens/login_screen.dart';
 import 'package:chataloka/screens/otp_screen.dart';
