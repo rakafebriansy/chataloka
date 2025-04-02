@@ -281,8 +281,6 @@ class UserProvider extends ChangeNotifier {
         userDoc[UserConstant.friendsUIDs] ?? [],
       );
 
-      print('FriendList ${friendsList}');
-
       if (friendsList.isEmpty) {
         _friendsStreamController.add(QuerySnapshotMock());
         return;

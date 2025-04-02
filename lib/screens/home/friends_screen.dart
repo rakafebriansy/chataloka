@@ -120,8 +120,6 @@ class _FriendsScreenState extends State<FriendsScreen> {
                             );
                           }
 
-                          print(snapshot.data!.docs);
-
                           if (!snapshot.hasData ||
                               snapshot.data!.docs.isEmpty) {
                             return Center(
