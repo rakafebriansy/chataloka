@@ -1,6 +1,7 @@
 class RouteConstant {
   static const String aboutScreen = '/aboutScreen';
   static const String addFriendScreen = '/addFriendScreen';
+  static const String chatScreen = '/chatScreen';
   static const String editProfileScreen = '/editProfileScreen';
   static const String friendRequestsScreen = '/friendRequestsScreen';
   static const String homeScreen = '/homeScreen';

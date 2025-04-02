@@ -31,11 +31,11 @@ class UserProvider extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
-  final StreamController<QuerySnapshot> _friendsStreamController =
-      StreamController();
-  final StreamController<QuerySnapshot> _friendRequestsStreamController =
+  StreamController<QuerySnapshot> _friendsStreamController =
       StreamController.broadcast();
-  final StreamController<QuerySnapshot> _strangersStreamController =
+  StreamController<QuerySnapshot> _friendRequestsStreamController =
+      StreamController.broadcast();
+  StreamController<QuerySnapshot> _strangersStreamController =
       StreamController.broadcast();
 
   Future<bool> checkAuthenticationState() async {
@@ -281,6 +281,8 @@ class UserProvider extends ChangeNotifier {
         userDoc[UserConstant.friendsUIDs] ?? [],
       );
 
+      print('FriendList ${friendsList}');
+
       if (friendsList.isEmpty) {
         _friendsStreamController.add(QuerySnapshotMock());
         return;
@@ -371,6 +373,18 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void createFriendsStream() {
+    _friendsStreamController = StreamController.broadcast();
+  }
+
+  void createFriendRequestsStream() {
+    _friendRequestsStreamController = StreamController.broadcast();
+  }
+
+  void createStrangersStream() {
+    _strangersStreamController = StreamController.broadcast();
+  }
+
   void disposeFriendsStream() {
     _friendsStreamController.close();
   }
@@ -382,4 +396,9 @@ class UserProvider extends ChangeNotifier {
   void disposeStrangersStream() {
     _strangersStreamController.close();
   }
+
+  bool isStrangersStreamClosed() => _strangersStreamController.isClosed;
+  bool isFriendRequestsStreamClosed() =>
+      _friendRequestsStreamController.isClosed;
+  bool isFriendsStreamClosed() => _friendsStreamController.isClosed;
 }

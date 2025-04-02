@@ -1,6 +1,7 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:chataloka/constants/route.dart';
 import 'package:chataloka/providers/user_provider.dart';
+import 'package:chataloka/screens/home/chat_list/chat_screen.dart';
 import 'package:chataloka/screens/home/friends/friend_requests_screen.dart';
 import 'package:chataloka/screens/home/friends/add_friend_screen.dart';
 import 'package:chataloka/screens/landing_screen.dart';
@@ -57,6 +58,7 @@ class MyApp extends StatelessWidget {
             initialRoute: RouteConstant.landingScreen,
             routes: {
               RouteConstant.addFriendScreen: (context) => const AddFriendScreen(),
+              RouteConstant.chatScreen: (context) => const ChatScreen(),
               RouteConstant.friendRequestsScreen: (context) => const FriendRequestsScreen(),
               RouteConstant.homeScreen: (context) => const HomeScreen(),
               RouteConstant.landingScreen: (context) => const LandingScreen(),

@@ -27,6 +27,9 @@ class _FriendRequestsScreenState extends State<FriendRequestsScreen> {
 
     try {
       userProvider = context.read<UserProvider>();
+      if (userProvider.isFriendRequestsStreamClosed()) {
+        userProvider.createFriendRequestsStream();
+      }
       _friendRequestsStream = userProvider.getAllFriendRequestsStream(
         userId: userProvider.userModel!.uid,
       );

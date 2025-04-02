@@ -26,6 +26,9 @@ class _FriendsScreenState extends State<FriendsScreen> {
 
     try {
       userProvider = context.read<UserProvider>();
+      if (userProvider.isFriendsStreamClosed()) {
+        userProvider.createFriendsStream();
+      }
       _friendsStream = userProvider.getAllFriendsStream(
         userId: userProvider.userModel!.uid,
       );
@@ -117,6 +120,8 @@ class _FriendsScreenState extends State<FriendsScreen> {
                             );
                           }
 
+                          print(snapshot.data!.docs);
+
                           if (!snapshot.hasData ||
                               snapshot.data!.docs.isEmpty) {
                             return Center(
@@ -168,7 +173,11 @@ class _FriendsScreenState extends State<FriendsScreen> {
                                             ),
                                             onPressed: () async {
                                               try {
-                                                //
+                                                Navigator.pushNamed(
+                                                  context,
+                                                  RouteConstant.chatScreen,
+                                                  arguments: userModel.uid,
+                                                );
                                               } catch (error) {
                                                 showErrorSnackbar(
                                                   context,
