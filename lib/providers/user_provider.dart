@@ -218,7 +218,7 @@ class UserProvider extends ChangeNotifier {
       userDoc,
     ) {
       if (!userDoc.exists || userDoc.data() == null) {
-        _friendRequestsStreamController.add(QuerySnapshotMock());
+        _strangersStreamController.add(QuerySnapshotMock());
         return;
       }
 
@@ -231,11 +231,11 @@ class UserProvider extends ChangeNotifier {
           .where(UserConstant.uid, whereNotIn: [...friendsList, _uid])
           .snapshots()
           .listen((snapshot) {
-            _friendRequestsStreamController.add(snapshot);
+            _strangersStreamController.add(snapshot);
           });
     });
 
-    return _friendRequestsStreamController.stream;
+    return _strangersStreamController.stream;
   }
 
   Stream<QuerySnapshot> getAllFriendRequestsStream({required String userId}) {

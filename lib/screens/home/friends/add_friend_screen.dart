@@ -24,7 +24,6 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
   @override
   void initState() {
     super.initState();
-    print('init');
 
     try {
       userProvider = context.read<UserProvider>();
