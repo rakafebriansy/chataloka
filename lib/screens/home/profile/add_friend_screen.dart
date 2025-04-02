@@ -19,13 +19,14 @@ class AddFriendScreen extends StatefulWidget {
 
 class _AddFriendScreenState extends State<AddFriendScreen> {
   late final Stream<QuerySnapshot>? _userStream;
+  late final UserProvider userProvider;
 
   @override
   void initState() {
     super.initState();
 
     try {
-      final UserProvider userProvider = context.read<UserProvider>();
+      userProvider = context.read<UserProvider>();
       _userStream = userProvider.getAllStrangersStream(
         userId: userProvider.userModel!.uid,
       );
@@ -37,9 +38,13 @@ class _AddFriendScreenState extends State<AddFriendScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final userProvider = context.read<UserProvider>();
+  void dispose() {
+    userProvider.disposeStrangersStream();
+    super.dispose();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: AppBarBackButton(

@@ -109,6 +109,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               friendId: userModel.uid,
                             );
                             Navigator.of(context).pop();
+                            Navigator.of(context).pop();
                           },
                           onCancel: () {
                             Navigator.of(context).pop();

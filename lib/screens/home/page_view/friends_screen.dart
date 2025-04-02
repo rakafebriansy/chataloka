@@ -18,13 +18,14 @@ class FriendsScreen extends StatefulWidget {
 
 class _FriendsScreenState extends State<FriendsScreen> {
   late final Stream<QuerySnapshot>? _friendsStream;
+  late final UserProvider userProvider;
 
   @override
   void initState() {
     super.initState();
 
     try {
-      final UserProvider userProvider = context.read<UserProvider>();
+      userProvider = context.read<UserProvider>();
       _friendsStream = userProvider.getAllFriendsStream(
         userId: userProvider.userModel!.uid,
       );
@@ -33,6 +34,12 @@ class _FriendsScreenState extends State<FriendsScreen> {
         showErrorSnackbar(context, error);
       });
     }
+  }
+
+  @override
+  void dispose() {
+    userProvider.disposeFriendsStream();
+    super.dispose();
   }
 
   @override

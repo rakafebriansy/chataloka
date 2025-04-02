@@ -26,6 +26,20 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final int? arguments = ModalRoute.of(context)?.settings.arguments as int?;
+      if (arguments != null) {
+        setState(() {
+          currentIndex = arguments;
+          homeController.jumpToPage(arguments);
+        });
+      }
+    });
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     final userProvider = context.read<UserProvider>();

@@ -19,13 +19,14 @@ class FriendRequestsScreen extends StatefulWidget {
 
 class _FriendRequestsScreenState extends State<FriendRequestsScreen> {
   late final Stream<QuerySnapshot>? _friendRequestsStream;
+  late final UserProvider userProvider;
 
   @override
   void initState() {
     super.initState();
 
     try {
-      final UserProvider userProvider = context.read<UserProvider>();
+      userProvider = context.read<UserProvider>();
       _friendRequestsStream = userProvider.getAllFriendRequestsStream(
         userId: userProvider.userModel!.uid,
       );
@@ -37,9 +38,13 @@ class _FriendRequestsScreenState extends State<FriendRequestsScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final userProvider = context.read<UserProvider>();
+  void dispose() {
+    userProvider.disposeFriendRequestsStream();
+    super.dispose();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: AppBarBackButton(

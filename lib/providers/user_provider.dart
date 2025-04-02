@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -29,6 +30,13 @@ class UserProvider extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
+
+  final StreamController<QuerySnapshot> _friendsStreamController =
+      StreamController();
+  final StreamController<QuerySnapshot> _friendRequestsStreamController =
+      StreamController.broadcast();
+  final StreamController<QuerySnapshot> _strangersStreamController =
+      StreamController.broadcast();
 
   Future<bool> checkAuthenticationState() async {
     bool isSignedIn = _auth.currentUser != null;
@@ -205,33 +213,38 @@ class UserProvider extends ChangeNotifier {
     return _firestore.collection(UserConstant.users).doc(userId).snapshots();
   }
 
-  Stream<QuerySnapshot> getAllStrangersStream({required String userId}) async* {
-    await for (var userDoc
-        in _firestore.collection(UserConstant.users).doc(userId).snapshots()) {
+  Stream<QuerySnapshot> getAllStrangersStream({required String userId}) {
+    _firestore.collection(UserConstant.users).doc(userId).snapshots().listen((
+      userDoc,
+    ) {
       if (!userDoc.exists || userDoc.data() == null) {
-        yield QuerySnapshotMock();
-        continue;
+        _friendRequestsStreamController.add(QuerySnapshotMock());
+        return;
       }
 
       List<String> friendsList = List<String>.from(
         userDoc[UserConstant.friendsUIDs] ?? [],
       );
 
-      yield* _firestore
+      _firestore
           .collection(UserConstant.users)
           .where(UserConstant.uid, whereNotIn: [...friendsList, _uid])
-          .snapshots();
-    }
+          .snapshots()
+          .listen((snapshot) {
+            _friendRequestsStreamController.add(snapshot);
+          });
+    });
+
+    return _friendRequestsStreamController.stream;
   }
 
-  Stream<QuerySnapshot> getAllFriendRequestsStream({
-    required String userId,
-  }) async* {
-    await for (var userDoc
-        in _firestore.collection(UserConstant.users).doc(userId).snapshots()) {
+  Stream<QuerySnapshot> getAllFriendRequestsStream({required String userId}) {
+    _firestore.collection(UserConstant.users).doc(userId).snapshots().listen((
+      userDoc,
+    ) {
       if (!userDoc.exists || userDoc.data() == null) {
-        yield QuerySnapshotMock();
-        continue;
+        _friendRequestsStreamController.add(QuerySnapshotMock());
+        return;
       }
 
       List<String> friendRequestsList = List<String>.from(
@@ -239,22 +252,29 @@ class UserProvider extends ChangeNotifier {
       );
 
       if (friendRequestsList.isEmpty) {
-        yield QuerySnapshotMock();
-      } else {
-        yield* _firestore
-            .collection(UserConstant.users)
-            .where(UserConstant.uid, whereIn: friendRequestsList)
-            .snapshots();
+        _friendRequestsStreamController.add(QuerySnapshotMock());
+        return;
       }
-    }
+
+      _firestore
+          .collection(UserConstant.users)
+          .where(UserConstant.uid, whereIn: friendRequestsList)
+          .snapshots()
+          .listen((snapshot) {
+            _friendRequestsStreamController.add(snapshot);
+          });
+    });
+
+    return _friendRequestsStreamController.stream;
   }
 
-  Stream<QuerySnapshot> getAllFriendsStream({required String userId}) async* {
-    await for (var userDoc
-        in _firestore.collection(UserConstant.users).doc(userId).snapshots()) {
+  Stream<QuerySnapshot> getAllFriendsStream({required String userId}) {
+    _firestore.collection(UserConstant.users).doc(userId).snapshots().listen((
+      userDoc,
+    ) {
       if (!userDoc.exists || userDoc.data() == null) {
-        yield QuerySnapshotMock();
-        continue;
+        _friendsStreamController.add(QuerySnapshotMock());
+        return;
       }
 
       List<String> friendsList = List<String>.from(
@@ -262,35 +282,21 @@ class UserProvider extends ChangeNotifier {
       );
 
       if (friendsList.isEmpty) {
-        yield QuerySnapshotMock();
-      } else {
-        yield* _firestore
-            .collection(UserConstant.users)
-            .where(UserConstant.uid, whereIn: friendsList)
-            .snapshots();
+        _friendsStreamController.add(QuerySnapshotMock());
+        return;
       }
-    }
+
+      _firestore
+          .collection(UserConstant.users)
+          .where(UserConstant.uid, whereIn: friendsList)
+          .snapshots()
+          .listen((snapshot) {
+            _friendsStreamController.add(snapshot);
+          });
+    });
+
+    return _friendsStreamController.stream;
   }
-
-  // Future<List<String>> getFriendUIDsList(String userId) async {
-  //   DocumentSnapshot userDoc =
-  //       await _firestore.collection(UserConstant.users).doc(userId).get();
-
-  //   List<String> friendsList = List<String>.from(
-  //     userDoc[UserConstant.friendsUIDs] ?? [],
-  //   );
-  //   return friendsList;
-  // }
-
-  // Future<List<String>> getFriendRequestsUIDsList(String userId) async {
-  //   DocumentSnapshot userDoc =
-  //       await _firestore.collection(UserConstant.users).doc(userId).get();
-
-  //   List<String> friendsList = List<String>.from(
-  //     userDoc[UserConstant.friendRequestsUIDs] ?? [],
-  //   );
-  //   return friendsList;
-  // }
 
   Future<void> sendFriendRequest({required String friendId}) async {
     final senderRef = _firestore.collection(UserConstant.users).doc(_uid);
@@ -304,6 +310,7 @@ class UserProvider extends ChangeNotifier {
         UserConstant.sentFriendRequestsUIDs: FieldValue.arrayUnion([friendId]),
       });
     });
+    notifyListeners();
   }
 
   Future<void> cancelFriendRequest({required String friendId}) async {
@@ -318,6 +325,7 @@ class UserProvider extends ChangeNotifier {
         UserConstant.sentFriendRequestsUIDs: FieldValue.arrayRemove([friendId]),
       });
     });
+    notifyListeners();
   }
 
   Future<void> acceptFriendRequest({required String friendId}) async {
@@ -338,6 +346,7 @@ class UserProvider extends ChangeNotifier {
         UserConstant.friendRequestsUIDs: FieldValue.arrayRemove([friendId]),
       });
     });
+    notifyListeners();
   }
 
   Future<void> removeFriend({required String friendId}) async {
@@ -352,6 +361,7 @@ class UserProvider extends ChangeNotifier {
         UserConstant.friendsUIDs: FieldValue.arrayRemove([_uid]),
       });
     });
+    notifyListeners();
   }
 
   Future<void> logout() async {
@@ -359,5 +369,17 @@ class UserProvider extends ChangeNotifier {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     await sharedPreferences.clear();
     notifyListeners();
+  }
+
+  void disposeFriendsStream() {
+    _friendsStreamController.close();
+  }
+
+  void disposeFriendRequestsStream() {
+    _friendRequestsStreamController.close();
+  }
+
+  void disposeStrangersStream() {
+    _strangersStreamController.close();
   }
 }
