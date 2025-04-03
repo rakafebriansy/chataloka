@@ -182,7 +182,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                                                         userModel.name,
                                                     UserConstant.friendImage:
                                                         userModel.image,
-                                                    UserConstant.friendgroupUID:
+                                                    UserConstant.friendGroupUID:
                                                         '',
                                                   },
                                                 );

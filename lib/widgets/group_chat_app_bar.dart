@@ -8,9 +8,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class GroupChatAppBar extends StatefulWidget {
-  const GroupChatAppBar({super.key, required this.groupUID});
+  const GroupChatAppBar({super.key, required this.friendGroupUID});
 
-  final String groupUID;
+  final String friendGroupUID;
 
   @override
   State<GroupChatAppBar> createState() => _GroupChatAppBarState();
@@ -25,7 +25,7 @@ class _GroupChatAppBarState extends State<GroupChatAppBar> {
     super.initState();
     try {
       userProvider = context.read<UserProvider>();
-      _userStream = userProvider.getUserStream(userId: widget.groupUID);
+      _userStream = userProvider.getUserStream(userId: widget.friendGroupUID);
     } catch (error) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         showErrorSnackbar(context, error);

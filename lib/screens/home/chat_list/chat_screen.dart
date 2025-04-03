@@ -1,4 +1,5 @@
 import 'package:chataloka/constants/user.dart';
+import 'package:chataloka/widgets/bottom_chat_field.dart';
 import 'package:chataloka/widgets/chat_app_bar.dart';
 import 'package:flutter/material.dart';
 
@@ -28,10 +29,15 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     final String? friendUID = arguments?[UserConstant.friendUID];
-    final String? groupUID = arguments?[UserConstant.groupUID];
-    final bool? isGroupChat = groupUID?.isNotEmpty;
+    final String? friendName = arguments?[UserConstant.friendName];
+    final String? friendImage = arguments?[UserConstant.friendImage];
+    final String? friendGroupUID = arguments?[UserConstant.friendGroupUID];
+    final bool? isGroupChat = friendGroupUID?.isNotEmpty;
 
-    if (friendUID == null) {
+    if (friendUID == null ||
+        friendName == null ||
+        friendImage == null ||
+        friendGroupUID == null) {
       return SizedBox.shrink();
     }
 
@@ -48,11 +54,11 @@ class _ChatScreenState extends State<ChatScreen> {
                 },
               ),
             ),
-            TextFormField(
-              decoration: InputDecoration(
-                hintText: 'Type a message',
-                suffixIcon: Icon(Icons.send),
-              ),
+            BottomChatField(
+              friendUID: friendUID,
+              friendName: friendName,
+              friendImage: friendImage,
+              friendGroupUID: friendGroupUID,
             ),
           ],
         ),

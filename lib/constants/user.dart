@@ -19,7 +19,7 @@ class UserConstant {
   static const String friendUID = 'friendUID';
   static const String friendName = 'friendName';
   static const String friendImage = 'friendImage';
-  static const String friendgroupUID = 'friendgroupUID';
+  static const String friendGroupUID = 'friendGroupUID';
 
   // global
   static const String users = 'users';
