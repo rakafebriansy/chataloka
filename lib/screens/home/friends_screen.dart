@@ -1,5 +1,6 @@
 import 'package:chataloka/builders/build_rounded_image.dart';
 import 'package:chataloka/constants/route.dart';
+import 'package:chataloka/constants/user.dart';
 import 'package:chataloka/models/user.dart';
 import 'package:chataloka/providers/user_provider.dart';
 import 'package:chataloka/utilities/global_methods.dart';
@@ -120,6 +121,8 @@ class _FriendsScreenState extends State<FriendsScreen> {
                             );
                           }
 
+                          print(snapshot.data!.docs);
+
                           if (!snapshot.hasData ||
                               snapshot.data!.docs.isEmpty) {
                             return Center(
@@ -174,7 +177,16 @@ class _FriendsScreenState extends State<FriendsScreen> {
                                                 Navigator.pushNamed(
                                                   context,
                                                   RouteConstant.chatScreen,
-                                                  arguments: userModel.uid,
+                                                  arguments: {
+                                                    UserConstant.friendUID:
+                                                        userModel.uid,
+                                                    UserConstant.friendName:
+                                                        userModel.name,
+                                                    UserConstant.friendImage:
+                                                        userModel.image,
+                                                    UserConstant.friendGroupId:
+                                                        '',
+                                                  },
                                                 );
                                               } catch (error) {
                                                 showErrorSnackbar(

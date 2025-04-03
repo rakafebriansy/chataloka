@@ -38,6 +38,11 @@ class UserProvider extends ChangeNotifier {
   StreamController<QuerySnapshot> _strangersStreamController =
       StreamController.broadcast();
 
+  StreamSubscription? _userStreamSubscription;
+  StreamSubscription? _friendsStreamSubscription;
+  StreamSubscription? _friendRequestsStreamSubscription;
+  StreamSubscription? _strangersStreamSubscription;
+
   Future<bool> checkAuthenticationState() async {
     bool isSignedIn = _auth.currentUser != null;
     await Future.delayed(const Duration(milliseconds: 500));
@@ -214,86 +219,97 @@ class UserProvider extends ChangeNotifier {
   }
 
   Stream<QuerySnapshot> getAllStrangersStream({required String userId}) {
-    _firestore.collection(UserConstant.users).doc(userId).snapshots().listen((
-      userDoc,
-    ) {
-      if (!userDoc.exists || userDoc.data() == null) {
-        _strangersStreamController.add(QuerySnapshotMock());
-        return;
-      }
+    _userStreamSubscription = _firestore
+        .collection(UserConstant.users)
+        .doc(userId)
+        .snapshots()
+        .listen((userDoc) {
+          if (!userDoc.exists || userDoc.data() == null) {
+            _strangersStreamSubscription?.cancel();
+            _strangersStreamController.add(QuerySnapshotMock());
+            return;
+          }
 
-      List<String> friendsList = List<String>.from(
-        userDoc[UserConstant.friendsUIDs] ?? [],
-      );
+          List<String> friendsList = List<String>.from(
+            userDoc[UserConstant.friendsUIDs] ?? [],
+          );
 
-      _firestore
-          .collection(UserConstant.users)
-          .where(UserConstant.uid, whereNotIn: [...friendsList, _uid])
-          .snapshots()
-          .listen((snapshot) {
-            _strangersStreamController.add(snapshot);
-          });
-    });
+          _strangersStreamSubscription = _firestore
+              .collection(UserConstant.users)
+              .where(UserConstant.uid, whereNotIn: [...friendsList, _uid])
+              .snapshots()
+              .listen((snapshot) {
+                _strangersStreamController.add(snapshot);
+              });
+        });
 
     return _strangersStreamController.stream;
   }
 
   Stream<QuerySnapshot> getAllFriendRequestsStream({required String userId}) {
-    _firestore.collection(UserConstant.users).doc(userId).snapshots().listen((
-      userDoc,
-    ) {
-      if (!userDoc.exists || userDoc.data() == null) {
-        _friendRequestsStreamController.add(QuerySnapshotMock());
-        return;
-      }
+    _userStreamSubscription = _firestore
+        .collection(UserConstant.users)
+        .doc(userId)
+        .snapshots()
+        .listen((userDoc) {
+          if (!userDoc.exists || userDoc.data() == null) {
+            _friendRequestsStreamSubscription?.cancel();
+            _friendRequestsStreamController.add(QuerySnapshotMock());
+            return;
+          }
 
-      List<String> friendRequestsList = List<String>.from(
-        userDoc[UserConstant.friendRequestsUIDs] ?? [],
-      );
+          List<String> friendRequestsList = List<String>.from(
+            userDoc[UserConstant.friendRequestsUIDs] ?? [],
+          );
 
-      if (friendRequestsList.isEmpty) {
-        _friendRequestsStreamController.add(QuerySnapshotMock());
-        return;
-      }
+          if (friendRequestsList.isEmpty) {
+            _friendRequestsStreamSubscription?.cancel();
+            _friendRequestsStreamController.add(QuerySnapshotMock());
+            return;
+          }
 
-      _firestore
-          .collection(UserConstant.users)
-          .where(UserConstant.uid, whereIn: friendRequestsList)
-          .snapshots()
-          .listen((snapshot) {
-            _friendRequestsStreamController.add(snapshot);
-          });
-    });
+          _friendRequestsStreamSubscription = _firestore
+              .collection(UserConstant.users)
+              .where(UserConstant.uid, whereIn: friendRequestsList)
+              .snapshots()
+              .listen((snapshot) {
+                _friendRequestsStreamController.add(snapshot);
+              });
+        });
 
     return _friendRequestsStreamController.stream;
   }
 
   Stream<QuerySnapshot> getAllFriendsStream({required String userId}) {
-    _firestore.collection(UserConstant.users).doc(userId).snapshots().listen((
-      userDoc,
-    ) {
-      if (!userDoc.exists || userDoc.data() == null) {
-        _friendsStreamController.add(QuerySnapshotMock());
-        return;
-      }
+    _userStreamSubscription = _firestore
+        .collection(UserConstant.users)
+        .doc(userId)
+        .snapshots()
+        .listen((userDoc) {
+          if (!userDoc.exists || userDoc.data() == null) {
+            _friendsStreamSubscription?.cancel();
+            _friendsStreamController.add(QuerySnapshotMock());
+            return;
+          }
 
-      List<String> friendsList = List<String>.from(
-        userDoc[UserConstant.friendsUIDs] ?? [],
-      );
+          List<String> friendsList = List<String>.from(
+            userDoc[UserConstant.friendsUIDs] ?? [],
+          );
 
-      if (friendsList.isEmpty) {
-        _friendsStreamController.add(QuerySnapshotMock());
-        return;
-      }
+          if (friendsList.isEmpty) {
+            _friendsStreamSubscription?.cancel();
+            _friendsStreamController.add(QuerySnapshotMock());
+            return;
+          }
 
-      _firestore
-          .collection(UserConstant.users)
-          .where(UserConstant.uid, whereIn: friendsList)
-          .snapshots()
-          .listen((snapshot) {
-            _friendsStreamController.add(snapshot);
-          });
-    });
+          _friendsStreamSubscription = _firestore
+              .collection(UserConstant.users)
+              .where(UserConstant.uid, whereIn: friendsList)
+              .snapshots()
+              .listen((snapshot) {
+                _friendsStreamController.add(snapshot);
+              });
+        });
 
     return _friendsStreamController.stream;
   }
@@ -368,6 +384,7 @@ class UserProvider extends ChangeNotifier {
     await _auth.signOut();
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     await sharedPreferences.clear();
+    this.closeAllUsersStream();
     notifyListeners();
   }
 
@@ -384,14 +401,20 @@ class UserProvider extends ChangeNotifier {
   }
 
   void disposeFriendsStream() {
+    _friendsStreamSubscription?.cancel();
+    _userStreamSubscription?.cancel();
     _friendsStreamController.close();
   }
 
   void disposeFriendRequestsStream() {
+    _friendRequestsStreamSubscription?.cancel();
+    _userStreamSubscription?.cancel();
     _friendRequestsStreamController.close();
   }
 
   void disposeStrangersStream() {
+    _strangersStreamSubscription?.cancel();
+    _userStreamSubscription?.cancel();
     _strangersStreamController.close();
   }
 
@@ -399,4 +422,16 @@ class UserProvider extends ChangeNotifier {
   bool isFriendRequestsStreamClosed() =>
       _friendRequestsStreamController.isClosed;
   bool isFriendsStreamClosed() => _friendsStreamController.isClosed;
+
+  void closeAllUsersStream() {
+    if (_friendsStreamController.isClosed) {
+      _friendsStreamController.close();
+    }
+    if (_friendRequestsStreamController.isClosed) {
+      _friendRequestsStreamController.close();
+    }
+    if (_strangersStreamController.isClosed) {
+      _strangersStreamController.close();
+    }
+  }
 }
