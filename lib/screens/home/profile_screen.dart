@@ -19,29 +19,32 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   String? uid;
   late final Stream<DocumentSnapshot>? _userStream;
+  late final UserProvider userProvider;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final userProvider = context.read<UserProvider>();
-      final args = ModalRoute.of(context)?.settings.arguments;
+      try {
+        userProvider = context.read<UserProvider>();
+        final args = ModalRoute.of(context)?.settings.arguments;
 
-      if (args is String) {
-        setState(() {
-          uid = args;
-          _userStream = userProvider.getUserStream(userId: args);
-        });
-      } else {
-        showErrorSnackbar(context, Exception("Invalid arguments"));
+        if (args is String) {
+          setState(() {
+            uid = args;
+            _userStream = userProvider.getUserStream(userId: args);
+          });
+        } else {
+          throw Exception('Invalid arguments');
+        }
+      } catch (error) {
+        showErrorSnackbar(context, error);
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = context.read<UserProvider>();
-
     if (uid == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }

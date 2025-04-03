@@ -3,7 +3,7 @@ class UserConstant {
   static const String uid = 'uid';
   static const String name = 'name';
   static const String phoneNumber = 'phoneNumber';
-  static const String groupId = 'groupId';
+  static const String groupUID = 'groupUID';
   static const String image = 'image';
   static const String token = 'token';
   static const String aboutMe = 'aboutMe';
@@ -19,7 +19,7 @@ class UserConstant {
   static const String friendUID = 'friendUID';
   static const String friendName = 'friendName';
   static const String friendImage = 'friendImage';
-  static const String friendGroupId = 'friendGroupId';
+  static const String friendgroupUID = 'friendgroupUID';
 
   // global
   static const String users = 'users';

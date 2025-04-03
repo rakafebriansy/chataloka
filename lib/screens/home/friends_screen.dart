@@ -121,8 +121,6 @@ class _FriendsScreenState extends State<FriendsScreen> {
                             );
                           }
 
-                          print(snapshot.data!.docs);
-
                           if (!snapshot.hasData ||
                               snapshot.data!.docs.isEmpty) {
                             return Center(
@@ -184,7 +182,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                                                         userModel.name,
                                                     UserConstant.friendImage:
                                                         userModel.image,
-                                                    UserConstant.friendGroupId:
+                                                    UserConstant.friendgroupUID:
                                                         '',
                                                   },
                                                 );
