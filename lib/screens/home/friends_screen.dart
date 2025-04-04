@@ -54,47 +54,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      TextButton(
-                        child: Text(
-                          'Friend Requests',
-                          style: GoogleFonts.openSans(fontSize: 12),
-                        ),
-                        onPressed: () {
-                          Navigator.of(
-                            context,
-                          ).pushNamed(RouteConstant.friendRequestsScreen);
-                        },
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: CupertinoSearchTextField(placeholder: 'Search'),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          Navigator.of(
-                            context,
-                          ).pushNamed(RouteConstant.addFriendScreen);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(10, 10, 0, 10),
-                          child: Icon(
-                            Icons.person_add,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+              child: CupertinoSearchTextField(placeholder: 'Search'),
             ),
             Expanded(
               child:
@@ -220,6 +180,15 @@ class _FriendsScreenState extends State<FriendsScreen> {
                       : SizedBox.shrink(),
             ),
           ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).pushNamed(RouteConstant.addFriendScreen);
+        },
+        child: Icon(
+          Icons.person_add,
+          color: Theme.of(context).colorScheme.primary,
         ),
       ),
     );

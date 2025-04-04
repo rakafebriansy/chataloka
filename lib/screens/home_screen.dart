@@ -62,17 +62,29 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           Padding(
             padding: EdgeInsets.all(8.0),
-            child: UserImageButton(
-              imageUrl: userProvider.userModel?.image,
-              side: 40,
-              onTap: () {
-                if (userProvider.userModel != null) {
-                  Navigator.of(context).pushNamed(
-                    RouteConstant.profileScreen,
-                    arguments: userProvider.userModel!.uid,
-                  );
-                }
-              },
+            child: Row(
+              children: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.of(
+                      context,
+                    ).pushNamed(RouteConstant.friendRequestsScreen);
+                  },
+                  icon: Icon(Icons.notification_add),
+                ),
+                UserImageButton(
+                  imageUrl: userProvider.userModel?.image,
+                  side: 40,
+                  onTap: () {
+                    if (userProvider.userModel != null) {
+                      Navigator.of(context).pushNamed(
+                        RouteConstant.profileScreen,
+                        arguments: userProvider.userModel!.uid,
+                      );
+                    }
+                  },
+                ),
+              ],
             ),
           ),
         ],
