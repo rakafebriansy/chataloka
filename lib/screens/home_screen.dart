@@ -1,4 +1,4 @@
-import 'package:chataloka/constants/route.dart';
+import 'package:chataloka/constants/route_constants.dart';
 import 'package:chataloka/providers/user_provider.dart';
 import 'package:chataloka/screens/home/chat_list_screen.dart';
 import 'package:chataloka/screens/home/groups_screen.dart';

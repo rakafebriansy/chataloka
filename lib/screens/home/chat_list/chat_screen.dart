@@ -1,4 +1,4 @@
-import 'package:chataloka/constants/user.dart';
+import 'package:chataloka/constants/user_constants.dart';
 import 'package:chataloka/widgets/bottom_chat_field.dart';
 import 'package:chataloka/widgets/chat_app_bar.dart';
 import 'package:flutter/material.dart';

@@ -2,15 +2,15 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:chataloka/models/user.dart';
+import 'package:chataloka/models/user_model.dart';
 import 'package:chataloka/utilities/firebase_mocks.dart';
 import 'package:chataloka/utilities/global_methods.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:chataloka/constants/route.dart';
-import 'package:chataloka/constants/user.dart';
+import 'package:chataloka/constants/route_constants.dart';
+import 'package:chataloka/constants/user_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserProvider extends ChangeNotifier {

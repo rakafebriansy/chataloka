@@ -1,5 +1,5 @@
-import 'package:chataloka/constants/route.dart';
-import 'package:chataloka/constants/user.dart';
+import 'package:chataloka/constants/route_constants.dart';
+import 'package:chataloka/constants/user_constants.dart';
 import 'package:chataloka/providers/user_provider.dart';
 import 'package:chataloka/utilities/global_methods.dart';
 import 'package:flutter/material.dart';

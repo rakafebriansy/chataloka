@@ -1,4 +1,4 @@
-import 'package:chataloka/constants/user.dart';
+import 'package:chataloka/constants/user_constants.dart';
 
 class UserModel {
   String uid;

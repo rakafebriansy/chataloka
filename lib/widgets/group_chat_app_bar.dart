@@ -1,4 +1,4 @@
-import 'package:chataloka/models/user.dart';
+import 'package:chataloka/models/user_model.dart';
 import 'package:chataloka/providers/user_provider.dart';
 import 'package:chataloka/utilities/global_methods.dart';
 import 'package:chataloka/widgets/user_image_button.dart';

@@ -1,7 +1,7 @@
 import 'package:chataloka/builders/build_rounded_image.dart';
-import 'package:chataloka/constants/route.dart';
-import 'package:chataloka/constants/user.dart';
-import 'package:chataloka/models/user.dart';
+import 'package:chataloka/constants/route_constants.dart';
+import 'package:chataloka/constants/user_constants.dart';
+import 'package:chataloka/models/user_model.dart';
 import 'package:chataloka/providers/user_provider.dart';
 import 'package:chataloka/utilities/global_methods.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

@@ -1,5 +1,5 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
-import 'package:chataloka/constants/route.dart';
+import 'package:chataloka/constants/route_constants.dart';
 import 'package:chataloka/providers/user_provider.dart';
 import 'package:chataloka/screens/home/chat_list/chat_screen.dart';
 import 'package:chataloka/screens/home/friends/friend_requests_screen.dart';
