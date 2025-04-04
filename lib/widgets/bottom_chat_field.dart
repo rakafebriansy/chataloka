@@ -33,7 +33,20 @@ class _BottomChatFieldState extends State<BottomChatField> {
         ),
         child: Row(
           children: [
-            IconButton(onPressed: () {}, icon: const Icon(Icons.attachment)),
+            IconButton(
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (context) {
+                    return Container(
+                      height: 200,
+                      child: const Center(child: Text('Attachment')),
+                    );
+                  },
+                );
+              },
+              icon: const Icon(Icons.attachment),
+            ),
             Expanded(
               child: TextFormField(
                 onChanged: (_) {
