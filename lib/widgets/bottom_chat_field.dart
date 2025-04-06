@@ -12,13 +12,13 @@ class BottomChatField extends StatefulWidget {
     required this.friendUID,
     required this.friendName,
     required this.friendImage,
-    required this.friendGroupUID,
+    this.friendGroupUID,
   });
 
   final String friendUID;
   final String friendName;
   final String friendImage;
-  final String friendGroupUID;
+  final String? friendGroupUID;
 
   @override
   State<BottomChatField> createState() => _BottomChatFieldState();
@@ -57,9 +57,9 @@ class _BottomChatFieldState extends State<BottomChatField> {
 
       await chatProvider.sendTextMessageToFirestore(
         sender: currentUser,
-        receiverUID: widget.friendUID,
-        receiverName: widget.friendName,
-        receiverImage: widget.friendImage,
+        contactUID: widget.friendUID,
+        contactName: widget.friendName,
+        contactImage: widget.friendImage,
         message: _textEditingController.text,
         messageType: MessageEnum.text,
         groupUID: widget.friendGroupUID,

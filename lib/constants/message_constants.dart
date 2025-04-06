@@ -1,7 +1,8 @@
 class MessageConstants {
-  static const String chats = 'messages';
-  static const String contactImage = 'contactImage';
+  static const String chats = 'chats';
+  static const String contactUID = 'contactUID';
   static const String contactName = 'contactName';
+  static const String contactImage = 'contactImage';
   static const String isMe = 'isMe';
   static const String isSeen = 'isSeen';
   static const String lastMessage = 'lastMessage';
@@ -12,7 +13,8 @@ class MessageConstants {
   static const String repliedMessage = 'repliedMessage';
   static const String repliedMessageType = 'repliedMessageType';
   static const String repliedTo = 'repliedTo';
-  static const String receiverUID = 'receiverUID';
+  static const String senderImage = 'senderImage';
+  static const String senderName = 'senderName';
   static const String senderUID = 'senderUID';
   static const String sentAt = 'sentAt';
 }

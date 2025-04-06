@@ -36,8 +36,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
     if (friendUID == null ||
         friendName == null ||
-        friendImage == null ||
-        friendGroupUID == null) {
+        friendImage == null) {
       return SizedBox.shrink();
     }
 

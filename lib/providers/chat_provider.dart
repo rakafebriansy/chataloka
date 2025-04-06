@@ -27,9 +27,9 @@ class ChatProvider extends ChangeNotifier {
 
   Future<void> sendTextMessageToFirestore({
     required UserModel sender,
-    required String receiverUID,
-    required String receiverName,
-    required String receiverImage,
+    required String contactUID,
+    required String contactName,
+    required String contactImage,
     required String message,
     required MessageEnum messageType,
     String? groupUID,
@@ -45,15 +45,15 @@ class ChatProvider extends ChangeNotifier {
               ? ''
               : _messageReplyModel!.isMe
               ? 'You'
-              : _messageReplyModel!.contactName;
+              : _messageReplyModel!.senderName;
       MessageEnum repliedMessageType =
           _messageReplyModel?.messageType ?? MessageEnum.text;
 
-      final MessageModel senderMessageModel = MessageModel(
+      final MessageModel messageModel = MessageModel(
         senderUID: sender.uid,
-        receiverUID: receiverUID,
-        contactName: receiverName,
-        contactImage: receiverImage,
+        contactUID: contactUID,
+        senderName: contactName,
+        senderImage: contactImage,
         messageUID: messageUID,
         message: message,
         messageType: messageType,
@@ -64,17 +64,26 @@ class ChatProvider extends ChangeNotifier {
         repliedMessageType: repliedMessageType,
       );
 
-      final MessageModel receiverMessageModel = senderMessageModel.copyWith(
-        contactName: sender.image,
-        contactImage: sender.name,
+      final senderLastMessageModel = LastMessageModel.fromMessageModel(
+        messageModel: messageModel,
+        contactUID: contactUID,
+        contactName: contactName,
+        contactImage: contactImage,
+      );
+      final contactLastMessageModel = LastMessageModel.fromMessageModel(
+        messageModel: messageModel,
+        contactUID: messageModel.senderUID,
+        contactName: messageModel.senderName,
+        contactImage: messageModel.senderImage,
       );
 
       if (groupUID != null) {
         //
       } else {
         _handleFriendMessage(
-          senderMessageModel: senderMessageModel,
-          receiverMessageModel: receiverMessageModel,
+          messageModel: messageModel,
+          senderLastMessageModel: senderLastMessageModel,
+          contactLastMessageModel: contactLastMessageModel,
         );
 
         setMessageReplyModel(null);
@@ -90,46 +99,40 @@ class ChatProvider extends ChangeNotifier {
   }
 
   Future<void> _handleFriendMessage({
-    required MessageModel senderMessageModel,
-    required MessageModel receiverMessageModel,
+    required MessageModel messageModel,
+    required LastMessageModel senderLastMessageModel,
+    required LastMessageModel contactLastMessageModel,
   }) async {
-    final senderLastMessageModel = LastMessageModel.fromMessageModel(
-      senderMessageModel,
-    );
-    final receiverLastMessageModel = LastMessageModel.fromMessageModel(
-      senderMessageModel,
-    );
-
     await _firestore.runTransaction((transaction) async {
       final senderRef = _firestore
           .collection(UserConstant.users)
-          .doc(senderMessageModel.senderUID)
+          .doc(messageModel.senderUID)
           .collection(MessageConstants.chats)
-          .doc(receiverMessageModel.receiverUID);
-      final receiverRef = _firestore
+          .doc(messageModel.contactUID);
+      final contactRef = _firestore
           .collection(UserConstant.users)
-          .doc(receiverMessageModel.senderUID)
+          .doc(messageModel.contactUID)
           .collection(MessageConstants.chats)
-          .doc(senderMessageModel.receiverUID);
+          .doc(messageModel.senderUID);
 
       transaction.set(
         senderRef
             .collection(MessageConstants.messages)
-            .doc(senderMessageModel.messageUID),
-        senderMessageModel.toMap(),
+            .doc(messageModel.messageUID),
+        messageModel.toMap(),
       );
       transaction.set(
-        receiverRef
+        contactRef
             .collection(MessageConstants.messages)
-            .doc(receiverMessageModel.messageUID),
-        receiverMessageModel.toMap(),
+            .doc(messageModel.messageUID),
+        messageModel.toMap(),
       );
 
       transaction.set(senderRef, {
         'lastMessage': senderLastMessageModel.toMap(),
       }, SetOptions(merge: true));
-      transaction.set(receiverRef, {
-        'lastMessage': receiverLastMessageModel.toMap(),
+      transaction.set(contactRef, {
+        'lastMessage': contactLastMessageModel.toMap(),
       }, SetOptions(merge: true));
     });
   }

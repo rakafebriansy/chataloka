@@ -2,8 +2,8 @@ import 'package:chataloka/constants/message_constants.dart';
 
 class MessageReplyModel {
   final String senderUID;
-  final String contactName;
-  final String contactImage;
+  final String senderName;
+  final String senderImage;
   final String message;
   final MessageEnum messageType;
 
@@ -11,22 +11,22 @@ class MessageReplyModel {
 
   MessageReplyModel({
     required this.senderUID,
-    required this.contactName,
-    required this.contactImage,
+    required this.senderName,
+    required this.senderImage,
     required this.message,
     required this.messageType,
- 
+
     required this.isMe,
   });
 
   Map<String, dynamic> toMap() {
     return {
       MessageConstants.senderUID: senderUID,
-      MessageConstants.contactName: contactName,
-      MessageConstants.contactImage: contactImage,
+      MessageConstants.senderName: senderName,
+      MessageConstants.senderImage: senderImage,
       MessageConstants.message: message,
       MessageConstants.messageType: messageType.name,
-      
+
       MessageConstants.isMe: isMe,
     };
   }
@@ -34,11 +34,11 @@ class MessageReplyModel {
   factory MessageReplyModel.fromMap(Map<String, dynamic> map) {
     return MessageReplyModel(
       senderUID: map[MessageConstants.senderUID] ?? '',
-      contactName: map[MessageConstants.contactName] ?? '',
-      contactImage: map[MessageConstants.contactImage] ?? '',
+      senderName: map[MessageConstants.senderName] ?? '',
+      senderImage: map[MessageConstants.senderImage] ?? '',
       message: map[MessageConstants.message] ?? '',
       messageType: map[MessageConstants.messageType].toString().toMessageEnum(),
-    
+
       isMe: map[MessageConstants.isMe] ?? false,
     );
   }

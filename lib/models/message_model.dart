@@ -2,9 +2,9 @@ import 'package:chataloka/constants/message_constants.dart';
 
 class MessageModel {
   final String senderUID;
-  final String receiverUID;
-  final String contactName;
-  final String contactImage;
+  final String senderName;
+  final String senderImage;
+  final String contactUID;
   final String messageUID;
   final String message;
   final MessageEnum messageType;
@@ -16,9 +16,9 @@ class MessageModel {
 
   MessageModel({
     required this.senderUID,
-    required this.receiverUID,
-    required this.contactName,
-    required this.contactImage,
+    required this.senderName,
+    required this.senderImage,
+    required this.contactUID,
     required this.messageUID,
     required this.message,
     required this.messageType,
@@ -32,9 +32,9 @@ class MessageModel {
   Map<String, dynamic> toMap() {
     return {
       MessageConstants.senderUID: senderUID,
-      MessageConstants.receiverUID: receiverUID,
-      MessageConstants.contactName: contactName,
-      MessageConstants.contactImage: contactImage,
+      MessageConstants.senderName: senderName,
+      MessageConstants.senderImage: senderImage,
+      MessageConstants.contactUID: contactUID,
       MessageConstants.messageUID: messageUID,
       MessageConstants.message: message,
       MessageConstants.messageType: messageType.name,
@@ -49,9 +49,9 @@ class MessageModel {
   factory MessageModel.fromMap(Map<String, dynamic> map) {
     return MessageModel(
       senderUID: map[MessageConstants.senderUID] ?? '',
-      contactName: map[MessageConstants.contactName] ?? '',
-      contactImage: map[MessageConstants.contactImage] ?? '',
-      receiverUID: map[MessageConstants.receiverUID] ?? '',
+      senderName: map[MessageConstants.senderName] ?? '',
+      senderImage: map[MessageConstants.senderImage] ?? '',
+      contactUID: map[MessageConstants.contactUID] ?? '',
       messageUID: map[MessageConstants.messageUID] ?? '',
       message: map[MessageConstants.message] ?? '',
       messageType: map[MessageConstants.messageType].toString().toMessageEnum(),
@@ -64,12 +64,12 @@ class MessageModel {
     );
   }
 
-  copyWith({required contactName, required contactImage}) {
+  copyWith({required senderName, required senderImage}) {
     return MessageModel(
       senderUID: this.senderUID,
-      receiverUID: this.receiverUID,
-      contactName: contactName,
-      contactImage: contactImage,
+      contactUID: this.contactUID,
+      senderName: senderName,
+      senderImage: senderImage,
       messageUID: this.messageUID,
       message: this.message,
       messageType: this.messageType,
