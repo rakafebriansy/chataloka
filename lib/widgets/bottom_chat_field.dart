@@ -1,4 +1,10 @@
+import 'package:chataloka/constants/message_constants.dart';
+import 'package:chataloka/models/user_model.dart';
+import 'package:chataloka/providers/chat_provider.dart';
+import 'package:chataloka/providers/user_provider.dart';
+import 'package:chataloka/utilities/global_methods.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class BottomChatField extends StatefulWidget {
   const BottomChatField({
@@ -19,7 +25,53 @@ class BottomChatField extends StatefulWidget {
 }
 
 class _BottomChatFieldState extends State<BottomChatField> {
-  final TextEditingController textController = TextEditingController();
+  late final TextEditingController? _textEditingController;
+  late final FocusNode? _focusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    _textEditingController = TextEditingController();
+    _focusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    _textEditingController?.dispose();
+    _focusNode?.dispose();
+    super.dispose();
+  }
+
+  Future<void> sendTextMessage() async {
+    try {
+      if (_textEditingController == null ||
+          _textEditingController.text.isEmpty) {
+        return;
+      }
+      final UserModel? currentUser = context.read<UserProvider>().userModel;
+      final chatProvider = context.read<ChatProvider>();
+
+      if (currentUser == null) {
+        throw Exception('User not found. Please re-login!');
+      }
+
+      await chatProvider.sendTextMessageToFirestore(
+        sender: currentUser,
+        receiverUID: widget.friendUID,
+        receiverName: widget.friendName,
+        receiverImage: widget.friendImage,
+        message: _textEditingController.text,
+        messageType: MessageEnum.text,
+        groupUID: widget.friendGroupUID,
+      );
+
+      _textEditingController.clear();
+      _focusNode?.requestFocus();
+      setState(() {});
+    } catch (error) {
+      showErrorSnackbar(context, error);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +90,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
                 showModalBottomSheet(
                   context: context,
                   builder: (context) {
-                    return Container(
+                    return SizedBox(
                       height: 200,
                       child: const Center(child: Text('Attachment')),
                     );
@@ -52,7 +104,8 @@ class _BottomChatFieldState extends State<BottomChatField> {
                 onChanged: (_) {
                   setState(() {});
                 },
-                controller: textController,
+                focusNode: _focusNode,
+                controller: _textEditingController,
                 decoration: const InputDecoration(
                   border: InputBorder.none,
                   hintText: 'Type a message',
@@ -65,13 +118,13 @@ class _BottomChatFieldState extends State<BottomChatField> {
                 return ScaleTransition(scale: animation, child: child);
               },
               child:
-                  textController.text.isNotEmpty
+                  _textEditingController != null &&
+                          _textEditingController.text.isNotEmpty
                       ? Padding(
                         padding: const EdgeInsets.all(4),
                         child: GestureDetector(
-                          onTap: () {
-                            textController.clear();
-                            setState(() {});
+                          onTap: () async {
+                            await sendTextMessage();
                           },
                           child: Container(
                             decoration: BoxDecoration(

@@ -316,10 +316,10 @@ class UserProvider extends ChangeNotifier {
 
   Future<void> sendFriendRequest({required String friendId}) async {
     final senderRef = _firestore.collection(UserConstant.users).doc(_uid);
-    final receiverRef = _firestore.collection(UserConstant.users).doc(friendId);
+    final contactRef = _firestore.collection(UserConstant.users).doc(friendId);
 
     await _firestore.runTransaction((transaction) async {
-      transaction.update(receiverRef, {
+      transaction.update(contactRef, {
         UserConstant.friendRequestsUIDs: FieldValue.arrayUnion([_uid]),
       });
       transaction.update(senderRef, {
@@ -331,10 +331,10 @@ class UserProvider extends ChangeNotifier {
 
   Future<void> cancelFriendRequest({required String friendId}) async {
     final senderRef = _firestore.collection(UserConstant.users).doc(_uid);
-    final receiverRef = _firestore.collection(UserConstant.users).doc(friendId);
+    final contactRef = _firestore.collection(UserConstant.users).doc(friendId);
 
     await _firestore.runTransaction((transaction) async {
-      transaction.update(receiverRef, {
+      transaction.update(contactRef, {
         UserConstant.friendRequestsUIDs: FieldValue.arrayRemove([_uid]),
       });
       transaction.update(senderRef, {
@@ -345,20 +345,20 @@ class UserProvider extends ChangeNotifier {
   }
 
   Future<void> acceptFriendRequest({required String friendId}) async {
-    final receiverRef = _firestore.collection(UserConstant.users).doc(_uid);
+    final contactRef = _firestore.collection(UserConstant.users).doc(_uid);
     final senderRef = _firestore.collection(UserConstant.users).doc(friendId);
 
     await _firestore.runTransaction((transaction) async {
       transaction.update(senderRef, {
         UserConstant.friendsUIDs: FieldValue.arrayUnion([_uid]),
       });
-      transaction.update(receiverRef, {
+      transaction.update(contactRef, {
         UserConstant.friendsUIDs: FieldValue.arrayUnion([friendId]),
       });
       transaction.update(senderRef, {
         UserConstant.sentFriendRequestsUIDs: FieldValue.arrayRemove([_uid]),
       });
-      transaction.update(receiverRef, {
+      transaction.update(contactRef, {
         UserConstant.friendRequestsUIDs: FieldValue.arrayRemove([friendId]),
       });
     });

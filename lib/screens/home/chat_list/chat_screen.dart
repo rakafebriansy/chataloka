@@ -32,7 +32,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final String? friendName = arguments?[UserConstant.friendName];
     final String? friendImage = arguments?[UserConstant.friendImage];
     final String? friendGroupUID = arguments?[UserConstant.friendGroupUID];
-    final bool? isGroupChat = friendGroupUID?.isNotEmpty;
+    final bool? isGroupChat = friendGroupUID != null && friendGroupUID.isNotEmpty;
 
     if (friendUID == null ||
         friendName == null ||

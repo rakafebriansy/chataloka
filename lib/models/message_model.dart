@@ -2,9 +2,9 @@ import 'package:chataloka/constants/message_constants.dart';
 
 class MessageModel {
   final String senderUID;
-  final String senderName;
-  final String senderImage;
   final String receiverUID;
+  final String contactName;
+  final String contactImage;
   final String messageUID;
   final String message;
   final MessageEnum messageType;
@@ -16,9 +16,9 @@ class MessageModel {
 
   MessageModel({
     required this.senderUID,
-    required this.senderName,
-    required this.senderImage,
     required this.receiverUID,
+    required this.contactName,
+    required this.contactImage,
     required this.messageUID,
     required this.message,
     required this.messageType,
@@ -32,9 +32,9 @@ class MessageModel {
   Map<String, dynamic> toMap() {
     return {
       MessageConstants.senderUID: senderUID,
-      MessageConstants.senderName: senderName,
-      MessageConstants.senderImage: senderImage,
       MessageConstants.receiverUID: receiverUID,
+      MessageConstants.contactName: contactName,
+      MessageConstants.contactImage: contactImage,
       MessageConstants.messageUID: messageUID,
       MessageConstants.message: message,
       MessageConstants.messageType: messageType.name,
@@ -49,18 +49,35 @@ class MessageModel {
   factory MessageModel.fromMap(Map<String, dynamic> map) {
     return MessageModel(
       senderUID: map[MessageConstants.senderUID] ?? '',
-      senderName: map[MessageConstants.senderName] ?? '',
-      senderImage: map[MessageConstants.senderImage] ?? '',
+      contactName: map[MessageConstants.contactName] ?? '',
+      contactImage: map[MessageConstants.contactImage] ?? '',
       receiverUID: map[MessageConstants.receiverUID] ?? '',
       messageUID: map[MessageConstants.messageUID] ?? '',
       message: map[MessageConstants.message] ?? '',
       messageType: map[MessageConstants.messageType].toString().toMessageEnum(),
       sentAt: DateTime.fromMicrosecondsSinceEpoch(map[MessageConstants.sentAt]),
-      isSeen: map[MessageConstants.isSeen] ?? '',
+      isSeen: map[MessageConstants.isSeen] ?? false,
       repliedMessage: map[MessageConstants.repliedMessage] ?? '',
       repliedTo: map[MessageConstants.repliedTo] ?? '',
       repliedMessageType:
           map[MessageConstants.repliedMessageType].toString().toMessageEnum(),
+    );
+  }
+
+  copyWith({required contactName, required contactImage}) {
+    return MessageModel(
+      senderUID: this.senderUID,
+      receiverUID: this.receiverUID,
+      contactName: contactName,
+      contactImage: contactImage,
+      messageUID: this.messageUID,
+      message: this.message,
+      messageType: this.messageType,
+      sentAt: this.sentAt,
+      isSeen: this.isSeen,
+      repliedMessage: this.repliedMessage,
+      repliedTo: this.repliedTo,
+      repliedMessageType: this.repliedMessageType,
     );
   }
 }
