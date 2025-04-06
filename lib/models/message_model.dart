@@ -64,12 +64,12 @@ class MessageModel {
     );
   }
 
-  copyWith({required senderName, required senderImage}) {
+  copyWith({required contactUID}) {
     return MessageModel(
       senderUID: this.senderUID,
-      contactUID: this.contactUID,
-      senderName: senderName,
-      senderImage: senderImage,
+      senderName: this.senderName,
+      senderImage: this.senderImage,
+      contactUID: contactUID,
       messageUID: this.messageUID,
       message: this.message,
       messageType: this.messageType,

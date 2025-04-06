@@ -49,11 +49,11 @@ class ChatProvider extends ChangeNotifier {
       MessageEnum repliedMessageType =
           _messageReplyModel?.messageType ?? MessageEnum.text;
 
-      final MessageModel messageModel = MessageModel(
+      final MessageModel senderMessageModel = MessageModel(
         senderUID: sender.uid,
+        senderName: sender.name,
+        senderImage: sender.image,
         contactUID: contactUID,
-        senderName: contactName,
-        senderImage: contactImage,
         messageUID: messageUID,
         message: message,
         messageType: messageType,
@@ -64,26 +64,13 @@ class ChatProvider extends ChangeNotifier {
         repliedMessageType: repliedMessageType,
       );
 
-      final senderLastMessageModel = LastMessageModel.fromMessageModel(
-        messageModel: messageModel,
-        contactUID: contactUID,
-        contactName: contactName,
-        contactImage: contactImage,
-      );
-      final contactLastMessageModel = LastMessageModel.fromMessageModel(
-        messageModel: messageModel,
-        contactUID: messageModel.senderUID,
-        contactName: messageModel.senderName,
-        contactImage: messageModel.senderImage,
-      );
-
       if (groupUID != null) {
         //
       } else {
         _handleFriendMessage(
-          messageModel: messageModel,
-          senderLastMessageModel: senderLastMessageModel,
-          contactLastMessageModel: contactLastMessageModel,
+          senderMessageModel: senderMessageModel,
+          contactName: contactName,
+          contactImage: contactImage
         );
 
         setMessageReplyModel(null);
@@ -99,33 +86,48 @@ class ChatProvider extends ChangeNotifier {
   }
 
   Future<void> _handleFriendMessage({
-    required MessageModel messageModel,
-    required LastMessageModel senderLastMessageModel,
-    required LastMessageModel contactLastMessageModel,
+    required MessageModel senderMessageModel,
+    required String contactName,
+    required String contactImage,
   }) async {
+    final MessageModel contactMessageModel = senderMessageModel.copyWith(
+      contactUID: senderMessageModel.senderUID,
+    );
+    final senderLastMessageModel = LastMessageModel.fromMessageModel(
+      messageModel: senderMessageModel,
+      contactUID: senderMessageModel.contactUID,
+      contactName: contactName,
+      contactImage: contactImage,
+    );
+    final contactLastMessageModel = LastMessageModel.fromMessageModel(
+      messageModel: contactMessageModel,
+      contactUID: contactMessageModel.senderUID,
+      contactName: contactMessageModel.senderName,
+      contactImage: contactMessageModel.senderImage,
+    );
     await _firestore.runTransaction((transaction) async {
       final senderRef = _firestore
           .collection(UserConstant.users)
-          .doc(messageModel.senderUID)
+          .doc(senderMessageModel.senderUID)
           .collection(MessageConstants.chats)
-          .doc(messageModel.contactUID);
+          .doc(senderMessageModel.contactUID);
       final contactRef = _firestore
           .collection(UserConstant.users)
-          .doc(messageModel.contactUID)
+          .doc(contactMessageModel.contactUID)
           .collection(MessageConstants.chats)
-          .doc(messageModel.senderUID);
+          .doc(contactMessageModel.senderUID);
 
       transaction.set(
         senderRef
             .collection(MessageConstants.messages)
-            .doc(messageModel.messageUID),
-        messageModel.toMap(),
+            .doc(senderMessageModel.messageUID),
+        senderMessageModel.toMap(),
       );
       transaction.set(
         contactRef
             .collection(MessageConstants.messages)
-            .doc(messageModel.messageUID),
-        messageModel.toMap(),
+            .doc(contactMessageModel.messageUID),
+        contactMessageModel.toMap(),
       );
 
       transaction.set(senderRef, {
