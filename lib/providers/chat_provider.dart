@@ -113,9 +113,9 @@ class ChatProvider extends ChangeNotifier {
           .doc(senderMessageModel.contactUID);
       final contactRef = _firestore
           .collection(UserConstant.users)
-          .doc(contactMessageModel.contactUID)
+          .doc(senderMessageModel.contactUID)
           .collection(MessageConstants.chats)
-          .doc(contactMessageModel.senderUID);
+          .doc(senderLastMessageModel.senderUID);
 
       transaction.set(
         senderRef
