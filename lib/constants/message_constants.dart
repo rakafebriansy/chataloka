@@ -5,6 +5,7 @@ class MessageConstants {
   static const String contactImage = 'contactImage';
   static const String isMe = 'isMe';
   static const String isSeen = 'isSeen';
+  static const String groupUID = 'groupUID';
   static const String lastMessage = 'lastMessage';
   static const String message = 'message';
   static const String messages = 'messages';
@@ -35,4 +36,18 @@ extension MessageEnumExtension on String {
         return MessageEnum.text;
     }
   }
+}
+
+class ChatScreenArguments {
+  String contactUID;
+  String contactName;
+  String contactImage;
+  String? groupUID;
+
+  ChatScreenArguments({
+    required this.contactUID,
+    required this.contactName,
+    required this.contactImage,
+    this.groupUID,
+  });
 }

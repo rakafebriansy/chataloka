@@ -1,4 +1,5 @@
 import 'package:chataloka/builders/build_rounded_image.dart';
+import 'package:chataloka/constants/message_constants.dart';
 import 'package:chataloka/constants/route_constants.dart';
 import 'package:chataloka/constants/user_constants.dart';
 import 'package:chataloka/models/user_model.dart';
@@ -54,7 +55,10 @@ class _FriendsScreenState extends State<FriendsScreen> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: CupertinoSearchTextField(placeholder: 'Search'),
+              child: CupertinoSearchTextField(
+                placeholder: 'Search',
+                style: GoogleFonts.openSans(color: Colors.white),
+              ),
             ),
             Expanded(
               child:
@@ -135,14 +139,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                                                 Navigator.pushNamed(
                                                   context,
                                                   RouteConstant.chatScreen,
-                                                  arguments: {
-                                                    UserConstant.friendUID:
-                                                        userModel.uid,
-                                                    UserConstant.friendName:
-                                                        userModel.name,
-                                                    UserConstant.friendImage:
-                                                        userModel.image,
-                                                  },
+                                                  arguments: ChatScreenArguments(contactUID: userModel.uid, contactName: userModel.name, contactImage: userModel.image),
                                                 );
                                               } catch (error) {
                                                 showErrorSnackbar(

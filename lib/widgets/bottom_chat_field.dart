@@ -1,6 +1,6 @@
 import 'package:chataloka/constants/message_constants.dart';
 import 'package:chataloka/models/user_model.dart';
-import 'package:chataloka/providers/chat_provider.dart';
+import 'package:chataloka/providers/message_provider.dart';
 import 'package:chataloka/providers/user_provider.dart';
 import 'package:chataloka/utilities/global_methods.dart';
 import 'package:flutter/material.dart';
@@ -9,16 +9,16 @@ import 'package:provider/provider.dart';
 class BottomChatField extends StatefulWidget {
   const BottomChatField({
     super.key,
-    required this.friendUID,
-    required this.friendName,
-    required this.friendImage,
-    this.friendGroupUID,
+    required this.contactUID,
+    required this.contactName,
+    required this.contactImage,
+    this.groupUID,
   });
 
-  final String friendUID;
-  final String friendName;
-  final String friendImage;
-  final String? friendGroupUID;
+  final String contactUID;
+  final String contactName;
+  final String contactImage;
+  final String? groupUID;
 
   @override
   State<BottomChatField> createState() => _BottomChatFieldState();
@@ -49,20 +49,20 @@ class _BottomChatFieldState extends State<BottomChatField> {
         return;
       }
       final UserModel? currentUser = context.read<UserProvider>().userModel;
-      final chatProvider = context.read<ChatProvider>();
+      final messageProvider = context.read<MessageProvider>();
 
       if (currentUser == null) {
         throw Exception('User not found. Please re-login!');
       }
 
-      await chatProvider.sendTextMessageToFirestore(
+      await messageProvider.sendTextMessageToFirestore(
         sender: currentUser,
-        contactUID: widget.friendUID,
-        contactName: widget.friendName,
-        contactImage: widget.friendImage,
+        contactUID: widget.contactUID,
+        contactName: widget.contactName,
+        contactImage: widget.contactImage,
         message: _textEditingController.text,
         messageType: MessageEnum.text,
-        groupUID: widget.friendGroupUID,
+        groupUID: widget.groupUID,
       );
 
       _textEditingController.clear();

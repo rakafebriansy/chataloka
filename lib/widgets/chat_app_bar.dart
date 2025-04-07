@@ -8,9 +8,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class ChatAppBar extends StatefulWidget {
-  const ChatAppBar({super.key, required this.friendUID});
+  const ChatAppBar({super.key, required this.contactUID});
 
-  final String friendUID;
+  final String contactUID;
 
   @override
   State<ChatAppBar> createState() => _ChatAppBarState();
@@ -25,7 +25,7 @@ class _ChatAppBarState extends State<ChatAppBar> {
     super.initState();
     try {
       userProvider = context.read<UserProvider>();
-      _userStream = userProvider.getUserStream(userId: widget.friendUID);
+      _userStream = userProvider.getUserStream(userId: widget.contactUID);
     } catch (error) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         showErrorSnackbar(context, error);

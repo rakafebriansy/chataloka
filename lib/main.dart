@@ -1,6 +1,6 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:chataloka/constants/route_constants.dart';
-import 'package:chataloka/providers/chat_provider.dart';
+import 'package:chataloka/providers/message_provider.dart';
 import 'package:chataloka/providers/user_provider.dart';
 import 'package:chataloka/screens/home/chat_list/chat_screen.dart';
 import 'package:chataloka/screens/home/friends/friend_requests_screen.dart';
@@ -25,7 +25,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => UserProvider()),
-        ChangeNotifierProvider(create: (_) => ChatProvider()),
+        ChangeNotifierProvider(create: (_) => MessageProvider()),
       ],
       child: MyApp(savedThemeMode: savedThemeMode),
     ),
@@ -59,9 +59,11 @@ class MyApp extends StatelessWidget {
             darkTheme: darkTheme,
             initialRoute: RouteConstant.landingScreen,
             routes: {
-              RouteConstant.addFriendScreen: (context) => const AddFriendScreen(),
+              RouteConstant.addFriendScreen:
+                  (context) => const AddFriendScreen(),
               RouteConstant.chatScreen: (context) => const ChatScreen(),
-              RouteConstant.friendRequestsScreen: (context) => const FriendRequestsScreen(),
+              RouteConstant.friendRequestsScreen:
+                  (context) => const FriendRequestsScreen(),
               RouteConstant.homeScreen: (context) => const HomeScreen(),
               RouteConstant.landingScreen: (context) => const LandingScreen(),
               RouteConstant.loginScreen: (context) => const LoginScreen(),

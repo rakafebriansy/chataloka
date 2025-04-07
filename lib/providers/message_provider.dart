@@ -9,7 +9,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
-class ChatProvider extends ChangeNotifier {
+class MessageProvider extends ChangeNotifier {
   bool _isLoading = false;
   bool _isSuccess = false;
   bool get isLoading => _isLoading;
@@ -70,7 +70,7 @@ class ChatProvider extends ChangeNotifier {
         _handleFriendMessage(
           senderMessageModel: senderMessageModel,
           contactName: contactName,
-          contactImage: contactImage
+          contactImage: contactImage,
         );
 
         setMessageReplyModel(null);
@@ -130,12 +130,17 @@ class ChatProvider extends ChangeNotifier {
         contactMessageModel.toMap(),
       );
 
-      transaction.set(senderRef, {
-        'lastMessage': senderLastMessageModel.toMap(),
-      }, SetOptions(merge: true));
-      transaction.set(contactRef, {
-        'lastMessage': contactLastMessageModel.toMap(),
-      }, SetOptions(merge: true));
+      transaction.set(senderRef, senderLastMessageModel.toMap());
+      transaction.set(contactRef, contactLastMessageModel.toMap(), SetOptions(merge: true));
     });
+  }
+
+  Stream<QuerySnapshot> getChatListStream(String userId) {
+    return _firestore
+        .collection(UserConstant.users)
+        .doc(userId)
+        .collection(MessageConstants.chats)
+        .orderBy(MessageConstants.sentAt, descending: true)
+        .snapshots();
   }
 }

@@ -1,4 +1,6 @@
+import 'package:chataloka/constants/message_constants.dart';
 import 'package:chataloka/constants/user_constants.dart';
+import 'package:chataloka/utilities/global_methods.dart';
 import 'package:chataloka/widgets/bottom_chat_field.dart';
 import 'package:chataloka/widgets/chat_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -11,37 +13,33 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  Map<String, String>? arguments;
+  ChatScreenArguments? args;
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        arguments =
-            ModalRoute.of(context)?.settings.arguments as Map<String, String>;
-        if (arguments?[UserConstant.friendUID] == null) {
-          Navigator.of(context).pop();
-        }
-      });
+      try {
+        setState(() {
+          args =
+              ModalRoute.of(context)?.settings.arguments as ChatScreenArguments;
+        });
+      } catch (error) {
+        Navigator.of(context).pop();
+        showErrorSnackbar(context, error);
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final String? friendUID = arguments?[UserConstant.friendUID];
-    final String? friendName = arguments?[UserConstant.friendName];
-    final String? friendImage = arguments?[UserConstant.friendImage];
-    final String? friendGroupUID = arguments?[UserConstant.friendGroupUID];
-    final bool? isGroupChat = friendGroupUID != null && friendGroupUID.isNotEmpty;
-
-    if (friendUID == null ||
-        friendName == null ||
-        friendImage == null) {
-      return SizedBox.shrink();
+    if (args == null) {
+      return CircularProgressIndicator();
     }
 
+    final bool isGroupChat = args!.groupUID != null && args!.groupUID!.isNotEmpty;
+
     return Scaffold(
-      appBar: AppBar(title: ChatAppBar(friendUID: friendUID)),
+      appBar: AppBar(title: ChatAppBar(contactUID: args!.contactUID)),
       body: SafeArea(
         child: Column(
           children: [
@@ -54,10 +52,10 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             ),
             BottomChatField(
-              friendUID: friendUID,
-              friendName: friendName,
-              friendImage: friendImage,
-              friendGroupUID: friendGroupUID,
+              contactUID: args!.contactUID,
+              contactName: args!.contactName,
+              contactImage: args!.contactImage,
+              groupUID: args!.groupUID,
             ),
           ],
         ),
