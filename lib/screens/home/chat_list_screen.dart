@@ -1,7 +1,6 @@
 import 'package:chataloka/builders/build_rounded_image.dart';
 import 'package:chataloka/constants/message_constants.dart';
 import 'package:chataloka/constants/route_constants.dart';
-import 'package:chataloka/constants/user_constants.dart';
 import 'package:chataloka/models/last_message_model.dart';
 import 'package:chataloka/providers/message_provider.dart';
 import 'package:chataloka/providers/user_provider.dart';
@@ -11,7 +10,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 
 class ChatListScreen extends StatefulWidget {
   const ChatListScreen({super.key});
@@ -35,7 +33,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
       }
       uid = userUID;
       messageProvider = context.read<MessageProvider>();
-      _chatStream = messageProvider.getChatListStream(userUID);
+      _chatStream = messageProvider.getChatListStream(userUID: userUID);
     } catch (error) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         showErrorSnackbar(context, error);
@@ -85,6 +83,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                             ),
                           );
                         }
+
                         return ListView(
                           children:
                               snapshot.data!.docs.map((DocumentSnapshot doc) {
@@ -112,9 +111,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                                     style: GoogleFonts.openSans(),
                                   ),
                                   trailing: Text(
-                                    DateFormat.Hm().format(
-                                      lastMessageModel.sentAt,
-                                    ),
+                                    formatSentTime(lastMessageModel.sentAt),
                                     style: GoogleFonts.openSans(),
                                   ),
                                   onTap: () {

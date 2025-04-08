@@ -131,16 +131,44 @@ class MessageProvider extends ChangeNotifier {
       );
 
       transaction.set(senderRef, senderLastMessageModel.toMap());
-      transaction.set(contactRef, contactLastMessageModel.toMap(), SetOptions(merge: true));
+      transaction.set(
+        contactRef,
+        contactLastMessageModel.toMap(),
+        SetOptions(merge: true),
+      );
     });
   }
 
-  Stream<QuerySnapshot> getChatListStream(String userId) {
+  Stream<QuerySnapshot> getChatListStream({required String userUID}) {
     return _firestore
         .collection(UserConstant.users)
-        .doc(userId)
+        .doc(userUID)
         .collection(MessageConstants.chats)
         .orderBy(MessageConstants.sentAt, descending: true)
         .snapshots();
+  }
+
+  Stream<QuerySnapshot> getMessagesStream({
+    required String userUID,
+    required String contactUID,
+    String? groupUID,
+  }) {
+    if (groupUID != null) {
+      return _firestore
+          .collection(UserConstant.groups)
+          .doc(contactUID)
+          .collection(MessageConstants.messages)
+          .orderBy(MessageConstants.sentAt, descending: false)
+          .snapshots();
+    } else {
+      return _firestore
+          .collection(UserConstant.users)
+          .doc(userUID)
+          .collection(MessageConstants.chats)
+          .doc(contactUID)
+          .collection(MessageConstants.messages)
+          .orderBy(MessageConstants.sentAt, descending: false)
+          .snapshots();
+    }
   }
 }

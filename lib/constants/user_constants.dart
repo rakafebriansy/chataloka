@@ -1,28 +1,20 @@
 class UserConstant {
-  // user
-  static const String uid = 'uid';
-  static const String name = 'name';
-  static const String phoneNumber = 'phoneNumber';
-  static const String groupUID = 'groupUID';
-  static const String image = 'image';
-  static const String token = 'token';
   static const String aboutMe = 'aboutMe';
-  static const String lastSeen = 'lastSeen';
   static const String createdAt = 'createdAt';
-  static const String isOnline = 'isOnline';
   static const String friendsUIDs = 'friendsUIDs';
   static const String friendRequestsUIDs = 'friendRequestsUIDs';
+  static const String groups = 'groups';
+  static const String groupUID = 'groupUID';
+  static const String image = 'image';
+  static const String isOnline = 'isOnline';
+  static const String lastSeen = 'lastSeen';
+  static const String name = 'name';
+  static const String phoneNumber = 'phoneNumber';
   static const String sentFriendRequestsUIDs = 'sentFriendRequestsUIDs';
-  static const String verificationId = 'verificationId';
-
-  // friend
-  static const String friendUID = 'friendUID';
-  static const String friendName = 'friendName';
-  static const String friendImage = 'friendImage';
-  static const String friendGroupUID = 'friendGroupUID';
-
-  // global
+  static const String token = 'token';
+  static const String uid = 'uid';
   static const String users = 'users';
-  static const String userModel = 'userModel';
   static const String userImages = 'userImages';
+  static const String userModel = 'userModel';
+  static const String verificationId = 'verificationId';
 }
