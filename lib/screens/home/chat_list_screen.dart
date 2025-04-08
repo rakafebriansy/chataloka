@@ -106,7 +106,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                                     isMe
                                         ? 'You: ${lastMessageModel.message}'
                                         : lastMessageModel.message,
-                                    maxLines: 2,
+                                    maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: GoogleFonts.openSans(),
                                   ),

@@ -5,6 +5,7 @@ import 'package:chataloka/providers/user_provider.dart';
 import 'package:chataloka/utilities/global_methods.dart';
 import 'package:chataloka/widgets/bottom_chat_field.dart';
 import 'package:chataloka/widgets/chat_app_bar.dart';
+import 'package:chataloka/widgets/message_bubble.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -142,93 +143,19 @@ class _ChatScreenState extends State<ChatScreen> {
                               final Color color =
                                   isMe
                                       ? Theme.of(context).primaryColor
-                                      : Theme.of(context).cardColor;
+                                      : Colors.lightBlue[50]!;
                               final Color textColor =
                                   isMe ? Colors.white : Colors.black;
-                              bool isShort =
-                                  (element.message as String).length < 30;
+                              final CrossAxisAlignment alignment =
+                                  isMe
+                                      ? CrossAxisAlignment.end
+                                      : CrossAxisAlignment.start;
 
-                              return Column(
-                                crossAxisAlignment:
-                                    isMe
-                                        ? CrossAxisAlignment.end
-                                        : CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    constraints: BoxConstraints(
-                                      maxWidth:
-                                          MediaQuery.of(context).size.width *
-                                          0.8,
-                                    ),
-                                    margin: const EdgeInsets.symmetric(
-                                      vertical: 5,
-                                      horizontal: 10,
-                                    ),
-                                    padding: const EdgeInsets.all(12),
-                                    decoration: BoxDecoration(
-                                      color: color,
-                                      borderRadius: BorderRadius.circular(10),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withAlpha(
-                                            (0.2 * 255).round(),
-                                          ),
-                                          blurRadius: 4,
-                                          spreadRadius: 0,
-                                          offset: Offset(0, 8),
-                                        ),
-                                      ],
-                                    ),
-                                    child:
-                                        isShort
-                                            ? Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  (element.message as String),
-                                                  style: GoogleFonts.openSans(
-                                                    color: textColor,
-                                                  ),
-                                                ),
-                                                const SizedBox(width: 8),
-                                                Text(
-                                                  DateFormat.Hm().format(
-                                                    element.sentAt,
-                                                  ),
-                                                  style: GoogleFonts.openSans(
-                                                    color: textColor,
-                                                    fontSize: 12,
-                                                  ),
-                                                ),
-                                              ],
-                                            )
-                                            : Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.end,
-                                              children: [
-                                                Text(
-                                                  (element.message as String),
-                                                  style: GoogleFonts.openSans(
-                                                    color: textColor,
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 5),
-                                                Text(
-                                                  DateFormat.Hm().format(
-                                                    element.sentAt,
-                                                  ),
-                                                  style: GoogleFonts.openSans(
-                                                    color: textColor,
-                                                    fontSize: 12,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                  ),
-                                ],
+                              return MessageBubble(
+                                element: element,
+                                color: color,
+                                textColor: textColor,
+                                alignment: alignment,
                               );
                             },
                             useStickyGroupSeparators: true,
