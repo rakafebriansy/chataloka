@@ -4,6 +4,7 @@ import 'package:chataloka/providers/message_provider.dart';
 import 'package:chataloka/providers/user_provider.dart';
 import 'package:chataloka/utilities/global_methods.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class BottomChatField extends StatefulWidget {
@@ -75,78 +76,150 @@ class _BottomChatFieldState extends State<BottomChatField> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).canvasColor,
-          borderRadius: BorderRadius.circular(30),
-          border: Border.all(color: Theme.of(context).primaryColor),
-        ),
-        child: Row(
+    return Consumer<MessageProvider>(
+      builder: (context, messageProvider, child) {
+        final messageReply = messageProvider.messageReplyModel;
+
+        return Column(
           children: [
-            IconButton(
-              onPressed: () {
-                showModalBottomSheet(
-                  context: context,
-                  builder: (context) {
-                    return SizedBox(
-                      height: 200,
-                      child: const Center(child: Text('Attachment')),
-                    );
-                  },
-                );
-              },
-              icon: const Icon(Icons.attachment),
-            ),
-            Expanded(
-              child: TextFormField(
-                onChanged: (_) {
-                  setState(() {});
-                },
-                focusNode: _focusNode,
-                controller: _textEditingController,
-                decoration: const InputDecoration(
-                  border: InputBorder.none,
-                  hintText: 'Type a message',
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).canvasColor,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.grey[300]!),
                 ),
-              ),
-            ),
-            AnimatedSwitcher(
-              duration: Duration(milliseconds: 200),
-              transitionBuilder: (child, animation) {
-                return ScaleTransition(scale: animation, child: child);
-              },
-              child:
-                  _textEditingController != null &&
-                          _textEditingController.text.isNotEmpty
-                      ? Padding(
-                        padding: const EdgeInsets.all(4),
-                        child: GestureDetector(
-                          onTap: () async {
-                            await sendTextMessage();
-                          },
+                child: Column(
+                  children: [
+                    messageReply != null
+                        ? Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
                           child: Container(
+                          padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                              color: Theme.of(context).primaryColor,
-                              borderRadius: BorderRadius.circular(30),
+                              color: Colors.grey[200],
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(12),
-                              child: const Icon(
-                                Icons.send,
-                                color: Colors.white,
-                                size: 16,
-                              ),
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        messageReply.isMe
+                                            ? 'You'
+                                            : messageReply.senderName,
+                                        style: GoogleFonts.openSans(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        messageProvider.setMessageReplyModel(
+                                          null,
+                                        );
+                                      },
+                                      child: const Icon(Icons.close, size: 14,),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 5),
+                                Text(
+                                  messageReply.message,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.openSans(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                        : SizedBox.shrink(),
+                    Row(
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            showModalBottomSheet(
+                              context: context,
+                              builder: (context) {
+                                return SizedBox(
+                                  height: 200,
+                                  child: const Center(
+                                    child: Text('Attachment'),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                          icon: const Icon(Icons.attachment),
+                        ),
+                        Expanded(
+                          child: TextFormField(
+                            onChanged: (_) {
+                              setState(() {});
+                            },
+                            focusNode: _focusNode,
+                            controller: _textEditingController,
+                            decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              hintText: 'Type a message',
                             ),
                           ),
                         ),
-                      )
-                      : SizedBox(width: 44),
+                        AnimatedSwitcher(
+                          duration: Duration(milliseconds: 200),
+                          transitionBuilder: (child, animation) {
+                            return ScaleTransition(
+                              scale: animation,
+                              child: child,
+                            );
+                          },
+                          child:
+                              _textEditingController != null &&
+                                      _textEditingController.text.isNotEmpty
+                                  ? Padding(
+                                    padding: const EdgeInsets.all(4),
+                                    child: GestureDetector(
+                                      onTap: () async {
+                                        await sendTextMessage();
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Theme.of(context).primaryColor,
+                                          borderRadius: BorderRadius.circular(
+                                            30,
+                                          ),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(12),
+                                          child: const Icon(
+                                            Icons.send,
+                                            color: Colors.white,
+                                            size: 16,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                  : SizedBox(width: 44),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
-        ),
-      ),
+        );
+      },
     );
   }
 }

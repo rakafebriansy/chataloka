@@ -1,47 +1,53 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:swipe_to/swipe_to.dart';
 
 class MessageBubble extends StatelessWidget {
   const MessageBubble({
     super.key,
     required this.element,
-    required this.color,
-    required this.textColor,
-    required this.alignment
+    required this.isMe,
+    this.onRightSwipe,
+    this.onLeftSwipe,
   });
 
   final dynamic element;
-  final Color color;
-  final Color textColor;
-  final CrossAxisAlignment alignment;
+  final bool isMe;
+  final GestureDragUpdateCallback? onRightSwipe;
+  final GestureDragUpdateCallback? onLeftSwipe;
 
   @override
   Widget build(BuildContext context) {
-    bool isShort = (element.message as String).length < 30;
-    return Column(
-      crossAxisAlignment: alignment,
-      children: [
-        Container(
+    final Color textColor = isMe ? Colors.white : Colors.black;
+    return SwipeTo(
+      onRightSwipe: !isMe ? onRightSwipe : null,
+      onLeftSwipe: isMe ? onLeftSwipe : null,
+      child: Align(
+        alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+        child: Container(
           constraints: BoxConstraints(
             maxWidth: MediaQuery.of(context).size.width * 0.8,
           ),
           margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(10),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withAlpha((0.2 * 255).round()),
-                blurRadius: 4,
-                spreadRadius: 0,
-                offset: Offset(0, 6),
-              ),
-            ],
+            color: isMe ? Theme.of(context).primaryColor : Colors.grey[300]!,
+            borderRadius:
+                isMe
+                    ? BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      topRight: Radius.circular(10),
+                      bottomLeft: Radius.circular(10),
+                    )
+                    : BorderRadius.only(
+                      topRight: Radius.circular(10),
+                      bottomLeft: Radius.circular(10),
+                      bottomRight: Radius.circular(10),
+                    ),
           ),
           child:
-              isShort
+              (element.message as String).length < 30
                   ? Row(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -79,7 +85,7 @@ class MessageBubble extends StatelessWidget {
                     ],
                   ),
         ),
-      ],
+      ),
     );
   }
 }

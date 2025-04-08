@@ -16,6 +16,7 @@ class MessageProvider extends ChangeNotifier {
   bool get isSuccess => _isSuccess;
 
   MessageReplyModel? _messageReplyModel;
+  MessageReplyModel? get messageReplyModel => _messageReplyModel;
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;

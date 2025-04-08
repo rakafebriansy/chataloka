@@ -1,5 +1,6 @@
 import 'package:chataloka/constants/message_constants.dart';
 import 'package:chataloka/models/message_model.dart';
+import 'package:chataloka/models/message_reply_model.dart';
 import 'package:chataloka/providers/message_provider.dart';
 import 'package:chataloka/providers/user_provider.dart';
 import 'package:chataloka/utilities/global_methods.dart';
@@ -140,22 +141,36 @@ class _ChatScreenState extends State<ChatScreen> {
                                 ),
                             itemBuilder: (context, dynamic element) {
                               final bool isMe = element.senderUID == uid;
-                              final Color color =
-                                  isMe
-                                      ? Theme.of(context).primaryColor
-                                      : Colors.lightBlue[50]!;
-                              final Color textColor =
-                                  isMe ? Colors.white : Colors.black;
-                              final CrossAxisAlignment alignment =
-                                  isMe
-                                      ? CrossAxisAlignment.end
-                                      : CrossAxisAlignment.start;
 
                               return MessageBubble(
                                 element: element,
-                                color: color,
-                                textColor: textColor,
-                                alignment: alignment,
+                                isMe: isMe,
+                                onRightSwipe: (_) {
+                                  final messageReplyModel = MessageReplyModel(
+                                    senderUID: element.senderUID,
+                                    senderName: element.senderName,
+                                    senderImage: element.senderImage,
+                                    message: element.message,
+                                    messageType: element.messageType,
+                                    isMe: isMe,
+                                  );
+                                  messageProvider.setMessageReplyModel(
+                                    messageReplyModel,
+                                  );
+                                },
+                                onLeftSwipe: (_) {
+                                  final messageReplyModel = MessageReplyModel(
+                                    senderUID: element.senderUID,
+                                    senderName: element.senderName,
+                                    senderImage: element.senderImage,
+                                    message: element.message,
+                                    messageType: element.messageType,
+                                    isMe: isMe,
+                                  );
+                                  messageProvider.setMessageReplyModel(
+                                    messageReplyModel,
+                                  );
+                                },
                               );
                             },
                             useStickyGroupSeparators: true,
