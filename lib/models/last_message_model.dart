@@ -30,7 +30,7 @@ class LastMessageModel {
       MessageConstants.contactUID: contactUID,
       MessageConstants.message: message,
       MessageConstants.messageType: messageType.name,
-      MessageConstants.sentAt: sentAt.microsecondsSinceEpoch,
+      MessageConstants.sentAt: sentAt.millisecondsSinceEpoch,
       MessageConstants.isSeen: isSeen,
     };
   }
@@ -61,7 +61,7 @@ class LastMessageModel {
       contactUID: map[MessageConstants.contactUID] ?? '',
       message: map[MessageConstants.message] ?? '',
       messageType: map[MessageConstants.messageType].toString().toMessageEnum(),
-      sentAt: DateTime.fromMicrosecondsSinceEpoch(map[MessageConstants.sentAt]),
+      sentAt: DateTime.fromMillisecondsSinceEpoch(map[MessageConstants.sentAt]),
       isSeen: map[MessageConstants.isSeen] ?? false,
     );
   }

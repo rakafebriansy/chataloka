@@ -111,7 +111,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                                     style: GoogleFonts.openSans(),
                                   ),
                                   trailing: Text(
-                                    formatSentTime(lastMessageModel.sentAt),
+                                    formatChatListDate(lastMessageModel.sentAt),
                                     style: GoogleFonts.openSans(),
                                   ),
                                   onTap: () {

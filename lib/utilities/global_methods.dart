@@ -91,7 +91,7 @@ String generateFileName({required String fileName, String? extension}) {
   return "${timestamp}_$fileName.${extension ?? ''}";
 }
 
-String formatSentTime(DateTime sentAt) {
+String formatChatListDate(DateTime sentAt) {
   final now = DateTime.now();
   final sentDate = DateTime(sentAt.year, sentAt.month, sentAt.day);
   final today = DateTime(now.year, now.month, now.day);
@@ -103,5 +103,20 @@ String formatSentTime(DateTime sentAt) {
     return "Yesterday";
   } else {
     return DateFormat('dd/MM/yyyy').format(sentAt);
+  }
+}
+
+String formatChatHeaderDate(DateTime sentAt) {
+  final now = DateTime.now();
+  final sentDate = DateTime(sentAt.year, sentAt.month, sentAt.day);
+  final today = DateTime(now.year, now.month, now.day);
+  final yesterday = today.subtract(Duration(days: 1));
+
+  if (sentDate == today) {
+    return "Today";
+  } else if (sentDate == yesterday) {
+    return "Yesterday";
+  } else {
+    return DateFormat('MMM d, y').format(sentAt);
   }
 }
