@@ -1,3 +1,4 @@
+import 'package:chataloka/models/message_model.dart';
 import 'package:chataloka/widgets/sent_mark.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,7 +13,7 @@ class MessageBubble extends StatelessWidget {
     this.onLeftSwipe,
   });
 
-  final dynamic element;
+  final MessageModel element;
   final bool isMe;
   final GestureDragUpdateCallback? onRightSwipe;
   final GestureDragUpdateCallback? onLeftSwipe;
@@ -20,7 +21,13 @@ class MessageBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color textColor = isMe ? Colors.white : Colors.black;
-    final bool isReplying = (element.repliedTo as String).isNotEmpty;
+    final bool isReplying = element.repliedTo.isNotEmpty;
+
+    print(element.message);
+    print(element.repliedTo);
+    print(element.senderName);
+    print(isMe);
+    print('====');
 
     return SwipeTo(
       onRightSwipe: !isMe ? onRightSwipe : null,
@@ -57,16 +64,20 @@ class MessageBubble extends StatelessWidget {
                     width: double.infinity,
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: Colors.deepPurple[800],
+                      color: isMe ? Colors.deepPurple[800] : Colors.grey[400]!,
                       borderRadius: BorderRadius.circular(5),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          element.repliedTo,
+                          (isMe == (element.repliedTo == 'You'))
+                              ? 'You'
+                              : isMe
+                              ? element.repliedTo
+                              : element.senderName,
                           style: GoogleFonts.openSans(
-                            color: Colors.white,
+                            color: textColor,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -76,7 +87,7 @@ class MessageBubble extends StatelessWidget {
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.openSans(
-                            color: Colors.white,
+                            color: textColor,
                             fontSize: 12,
                           ),
                         ),
@@ -85,14 +96,14 @@ class MessageBubble extends StatelessWidget {
                   ),
                   SizedBox(height: 8),
                 ],
-                (element.message as String).length < 30
+                element.message.length < 30
                     ? Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          (element.message as String),
+                          element.message,
                           style: GoogleFonts.openSans(color: textColor),
                         ),
                         const SizedBox(width: 8),
@@ -104,7 +115,7 @@ class MessageBubble extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          (element.message as String),
+                          element.message,
                           style: GoogleFonts.openSans(color: textColor),
                         ),
                         const SizedBox(height: 5),

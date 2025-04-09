@@ -18,7 +18,7 @@ class SentMark extends StatelessWidget {
           style: GoogleFonts.openSans(color: textColor, fontSize: 10),
         ),
         const SizedBox(width: 4),
-        const Icon(Icons.done_all, size: 14, color: Colors.white),
+        Icon(Icons.done_all, size: 14, color: textColor),
       ],
     );
   }
