@@ -116,25 +116,29 @@ class _ChatScreenState extends State<ChatScreen> {
                               );
                             },
                             groupHeaderBuilder:
-                                (dynamic groupedByValue) => Padding(
-                                  padding: const EdgeInsets.all(8),
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 5,
-                                      horizontal: 10,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.grey[500],
-                                    ),
-                                    child: Text(
-                                      formatChatHeaderDate(
-                                        groupedByValue.sentAt,
+                                (dynamic groupedByValue) => Align(
+                                  alignment: Alignment.topCenter,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8),
+                                    child: Container(
+                                      width: 100,
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 5,
+                                        horizontal: 10,
                                       ),
-                                      textAlign: TextAlign.center,
-                                      style: GoogleFonts.openSans(
-                                        color: Colors.white,
-                                        fontSize: 12,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: Colors.grey[500],
+                                      ),
+                                      child: Text(
+                                        formatChatHeaderDate(
+                                          groupedByValue.sentAt,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                        style: GoogleFonts.openSans(
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                        ),
                                       ),
                                     ),
                                   ),

@@ -105,6 +105,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
                                   children: [
@@ -131,6 +132,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
                                 ),
                                 const SizedBox(height: 5),
                                 Text(
+                                  // textAlign: TextAlign.right,
                                   messageReply.message,
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
