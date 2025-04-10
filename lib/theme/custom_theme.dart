@@ -1,43 +1,40 @@
+import 'package:chataloka/theme/custom_theme_color.dart';
 import 'package:flutter/material.dart';
 
 @immutable
 class CustomTheme extends ThemeExtension<CustomTheme> {
-  final Color customSenderCardColor;
-  final Color customDarkSenderCardColor;
-  final Color customContactCardColor;
-  final Color customDarkContactCardColor;
-  final Color customSenderTextColor;
-  final Color customContactTextColor;
-  final Color customButtonColor;
+  final PairCustomThemeColor primaryCard;
+  final PairCustomThemeColor secondaryCard;
+  final Color text;
+  final Color primaryChatText;
+  final Color secondaryChatText;
+  final PairCustomThemeColor button;
 
   const CustomTheme({
-    required this.customSenderCardColor,
-    required this.customDarkSenderCardColor,
-    required this.customContactCardColor,
-    required this.customDarkContactCardColor,
-    required this.customContactTextColor,
-    required this.customSenderTextColor,
-    required this.customButtonColor,
+    required this.primaryCard,
+    required this.secondaryCard,
+    required this.text,
+    required this.primaryChatText,
+    required this.secondaryChatText,
+    required this.button,
   });
 
   @override
   CustomTheme copyWith({
-    Color? customSenderCardColor,
-    Color? customDarkSenderCardColor,
-    Color? customContactCardColor,
-    Color? customDarkContactCardColor,
-    Color? customSenderTextColor,
-    Color? customContactTextColor,
-    Color? customButtonColor,
+    PairCustomThemeColor? primaryCard,
+    PairCustomThemeColor? secondaryCard,
+    Color? text,
+    Color? primaryChatText,
+    Color? secondaryChatText,
+    PairCustomThemeColor? button,
   }) {
     return CustomTheme(
-      customSenderCardColor: customSenderCardColor ?? this.customSenderCardColor,
-      customDarkSenderCardColor: customDarkSenderCardColor ?? this.customDarkSenderCardColor,
-      customContactCardColor: customContactCardColor ?? this.customContactCardColor,
-      customDarkContactCardColor: customDarkContactCardColor ?? this.customDarkContactCardColor,
-      customSenderTextColor: customSenderTextColor ?? this.customSenderTextColor,
-      customContactTextColor: customContactTextColor ?? this.customContactTextColor,
-      customButtonColor: customButtonColor ?? this.customButtonColor,
+      text: text ?? this.text,
+      primaryCard: primaryCard ?? this.primaryCard,
+      secondaryCard: secondaryCard ?? this.secondaryCard,
+      primaryChatText: primaryChatText ?? this.primaryChatText,
+      secondaryChatText: secondaryChatText ?? this.secondaryChatText,
+      button: button ?? this.button,
     );
   }
 
@@ -46,13 +43,22 @@ class CustomTheme extends ThemeExtension<CustomTheme> {
     if (other is! CustomTheme) return this;
 
     return CustomTheme(
-      customSenderCardColor: Color.lerp(customSenderCardColor, other.customSenderCardColor, t)!,
-      customDarkSenderCardColor: Color.lerp(customDarkSenderCardColor, other.customDarkSenderCardColor, t)!,
-      customContactCardColor: Color.lerp(customContactCardColor, other.customContactCardColor, t)!,
-      customDarkContactCardColor: Color.lerp(customDarkContactCardColor, other.customDarkContactCardColor, t)!,
-      customSenderTextColor: Color.lerp(customSenderTextColor, other.customSenderTextColor, t)!,
-      customContactTextColor: Color.lerp(customContactTextColor, other.customContactTextColor, t)!,
-      customButtonColor: Color.lerp(customButtonColor, other.customButtonColor, t)!,
+      primaryCard: PairCustomThemeColor(
+        light: Color.lerp(primaryCard.light, other.primaryCard.light, t)!,
+        dark: Color.lerp(primaryCard.dark, other.primaryCard.dark, t)!,
+      ),
+      secondaryCard: PairCustomThemeColor(
+        light: Color.lerp(secondaryCard.light, other.secondaryCard.light, t)!,
+        dark: Color.lerp(secondaryCard.dark, other.secondaryCard.dark, t)!,
+      ),
+      text: Color.lerp(text, other.text, t)!,
+      primaryChatText: Color.lerp(primaryChatText, other.primaryChatText, t)!,
+      secondaryChatText:
+          Color.lerp(secondaryChatText, other.primaryChatText, t)!,
+      button: PairCustomThemeColor(
+        light: Color.lerp(button.light, other.button.light, t)!,
+        dark: Color.lerp(button.dark, other.button.dark, t)!,
+      ),
     );
   }
 }

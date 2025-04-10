@@ -69,7 +69,7 @@ class _ChatScreenState extends State<ChatScreen> {
     if (args == null || uid == null) {
       return CircularProgressIndicator();
     }
-    final theme = Theme.of(context).extension<CustomTheme>()!;
+    final customTheme = Theme.of(context).extension<CustomTheme>()!;
 
     return Scaffold(
       appBar: AppBar(title: ChatAppBar(contactUID: args!.contactUID)),
@@ -160,7 +160,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                           ),
                                           textAlign: TextAlign.center,
                                           style: GoogleFonts.openSans(
-                                            color: theme.customSenderTextColor,
+                                            color: customTheme.text,
                                             fontSize: 12,
                                           ),
                                         ),

@@ -45,7 +45,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final CustomTheme theme = Theme.of(context).extension<CustomTheme>()!;
+    final customTheme = Theme.of(context).extension<CustomTheme>()!;
 
     return Scaffold(
       body: Column(
@@ -114,7 +114,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                                     overflow: TextOverflow.ellipsis,
                                     style: GoogleFonts.openSans(),
                                   ),
-                                  trailing: SentMark(model: lastMessageModel, textColor: isMe ? theme.customContactTextColor : theme.customSenderTextColor),
+                                  trailing: SentMark(model: lastMessageModel, textColor: isMe ? customTheme.secondaryChatText : customTheme.primaryChatText),
                                   onTap: () {
                                     Navigator.of(context).pushNamed(
                                       RouteConstant.chatScreen,

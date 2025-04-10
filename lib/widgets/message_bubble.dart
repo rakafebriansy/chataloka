@@ -23,7 +23,8 @@ class MessageBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     final CustomTheme theme = Theme.of(context).extension<CustomTheme>()!;
 
-    final Color textColor = isMe ? theme.customSenderTextColor : theme.customContactTextColor;
+    final Color textColor =
+        isMe ? theme.primaryChatText : theme.secondaryChatText;
     final bool isReplying = messageModel.repliedTo.isNotEmpty;
 
     return SwipeTo(
@@ -38,7 +39,7 @@ class MessageBubble extends StatelessWidget {
           margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
           padding: EdgeInsets.all(isReplying ? 8 : 12),
           decoration: BoxDecoration(
-            color: isMe ? theme.customSenderCardColor : theme.customContactCardColor,
+            color: isMe ? theme.primaryCard.light : theme.secondaryCard.light,
             borderRadius:
                 isMe
                     ? BorderRadius.only(
@@ -61,7 +62,10 @@ class MessageBubble extends StatelessWidget {
                     width: double.infinity,
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: isMe ? theme.customDarkSenderCardColor : theme.customDarkContactCardColor,
+                      color:
+                          isMe
+                              ? theme.primaryCard.dark
+                              : theme.secondaryCard.dark,
                       borderRadius: BorderRadius.circular(5),
                     ),
                     child: Column(
@@ -104,8 +108,8 @@ class MessageBubble extends StatelessWidget {
                           style: GoogleFonts.openSans(color: textColor),
                         ),
                         const SizedBox(width: 8),
-                        if(isMe)
-                        SentMark(model: messageModel, textColor: textColor),
+                        if (isMe)
+                          SentMark(model: messageModel, textColor: textColor),
                       ],
                     )
                     : Column(
@@ -117,8 +121,8 @@ class MessageBubble extends StatelessWidget {
                           style: GoogleFonts.openSans(color: textColor),
                         ),
                         const SizedBox(height: 5),
-                        if(isMe)
-                        SentMark(model: messageModel, textColor: textColor),
+                        if (isMe)
+                          SentMark(model: messageModel, textColor: textColor),
                       ],
                     ),
               ],

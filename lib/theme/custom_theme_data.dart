@@ -1,3 +1,4 @@
+import 'package:chataloka/theme/custom_theme_color.dart';
 import 'package:flutter/material.dart';
 import 'package:chataloka/theme/custom_theme.dart';
 
@@ -6,13 +7,21 @@ class CustomThemeData {
     brightness: Brightness.light,
     extensions: [
       CustomTheme(
-customSenderCardColor: Colors.deepPurple[400]!,
-        customDarkSenderCardColor: Colors.deepPurple[500]!,
-        customSenderTextColor: Colors.white,
-        customContactCardColor: Colors.grey[300]!,
-        customDarkContactCardColor: Colors.grey[400]!,
-        customContactTextColor: Colors.black,
-        customButtonColor: Colors.deepPurple[500]!,
+        primaryCard: PairCustomThemeColor(
+          light: Colors.deepPurple[600]!,
+          dark: Colors.deepPurple[700]!,
+        ),
+        secondaryCard: PairCustomThemeColor(
+          light: Colors.grey[300]!,
+          dark: Colors.grey[400]!,
+        ),
+        text: Colors.white,
+        primaryChatText: Colors.white70,
+        secondaryChatText: Colors.black,
+        button: PairCustomThemeColor(
+          light: Colors.blue[500]!,
+          dark: Colors.blue[700]!,
+        ),
       ),
     ],
   );
@@ -21,13 +30,21 @@ customSenderCardColor: Colors.deepPurple[400]!,
     brightness: Brightness.dark,
     extensions: [
       CustomTheme(
-        customSenderCardColor: Colors.deepPurple[800]!,
-        customDarkSenderCardColor: Colors.deepPurple[900]!,
-        customSenderTextColor: Colors.white,
-        customContactCardColor: Color(0xFF4D4D4D),
-        customDarkContactCardColor: Color(0xFF3C3C3C),
-        customContactTextColor: Colors.white70,
-        customButtonColor: Colors.deepPurple[500]!,
+        primaryCard: PairCustomThemeColor(
+          light: Colors.deepPurple[800]!,
+          dark: Colors.deepPurple[900]!,
+        ),
+        secondaryCard: PairCustomThemeColor(
+          light: Color(0xFF4D4D4D),
+          dark: Color(0xFF3C3C3C),
+        ),
+        text: Colors.black,
+        primaryChatText: Colors.white70,
+        secondaryChatText: Colors.white70,
+        button: PairCustomThemeColor(
+          light: Colors.blue[500]!,
+          dark: Colors.blue[700]!,
+        ),
       ),
     ],
   );

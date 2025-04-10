@@ -128,7 +128,7 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    final theme = Theme.of(context).extension<CustomTheme>()!;
+    final customTheme = Theme.of(context).extension<CustomTheme>()!;
 
     return Scaffold(
       appBar: AppBar(
@@ -164,10 +164,10 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
                           child: CircleAvatar(
                             radius: 20,
                             backgroundColor:
-                                Theme.of(context).colorScheme.primary,
+                                customTheme.button.light,
                             child: Icon(
                               Icons.camera_alt,
-                              color: theme.customSenderTextColor,
+                              color: customTheme.text,
                               size: 20,
                             ),
                           ),
@@ -191,10 +191,10 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
                           child: CircleAvatar(
                             radius: 20,
                             backgroundColor:
-                                Theme.of(context).colorScheme.primary,
+                                customTheme.button.light,
                             child: Icon(
                               Icons.camera_alt,
-                              color: theme.customSenderTextColor,
+                              color: customTheme.text,
                               size: 20,
                             ),
                           ),
@@ -222,13 +222,13 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
                   successIcon: Icons.check,
                   successColor: Colors.green,
                   errorColor: Colors.red,
-                  color: Theme.of(context).colorScheme.primary,
+                  color: customTheme.button.light,
                   borderRadius: 10,
                   width: screenWidth - 40,
                   child: Text(
                     'Continue',
                     style: TextStyle(
-                      color: theme.customSenderTextColor,
+                      color: customTheme.text,
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                     ),

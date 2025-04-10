@@ -3,6 +3,7 @@ import 'package:chataloka/constants/message_constants.dart';
 import 'package:chataloka/constants/route_constants.dart';
 import 'package:chataloka/models/user_model.dart';
 import 'package:chataloka/providers/user_provider.dart';
+import 'package:chataloka/theme/custom_theme.dart';
 import 'package:chataloka/utilities/global_methods.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -48,6 +49,8 @@ class _FriendsScreenState extends State<FriendsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final customTheme = Theme.of(context).extension<CustomTheme>()!;
+
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -182,7 +185,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
         },
         child: Icon(
           Icons.person_add,
-          color: Theme.of(context).colorScheme.primary,
+          color: customTheme.button.light,
         ),
       ),
     );

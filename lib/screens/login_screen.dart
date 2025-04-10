@@ -1,4 +1,5 @@
 import 'package:chataloka/providers/user_provider.dart';
+import 'package:chataloka/theme/custom_theme.dart';
 import 'package:chataloka/utilities/global_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -43,6 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final userProvider = context.watch<UserProvider>();
+    final customTheme = Theme.of(context).extension<CustomTheme>()!;
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
@@ -163,11 +165,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 width: screenWidth - 40,
                 successColor: Colors.green,
                 errorColor: Colors.red,
-                color: Theme.of(context).colorScheme.primary,
+                color: customTheme.button.light,
                 child: Text(
                   'Send Code',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: customTheme.text,
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),
