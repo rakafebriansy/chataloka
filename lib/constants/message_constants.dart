@@ -1,8 +1,10 @@
 class MessageConstants {
   static const String chats = 'chats';
+  static const String chatFiles = 'chatFiles';
   static const String contactUID = 'contactUID';
   static const String contactName = 'contactName';
   static const String contactImage = 'contactImage';
+  static const String fileUrl = 'fileUrl';
   static const String isMe = 'isMe';
   static const String isSeen = 'isSeen';
   static const String groupUID = 'groupUID';

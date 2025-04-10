@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:chataloka/utilities/assets_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 void showChatalokaDialog({
   required BuildContext context,
@@ -86,6 +88,21 @@ Future<File?> pickImage({required bool fromCamera}) async {
   return File(pickedFile.path);
 }
 
+Future<CroppedFile> cropImage(String filePath) async {
+  final CroppedFile? croppedFile = await ImageCropper().cropImage(
+    sourcePath: filePath,
+    maxHeight: 800,
+    maxWidth: 800,
+    compressQuality: 90,
+  );
+
+  if (croppedFile == null) {
+    throw Exception('Failed to crop image');
+  }
+
+  return croppedFile;
+}
+
 String generateFileName({required String fileName, String? extension}) {
   String timestamp = DateTime.now().toIso8601String().replaceAll(":", "-");
   return "${timestamp}_$fileName.${extension ?? ''}";
@@ -119,4 +136,17 @@ String formatChatHeaderDate(DateTime sentAt) {
   } else {
     return DateFormat('MMM d, y').format(sentAt);
   }
+}
+
+Future<String> storeFileToFirebaseStorage({
+  required File file,
+  required String reference,
+}) async {
+  UploadTask uploadTask = FirebaseStorage.instance
+      .ref()
+      .child(reference)
+      .putFile(file);
+  TaskSnapshot taskSnapshot = await uploadTask;
+  String fileUrl = await taskSnapshot.ref.getDownloadURL();
+  return fileUrl;
 }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chataloka/constants/message_constants.dart';
 import 'package:chataloka/models/user_model.dart';
 import 'package:chataloka/providers/message_provider.dart';
@@ -5,6 +7,7 @@ import 'package:chataloka/providers/user_provider.dart';
 import 'package:chataloka/utilities/global_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:provider/provider.dart';
 
 class BottomChatField extends StatefulWidget {
@@ -28,10 +31,13 @@ class BottomChatField extends StatefulWidget {
 class _BottomChatFieldState extends State<BottomChatField> {
   late final TextEditingController? _textEditingController;
   late final FocusNode? _focusNode;
+  File? file;
+  late final MessageProvider messageProvider;
 
   @override
   void initState() {
     super.initState();
+    messageProvider = context.read<MessageProvider>();
     _textEditingController = TextEditingController();
     _focusNode = FocusNode();
   }
@@ -43,6 +49,48 @@ class _BottomChatFieldState extends State<BottomChatField> {
     super.dispose();
   }
 
+  Future<void> selectImage(bool fromCamera) async {
+    try {
+      file = await pickImage(fromCamera: fromCamera);
+
+      if (file == null) {
+        throw Exception('No image selected');
+      }
+
+      CroppedFile croppedFile = await cropImage(file!.path);
+      setState(() {
+        file = File(croppedFile.path);
+      });
+      await sendFileMessage(MessageEnum.image);
+      Navigator.of(context).pop();
+    } catch (error) {
+      showErrorSnackbar(context, error);
+    }
+  }
+
+  Future<void> sendFileMessage(MessageEnum messageType) async {
+    try {
+      final UserModel? currentUser = context.read<UserProvider>().userModel;
+
+      if (currentUser == null) {
+        throw Exception('User not found. Please re-login!');
+      }
+
+      await messageProvider.sendMessageToFirebase(
+        sender: currentUser,
+        contactUID: widget.contactUID,
+        contactName: widget.contactName,
+        contactImage: widget.contactImage,
+        message: messageType.name.toUpperCase(),
+        messageType: MessageEnum.image,
+        groupUID: widget.groupUID,
+        file: file,
+      );
+    } catch (error) {
+      showErrorSnackbar(context, error);
+    }
+  }
+
   Future<void> sendTextMessage() async {
     try {
       if (_textEditingController == null ||
@@ -50,13 +98,13 @@ class _BottomChatFieldState extends State<BottomChatField> {
         return;
       }
       final UserModel? currentUser = context.read<UserProvider>().userModel;
-      final messageProvider = context.read<MessageProvider>();
+      final MessageProvider messageProvider = context.read<MessageProvider>();
 
       if (currentUser == null) {
         throw Exception('User not found. Please re-login!');
       }
 
-      await messageProvider.sendTextMessageToFirestore(
+      await messageProvider.sendMessageToFirebase(
         sender: currentUser,
         contactUID: widget.contactUID,
         contactName: widget.contactName,
@@ -99,7 +147,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Container(
-                          padding: const EdgeInsets.all(8),
+                            padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
                               color: Colors.grey[200],
                               borderRadius: BorderRadius.circular(10),
@@ -126,7 +174,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
                                           null,
                                         );
                                       },
-                                      child: const Icon(Icons.close, size: 14,),
+                                      child: const Icon(Icons.close, size: 14),
                                     ),
                                   ],
                                 ),
@@ -154,8 +202,42 @@ class _BottomChatFieldState extends State<BottomChatField> {
                               builder: (context) {
                                 return SizedBox(
                                   height: 200,
-                                  child: const Center(
-                                    child: Text('Attachment'),
+                                  child: Column(
+                                    children: [
+                                      ListTile(
+                                        leading: const Icon(Icons.camera_alt),
+                                        title: const Text('Camera'),
+                                        onTap: () {
+                                          selectImage(true);
+                                        },
+                                      ),
+                                      ListTile(
+                                        leading: const Icon(Icons.image),
+                                        title: const Text('Images'),
+                                        onTap: () {
+                                          selectImage(false);
+                                        },
+                                      ),
+                                      ListTile(
+                                        leading: const Icon(
+                                          Icons.video_library,
+                                        ),
+                                        title: const Text('Video'),
+                                        onTap: () {},
+                                      ),
+                                      ListTile(
+                                        leading: const Icon(Icons.image),
+                                        title: const Text('Gallery'),
+                                        onTap: () {
+                                          selectImage(false);
+                                        },
+                                      ),
+                                      ListTile(
+                                        leading: const Icon(Icons.audio_file),
+                                        title: const Text('Audio'),
+                                        onTap: () {},
+                                      ),
+                                    ],
                                   ),
                                 );
                               },
@@ -189,27 +271,38 @@ class _BottomChatFieldState extends State<BottomChatField> {
                                       _textEditingController.text.isNotEmpty
                                   ? Padding(
                                     padding: const EdgeInsets.all(4),
-                                    child: GestureDetector(
-                                      onTap: () async {
-                                        await sendTextMessage();
-                                      },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: Theme.of(context).primaryColor,
-                                          borderRadius: BorderRadius.circular(
-                                            30,
-                                          ),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(12),
-                                          child: const Icon(
-                                            Icons.send,
-                                            color: Colors.white,
-                                            size: 16,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
+                                    child:
+                                        messageProvider.isLoading
+                                            ? Transform.scale(
+                                              scale: 0.5,
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            )
+                                            : GestureDetector(
+                                              onTap: () async {
+                                                await sendTextMessage();
+                                              },
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  color:
+                                                      Theme.of(
+                                                        context,
+                                                      ).primaryColor,
+                                                  borderRadius:
+                                                      BorderRadius.circular(30),
+                                                ),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(
+                                                    12,
+                                                  ),
+                                                  child: const Icon(
+                                                    Icons.send,
+                                                    color: Colors.white,
+                                                    size: 16,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
                                   )
                                   : SizedBox(width: 44),
                         ),

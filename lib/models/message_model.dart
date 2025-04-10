@@ -13,6 +13,7 @@ class MessageModel {
   final String repliedMessage;
   final String repliedTo;
   final MessageEnum repliedMessageType;
+  final String? fileUrl;
 
   MessageModel({
     required this.senderUID,
@@ -27,6 +28,7 @@ class MessageModel {
     required this.repliedMessage,
     required this.repliedTo,
     required this.repliedMessageType,
+    required this.fileUrl,
   });
 
   Map<String, dynamic> toMap() {
@@ -43,6 +45,7 @@ class MessageModel {
       MessageConstants.repliedMessage: repliedMessage,
       MessageConstants.repliedTo: repliedTo,
       MessageConstants.repliedMessageType: repliedMessageType.name,
+      MessageConstants.fileUrl: fileUrl,
     };
   }
 
@@ -61,6 +64,7 @@ class MessageModel {
       repliedTo: map[MessageConstants.repliedTo] ?? '',
       repliedMessageType:
           map[MessageConstants.repliedMessageType].toString().toMessageEnum(),
+      fileUrl: map[MessageConstants.fileUrl] ?? '',
     );
   }
 
@@ -78,6 +82,7 @@ class MessageModel {
       repliedMessage: this.repliedMessage,
       repliedTo: this.repliedTo,
       repliedMessageType: this.repliedMessageType,
+      fileUrl: this.fileUrl,
     );
   }
 }

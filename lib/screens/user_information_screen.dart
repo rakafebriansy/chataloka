@@ -3,13 +3,14 @@ import 'dart:io';
 import 'package:chataloka/constants/route_constants.dart';
 import 'package:chataloka/models/user_model.dart';
 import 'package:chataloka/providers/user_provider.dart';
+import 'package:chataloka/theme/custom_theme.dart';
 import 'package:chataloka/utilities/global_methods.dart';
 import 'package:chataloka/widgets/app_bar_back_button.dart';
-import 'package:chataloka/widgets/display_user_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:provider/provider.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
+import 'package:chataloka/utilities/assets_manager.dart';
 
 class UserInformationScreen extends StatefulWidget {
   const UserInformationScreen({super.key});
@@ -23,8 +24,7 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
       RoundedLoadingButtonController();
   final _nameController = TextEditingController();
 
-  File? finalFileImage;
-  String? userImage;
+  File? imageFile;
 
   @override
   void dispose() {
@@ -35,33 +35,20 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
 
   Future<void> selectImage(bool fromCamera) async {
     try {
-      finalFileImage = await pickImage(fromCamera: fromCamera);
+      imageFile = await pickImage(fromCamera: fromCamera);
 
-      if (finalFileImage == null) {
+      if (imageFile == null) {
         throw Exception('No image selected');
       }
 
-      await cropImage(finalFileImage!.path);
+      CroppedFile croppedFile = await cropImage(imageFile!.path);
+      setState(() {
+        imageFile = File(croppedFile.path);
+      });
       Navigator.of(context).pop();
     } catch (error) {
       showErrorSnackbar(context, error);
     }
-  }
-
-  Future<void> cropImage(String filePath) async {
-    final CroppedFile? croppedFile = await ImageCropper().cropImage(
-      sourcePath: filePath,
-      maxHeight: 800,
-      maxWidth: 800,
-      compressQuality: 90,
-    );
-
-    if (croppedFile == null) {
-      throw Exception('Failed to crop image');
-    }
-    setState(() {
-      finalFileImage = File(croppedFile.path);
-    });
   }
 
   void showImagePicker() {
@@ -98,7 +85,7 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
         throw Exception('Name is required');
       } else if (_nameController.text.length < 3) {
         throw Exception('Name must be at least 3 characters');
-      } else if (finalFileImage == null) {
+      } else if (imageFile == null) {
         throw Exception('No image selected');
       }
       final userProvider = context.read<UserProvider>();
@@ -119,7 +106,7 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
 
       await userProvider.saveUserDataToFirestore(
         userModel: userModel,
-        imageFile: finalFileImage,
+        imageFile: imageFile,
       );
 
       _btnController.success();
@@ -141,6 +128,7 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+    final theme = Theme.of(context).extension<CustomTheme>()!;
 
     return Scaffold(
       appBar: AppBar(
@@ -157,14 +145,63 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             children: [
-              DisplayUserImage(
-                context:context,
-                finalFileImage: finalFileImage,
-                radius: 60,
-                onPressed: () {
-                  showImagePicker();
-                },
-              ),
+              imageFile == null
+                  ? Stack(
+                    children: [
+                      CircleAvatar(
+                        radius: 60,
+                        backgroundImage: const AssetImage(
+                          AssetsManager.userImage,
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: InkWell(
+                          onTap: () {
+                            showImagePicker();
+                          },
+                          child: CircleAvatar(
+                            radius: 20,
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                            child: Icon(
+                              Icons.camera_alt,
+                              color: theme.customSenderTextColor,
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                  : Stack(
+                    children: [
+                      CircleAvatar(
+                        radius: 60,
+                        backgroundImage: FileImage(File(imageFile!.path)),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: InkWell(
+                          onTap: () {
+                            showImagePicker();
+                          },
+                          child: CircleAvatar(
+                            radius: 20,
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                            child: Icon(
+                              Icons.camera_alt,
+                              color: theme.customSenderTextColor,
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
               const SizedBox(height: 30),
               TextField(
                 controller: _nameController,
@@ -188,10 +225,10 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
                   color: Theme.of(context).colorScheme.primary,
                   borderRadius: 10,
                   width: screenWidth - 40,
-                  child: const Text(
+                  child: Text(
                     'Continue',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: theme.customSenderTextColor,
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                     ),

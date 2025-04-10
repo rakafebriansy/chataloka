@@ -1,11 +1,13 @@
+import 'dart:io';
+
 import 'package:chataloka/constants/message_constants.dart';
 import 'package:chataloka/constants/user_constants.dart';
 import 'package:chataloka/models/last_message_model.dart';
 import 'package:chataloka/models/message_model.dart';
 import 'package:chataloka/models/message_reply_model.dart';
 import 'package:chataloka/models/user_model.dart';
+import 'package:chataloka/utilities/global_methods.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
@@ -19,14 +21,13 @@ class MessageProvider extends ChangeNotifier {
   MessageReplyModel? get messageReplyModel => _messageReplyModel;
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseStorage _storage = FirebaseStorage.instance;
 
   void setMessageReplyModel(MessageReplyModel? messageReplyModel) {
     _messageReplyModel = messageReplyModel;
     notifyListeners();
   }
 
-  Future<void> sendTextMessageToFirestore({
+  Future<void> sendMessageToFirebase({
     required UserModel sender,
     required String contactUID,
     required String contactName,
@@ -34,6 +35,7 @@ class MessageProvider extends ChangeNotifier {
     required String message,
     required MessageEnum messageType,
     String? groupUID,
+    File? file,
   }) async {
     try {
       _isLoading = true;
@@ -50,6 +52,14 @@ class MessageProvider extends ChangeNotifier {
       MessageEnum repliedMessageType =
           _messageReplyModel?.messageType ?? MessageEnum.text;
 
+      final ref =
+          '${MessageConstants.chatFiles}/${messageType.name}/${sender.uid}/${contactUID}/${messageUID}';
+
+      String? fileUrl =
+          file != null
+              ? await storeFileToFirebaseStorage(file: file, reference: ref)
+              : null;
+
       final MessageModel senderMessageModel = MessageModel(
         senderUID: sender.uid,
         senderName: sender.name,
@@ -63,12 +73,13 @@ class MessageProvider extends ChangeNotifier {
         repliedMessage: repliedMessage,
         repliedTo: repliedTo,
         repliedMessageType: repliedMessageType,
+        fileUrl: fileUrl,
       );
 
       if (groupUID != null) {
         //
       } else {
-        _handleFriendMessage(
+        _handleFriendTextMessage(
           senderMessageModel: senderMessageModel,
           contactName: contactName,
           contactImage: contactImage,
@@ -86,7 +97,7 @@ class MessageProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> _handleFriendMessage({
+  Future<void> _handleFriendTextMessage({
     required MessageModel senderMessageModel,
     required String contactName,
     required String contactImage,

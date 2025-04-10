@@ -6,7 +6,7 @@ class CustomThemeData {
     brightness: Brightness.light,
     extensions: [
       CustomTheme(
-        customSenderCardColor: Colors.deepPurple[400]!,
+customSenderCardColor: Colors.deepPurple[400]!,
         customDarkSenderCardColor: Colors.deepPurple[500]!,
         customSenderTextColor: Colors.white,
         customContactCardColor: Colors.grey[300]!,
