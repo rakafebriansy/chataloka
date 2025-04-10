@@ -4,7 +4,9 @@ import 'package:chataloka/constants/route_constants.dart';
 import 'package:chataloka/models/last_message_model.dart';
 import 'package:chataloka/providers/message_provider.dart';
 import 'package:chataloka/providers/user_provider.dart';
+import 'package:chataloka/theme/custom_theme.dart';
 import 'package:chataloka/utilities/global_methods.dart';
+import 'package:chataloka/widgets/sent_mark.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -43,6 +45,8 @@ class _ChatListScreenState extends State<ChatListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final CustomTheme theme = Theme.of(context).extension<CustomTheme>()!;
+
     return Scaffold(
       body: Column(
         children: [
@@ -110,10 +114,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                                     overflow: TextOverflow.ellipsis,
                                     style: GoogleFonts.openSans(),
                                   ),
-                                  trailing: Text(
-                                    formatChatListDate(lastMessageModel.sentAt),
-                                    style: GoogleFonts.openSans(),
-                                  ),
+                                  trailing: SentMark(model: lastMessageModel, textColor: isMe ? theme.customContactTextColor : theme.customSenderTextColor),
                                   onTap: () {
                                     Navigator.of(context).pushNamed(
                                       RouteConstant.chatScreen,

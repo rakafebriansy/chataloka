@@ -66,7 +66,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (args == null) {
+    if (args == null || uid == null) {
       return CircularProgressIndicator();
     }
     final theme = Theme.of(context).extension<CustomTheme>()!;
@@ -168,19 +168,35 @@ class _ChatScreenState extends State<ChatScreen> {
                                     ],
                                   ),
                                 ),
-                            itemBuilder: (context, dynamic element) {
-                              final bool isMe = element.senderUID == uid;
+                            itemBuilder: (context, dynamic messageModel) {
+                              final bool isMe =
+                                  (messageModel as MessageModel).senderUID ==
+                                  uid;
+
+                              if (!messageModel.isSeen &&
+                                  messageModel.senderUID != uid) {
+                                try {
+                                  messageProvider.setMessageAsSeen(
+                                    userUID: uid!,
+                                    contactUID: args!.contactUID,
+                                    messageUID: messageModel.messageUID,
+                                    groupUID: args!.groupUID
+                                  );
+                                } catch (error) {
+                                  showErrorSnackbar(context, error);
+                                }
+                              }
 
                               return MessageBubble(
-                                element: element,
+                                messageModel: messageModel,
                                 isMe: isMe,
                                 onRightSwipe: (_) {
                                   final messageReplyModel = MessageReplyModel(
-                                    senderUID: element.senderUID,
-                                    senderName: element.senderName,
-                                    senderImage: element.senderImage,
-                                    message: element.message,
-                                    messageType: element.messageType,
+                                    senderUID: messageModel.senderUID,
+                                    senderName: messageModel.senderName,
+                                    senderImage: messageModel.senderImage,
+                                    message: messageModel.message,
+                                    messageType: messageModel.messageType,
                                     isMe: isMe,
                                   );
                                   messageProvider.setMessageReplyModel(
@@ -189,11 +205,11 @@ class _ChatScreenState extends State<ChatScreen> {
                                 },
                                 onLeftSwipe: (_) {
                                   final messageReplyModel = MessageReplyModel(
-                                    senderUID: element.senderUID,
-                                    senderName: element.senderName,
-                                    senderImage: element.senderImage,
-                                    message: element.message,
-                                    messageType: element.messageType,
+                                    senderUID: messageModel.senderUID,
+                                    senderName: messageModel.senderName,
+                                    senderImage: messageModel.senderImage,
+                                    message: messageModel.message,
+                                    messageType: messageModel.messageType,
                                     isMe: isMe,
                                   );
                                   messageProvider.setMessageReplyModel(

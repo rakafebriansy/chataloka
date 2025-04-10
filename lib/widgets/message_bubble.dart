@@ -8,13 +8,13 @@ import 'package:swipe_to/swipe_to.dart';
 class MessageBubble extends StatelessWidget {
   const MessageBubble({
     super.key,
-    required this.element,
+    required this.messageModel,
     required this.isMe,
     this.onRightSwipe,
     this.onLeftSwipe,
   });
 
-  final MessageModel element;
+  final MessageModel messageModel;
   final bool isMe;
   final GestureDragUpdateCallback? onRightSwipe;
   final GestureDragUpdateCallback? onLeftSwipe;
@@ -24,7 +24,7 @@ class MessageBubble extends StatelessWidget {
     final CustomTheme theme = Theme.of(context).extension<CustomTheme>()!;
 
     final Color textColor = isMe ? theme.customSenderTextColor : theme.customContactTextColor;
-    final bool isReplying = element.repliedTo.isNotEmpty;
+    final bool isReplying = messageModel.repliedTo.isNotEmpty;
 
     return SwipeTo(
       onRightSwipe: !isMe ? onRightSwipe : null,
@@ -68,11 +68,11 @@ class MessageBubble extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          (isMe == (element.repliedTo == 'You'))
+                          (isMe == (messageModel.repliedTo == 'You'))
                               ? 'You'
                               : isMe
-                              ? element.repliedTo
-                              : element.senderName,
+                              ? messageModel.repliedTo
+                              : messageModel.senderName,
                           style: GoogleFonts.openSans(
                             color: textColor,
                             fontWeight: FontWeight.w600,
@@ -80,7 +80,7 @@ class MessageBubble extends StatelessWidget {
                         ),
                         const SizedBox(height: 5),
                         Text(
-                          element.repliedMessage,
+                          messageModel.repliedMessage,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.openSans(
@@ -93,18 +93,19 @@ class MessageBubble extends StatelessWidget {
                   ),
                   SizedBox(height: 8),
                 ],
-                element.message.length < 30
+                messageModel.message.length < 30
                     ? Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          element.message,
+                          messageModel.message,
                           style: GoogleFonts.openSans(color: textColor),
                         ),
                         const SizedBox(width: 8),
-                        SentMark(element: element, textColor: textColor),
+                        if(isMe)
+                        SentMark(model: messageModel, textColor: textColor),
                       ],
                     )
                     : Column(
@@ -112,11 +113,12 @@ class MessageBubble extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          element.message,
+                          messageModel.message,
                           style: GoogleFonts.openSans(color: textColor),
                         ),
                         const SizedBox(height: 5),
-                        SentMark(element: element, textColor: textColor),
+                        if(isMe)
+                        SentMark(model: messageModel, textColor: textColor),
                       ],
                     ),
               ],

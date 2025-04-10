@@ -107,33 +107,33 @@ class MessageProvider extends ChangeNotifier {
       contactImage: contactMessageModel.senderImage,
     );
     await _firestore.runTransaction((transaction) async {
-      final senderRef = _firestore
+      final senderChatRef = _firestore
           .collection(UserConstant.users)
           .doc(senderMessageModel.senderUID)
           .collection(MessageConstants.chats)
           .doc(senderMessageModel.contactUID);
-      final contactRef = _firestore
+      final contactChatRef = _firestore
           .collection(UserConstant.users)
           .doc(senderMessageModel.contactUID)
           .collection(MessageConstants.chats)
           .doc(senderLastMessageModel.senderUID);
 
       transaction.set(
-        senderRef
+        senderChatRef
             .collection(MessageConstants.messages)
             .doc(senderMessageModel.messageUID),
         senderMessageModel.toMap(),
       );
       transaction.set(
-        contactRef
+        contactChatRef
             .collection(MessageConstants.messages)
             .doc(contactMessageModel.messageUID),
         contactMessageModel.toMap(),
       );
 
-      transaction.set(senderRef, senderLastMessageModel.toMap());
+      transaction.set(senderChatRef, senderLastMessageModel.toMap());
       transaction.set(
-        contactRef,
+        contactChatRef,
         contactLastMessageModel.toMap(),
         SetOptions(merge: true),
       );
@@ -170,6 +170,47 @@ class MessageProvider extends ChangeNotifier {
           .collection(MessageConstants.messages)
           .orderBy(MessageConstants.sentAt, descending: false)
           .snapshots();
+    }
+  }
+
+  Future<void> setMessageAsSeen({
+    required String userUID,
+    required String contactUID,
+    required String messageUID,
+    String? groupUID,
+  }) async {
+    if (groupUID != null) {
+      return _firestore
+          .collection(UserConstant.groups)
+          .doc(contactUID)
+          .collection(MessageConstants.messages)
+          .doc(messageUID)
+          .update({MessageConstants.isSeen: true});
+    } else {
+      await _firestore.runTransaction((transaction) async {
+        final userChatRef = _firestore
+            .collection(UserConstant.users)
+            .doc(userUID)
+            .collection(MessageConstants.chats)
+            .doc(contactUID);
+
+        final contactChatRef = _firestore
+            .collection(UserConstant.users)
+            .doc(contactUID)
+            .collection(MessageConstants.chats)
+            .doc(userUID);
+
+        transaction.update(
+          userChatRef.collection(MessageConstants.messages).doc(messageUID),
+          {MessageConstants.isSeen: true},
+        );
+        transaction.update(
+          contactChatRef.collection(MessageConstants.messages).doc(messageUID),
+          {MessageConstants.isSeen: true},
+        );
+        transaction.update(userChatRef, {MessageConstants.isSeen: true});
+        transaction.update(contactChatRef, {MessageConstants.isSeen: true});
+      });
     }
   }
 }
