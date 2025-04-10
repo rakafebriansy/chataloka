@@ -28,6 +28,7 @@ class _ChatScreenState extends State<ChatScreen> {
   late final MessageProvider messageProvider;
   late final bool isGroupChat =
       args?.groupUID != null && args!.groupUID!.isNotEmpty;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -55,6 +56,12 @@ class _ChatScreenState extends State<ChatScreen> {
         showErrorSnackbar(context, error);
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -100,6 +107,17 @@ class _ChatScreenState extends State<ChatScreen> {
                               ),
                             );
                           }
+
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            if (_scrollController.hasClients) {
+                              _scrollController.animateTo(
+                                _scrollController.position.minScrollExtent,
+                                duration: const Duration(milliseconds: 200),
+                                curve: Curves.easeOut,
+                              );
+                            }
+                          });
+
                           List<MessageModel> messagesList =
                               snapshot.data!.docs.map((DocumentSnapshot doc) {
                                 return MessageModel.fromMap(
@@ -108,7 +126,9 @@ class _ChatScreenState extends State<ChatScreen> {
                               }).toList();
 
                           return GroupedListView<dynamic, DateTime>(
+                            reverse: true,
                             elements: messagesList,
+                            controller: _scrollController,
                             groupBy: (dynamic element) {
                               return DateTime(
                                 (element as MessageModel).sentAt.year,
@@ -184,7 +204,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             },
                             useStickyGroupSeparators: true,
                             floatingHeader: true,
-                            order: GroupedListOrder.ASC,
+                            order: GroupedListOrder.DESC,
                           );
                         },
                       )
