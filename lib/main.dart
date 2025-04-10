@@ -12,6 +12,7 @@ import 'package:chataloka/screens/user_information_screen.dart';
 import 'package:chataloka/screens/home_screen.dart';
 import 'package:chataloka/screens/home/profile_screen.dart';
 import 'package:chataloka/screens/home/profile/settings_screen.dart';
+import 'package:chataloka/theme/custom_theme_data.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
@@ -27,53 +28,46 @@ void main() async {
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => MessageProvider()),
       ],
-      child: MyApp(savedThemeMode: savedThemeMode),
+      child: AdaptiveTheme(
+        light: CustomThemeData.lightTheme,
+        dark: CustomThemeData.darkTheme,
+        initial: savedThemeMode ?? AdaptiveThemeMode.light,
+        builder:
+            (theme, darkTheme) => MyApp(theme: theme, darkTheme: darkTheme),
+      ),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key, required this.savedThemeMode});
+  final ThemeData theme;
+  final ThemeData darkTheme;
 
-  final AdaptiveThemeMode? savedThemeMode;
+  const MyApp({super.key, required this.theme, required this.darkTheme});
 
   @override
   Widget build(BuildContext context) {
-    return AdaptiveTheme(
-      light: ThemeData(
-        useMaterial3: true,
-        brightness: Brightness.light,
-        colorSchemeSeed: Colors.deepPurple,
-      ),
-      dark: ThemeData(
-        useMaterial3: true,
-        brightness: Brightness.dark,
-        colorSchemeSeed: Colors.deepPurple,
-      ),
-      initial: savedThemeMode ?? AdaptiveThemeMode.light,
-      builder:
-          (theme, darkTheme) => MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: 'Chataloka',
-            theme: theme,
-            darkTheme: darkTheme,
-            initialRoute: RouteConstant.landingScreen,
-            routes: {
-              RouteConstant.addFriendScreen:
-                  (context) => const AddFriendScreen(),
-              RouteConstant.chatScreen: (context) => const ChatScreen(),
-              RouteConstant.friendRequestsScreen:
-                  (context) => const FriendRequestsScreen(),
-              RouteConstant.homeScreen: (context) => const HomeScreen(),
-              RouteConstant.landingScreen: (context) => const LandingScreen(),
-              RouteConstant.loginScreen: (context) => const LoginScreen(),
-              RouteConstant.profileScreen: (context) => const ProfileScreen(),
-              RouteConstant.otpScreen: (context) => const OTPScreen(),
-              RouteConstant.settingsScreen: (context) => const SettingsScreen(),
-              RouteConstant.userInformationScreen:
-                  (context) => const UserInformationScreen(),
-            },
-          ),
+
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Chataloka',
+      theme: theme,
+      darkTheme: darkTheme,
+      initialRoute: RouteConstant.landingScreen,
+      routes: {
+        RouteConstant.addFriendScreen: (context) => const AddFriendScreen(),
+        RouteConstant.chatScreen: (context) => const ChatScreen(),
+        RouteConstant.friendRequestsScreen:
+            (context) => const FriendRequestsScreen(),
+        RouteConstant.homeScreen: (context) => const HomeScreen(),
+        RouteConstant.landingScreen: (context) => const LandingScreen(),
+        RouteConstant.loginScreen: (context) => const LoginScreen(),
+        RouteConstant.profileScreen: (context) => const ProfileScreen(),
+        RouteConstant.otpScreen: (context) => const OTPScreen(),
+        RouteConstant.settingsScreen: (context) => const SettingsScreen(),
+        RouteConstant.userInformationScreen:
+            (context) => const UserInformationScreen(),
+      },
     );
   }
 }

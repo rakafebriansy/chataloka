@@ -1,4 +1,5 @@
 import 'package:chataloka/models/message_model.dart';
+import 'package:chataloka/theme/custom_theme.dart';
 import 'package:chataloka/widgets/sent_mark.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -20,14 +21,10 @@ class MessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color textColor = isMe ? Colors.white : Colors.black;
-    final bool isReplying = element.repliedTo.isNotEmpty;
+    final CustomTheme theme = Theme.of(context).extension<CustomTheme>()!;
 
-    print(element.message);
-    print(element.repliedTo);
-    print(element.senderName);
-    print(isMe);
-    print('====');
+    final Color textColor = isMe ? theme.customSenderTextColor : theme.customContactTextColor;
+    final bool isReplying = element.repliedTo.isNotEmpty;
 
     return SwipeTo(
       onRightSwipe: !isMe ? onRightSwipe : null,
@@ -41,7 +38,7 @@ class MessageBubble extends StatelessWidget {
           margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
           padding: EdgeInsets.all(isReplying ? 8 : 12),
           decoration: BoxDecoration(
-            color: isMe ? Colors.deepPurple[600] : Colors.grey[300]!,
+            color: isMe ? theme.customSenderCardColor : theme.customContactCardColor,
             borderRadius:
                 isMe
                     ? BorderRadius.only(
@@ -64,7 +61,7 @@ class MessageBubble extends StatelessWidget {
                     width: double.infinity,
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: isMe ? Colors.deepPurple[800] : Colors.grey[400]!,
+                      color: isMe ? theme.customDarkSenderCardColor : theme.customDarkContactCardColor,
                       borderRadius: BorderRadius.circular(5),
                     ),
                     child: Column(

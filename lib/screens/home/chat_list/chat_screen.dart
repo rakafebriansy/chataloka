@@ -3,6 +3,7 @@ import 'package:chataloka/models/message_model.dart';
 import 'package:chataloka/models/message_reply_model.dart';
 import 'package:chataloka/providers/message_provider.dart';
 import 'package:chataloka/providers/user_provider.dart';
+import 'package:chataloka/theme/custom_theme.dart';
 import 'package:chataloka/utilities/global_methods.dart';
 import 'package:chataloka/widgets/bottom_chat_field.dart';
 import 'package:chataloka/widgets/chat_app_bar.dart';
@@ -10,7 +11,6 @@ import 'package:chataloka/widgets/message_bubble.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:grouped_list/grouped_list.dart';
 
@@ -62,6 +62,7 @@ class _ChatScreenState extends State<ChatScreen> {
     if (args == null) {
       return CircularProgressIndicator();
     }
+    final theme = Theme.of(context).extension<CustomTheme>()!;
 
     return Scaffold(
       appBar: AppBar(title: ChatAppBar(contactUID: args!.contactUID)),
@@ -128,7 +129,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                           horizontal: 10,
                                         ),
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(10),
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
                                           color: Colors.grey[500],
                                         ),
                                         child: Text(
@@ -137,7 +140,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                           ),
                                           textAlign: TextAlign.center,
                                           style: GoogleFonts.openSans(
-                                            color: Colors.white,
+                                            color: theme.customSenderTextColor,
                                             fontSize: 12,
                                           ),
                                         ),
