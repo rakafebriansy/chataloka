@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:chataloka/models/user_model.dart';
-import 'package:chataloka/utilities/firebase_mocks.dart';
+import 'package:chataloka/libs/firebase/firebase_mocks.dart';
 import 'package:chataloka/utilities/global_methods.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -61,6 +61,13 @@ class UserProvider extends ChangeNotifier {
     final DocumentSnapshot documentSnapshot =
         await _firestore.collection(UserConstant.users).doc(_uid).get();
     return documentSnapshot.exists;
+  }
+
+  Future<void> updateUserStatus({required bool value}) async {
+    await _firestore.collection(UserConstant.users).doc(_auth.currentUser!.uid).update({
+      UserConstant.isOnline: value,
+      UserConstant.lastSeen: DateTime.now().millisecondsSinceEpoch,
+    });
   }
 
   Future<void> getUserDataFromFirestore() async {
@@ -184,8 +191,8 @@ class UserProvider extends ChangeNotifier {
         userModel.image = imageUrl;
       }
 
-      userModel.lastSeen = DateTime.now().microsecondsSinceEpoch.toString();
-      userModel.createdAt = DateTime.now().microsecondsSinceEpoch.toString();
+      userModel.lastSeen = DateTime.now();
+      userModel.createdAt = DateTime.now();
 
       _userModel = userModel;
       _uid = userModel.uid;

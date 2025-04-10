@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:get_time_ago/get_time_ago.dart';
 
 class ChatAppBar extends StatefulWidget {
   const ChatAppBar({super.key, required this.contactUID});
@@ -67,7 +68,7 @@ class _ChatAppBarState extends State<ChatAppBar> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(userModel.name, style: GoogleFonts.openSans(fontSize: 18, fontWeight: FontWeight.w600)),
-                Text('Online', style: GoogleFonts.openSans(fontSize: 12)),
+                Text(userModel.isOnline ? 'Online' : 'Last seen ${GetTimeAgo.parse(userModel.lastSeen)}', style: GoogleFonts.openSans(fontSize: 12, color: userModel.isOnline ? Colors.green : Colors.grey.shade600)),
               ],
             ),
           ],

@@ -15,13 +15,16 @@ import 'package:chataloka/screens/home/profile/settings_screen.dart';
 import 'package:chataloka/theme/custom_theme_data.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:get_time_ago/get_time_ago.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
+import 'package:chataloka/libs/get_time_ago/custom_messages.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   final savedThemeMode = await AdaptiveTheme.getThemeMode();
+  GetTimeAgo.setCustomLocaleMessages('en', CustomMessages()); 
   runApp(
     MultiProvider(
       providers: [

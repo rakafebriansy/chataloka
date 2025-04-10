@@ -7,8 +7,8 @@ class UserModel {
   String image;
   String token;
   String aboutMe;
-  String lastSeen;
-  String createdAt;
+  DateTime lastSeen;
+  DateTime createdAt;
   bool isOnline;
   List<String> friendsUIDs;
   List<String> friendRequestsUIDs;
@@ -37,8 +37,8 @@ class UserModel {
       image: map[UserConstant.image] ?? '',
       token: map[UserConstant.token] ?? '',
       aboutMe: map[UserConstant.aboutMe] ?? '',
-      lastSeen: map[UserConstant.lastSeen] ?? '',
-      createdAt: map[UserConstant.createdAt] ?? '',
+      lastSeen: DateTime.fromMillisecondsSinceEpoch(map[UserConstant.lastSeen]),
+      createdAt: DateTime.fromMillisecondsSinceEpoch(map[UserConstant.createdAt]),
       isOnline: map[UserConstant.isOnline] ?? '',
       friendsUIDs: List<String>.from(map[UserConstant.friendsUIDs] ?? []),
       friendRequestsUIDs: List<String>.from(map[UserConstant.friendRequestsUIDs] ?? []),
@@ -54,8 +54,8 @@ class UserModel {
       UserConstant.image: image,
       UserConstant.token: token,
       UserConstant.aboutMe: aboutMe,
-      UserConstant.lastSeen: lastSeen,
-      UserConstant.createdAt: createdAt,
+      UserConstant.lastSeen: lastSeen.millisecondsSinceEpoch,
+      UserConstant.createdAt: createdAt.millisecondsSinceEpoch,
       UserConstant.isOnline: isOnline,
       UserConstant.friendsUIDs: friendsUIDs,
       UserConstant.friendRequestsUIDs: friendRequestsUIDs,

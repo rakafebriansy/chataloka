@@ -15,7 +15,8 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>
+    with WidgetsBindingObserver, TickerProviderStateMixin {
   final PageController homeController = PageController(initialPage: 0);
   int currentIndex = 0;
 
@@ -28,6 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final int? arguments = ModalRoute.of(context)?.settings.arguments as int?;
       if (arguments != null) {
@@ -37,6 +39,29 @@ class _HomeScreenState extends State<HomeScreen> {
         });
       }
     });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    final userProvider = context.read<UserProvider>();
+    switch (state) {
+      case AppLifecycleState.resumed:
+        userProvider.updateUserStatus(value: true);
+        break;
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.paused:
+      case AppLifecycleState.detached:
+      case AppLifecycleState.hidden:
+        userProvider.updateUserStatus(value: false);
+        break;
+    }
+    super.didChangeAppLifecycleState(state);
   }
 
   @override
