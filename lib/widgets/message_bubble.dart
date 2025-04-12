@@ -1,5 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chataloka/models/message_model.dart';
 import 'package:chataloka/theme/custom_theme.dart';
+import 'package:chataloka/utilities/assets_manager.dart';
+import 'package:chataloka/widgets/display_message_type.dart';
 import 'package:chataloka/widgets/sent_mark.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -85,18 +88,38 @@ class MessageBubble extends StatelessWidget {
                         const SizedBox(height: 5),
                         Text(
                           messageModel.repliedMessage,
+                          style: GoogleFonts.openSans(color: textColor),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.openSans(
-                            color: textColor,
-                            fontSize: 12,
-                          ),
                         ),
                       ],
                     ),
                   ),
                   SizedBox(height: 8),
                 ],
+                if (messageModel.fileUrl != null &&
+                    messageModel.fileUrl!.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Container(
+                        constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width * 0.6,
+                          maxHeight: 250,
+                        ),
+                        child: CachedNetworkImage(
+                          imageUrl: messageModel.fileUrl!,
+                          placeholder:
+                              (context, url) =>
+                                  Center(child: CircularProgressIndicator()),
+                          errorWidget:
+                              (context, url, error) =>
+                                  Image.asset(AssetsManager.imageError),
+                        ),
+                      ),
+                    ),
+                  ),
                 messageModel.message.length < 30
                     ? Row(
                       mainAxisSize: MainAxisSize.max,

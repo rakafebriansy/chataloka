@@ -53,6 +53,7 @@ dependencies:
   grouped_list: ^6.0.0
   swipe_to: ^1.0.6
   get_time_ago: ^2.3.0
+  cached_network_image: ^3.4.1
 
 dev_dependencies:
   flutter_test:
