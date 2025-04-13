@@ -4,6 +4,7 @@ import 'package:chataloka/constants/message_constants.dart';
 import 'package:chataloka/models/user_model.dart';
 import 'package:chataloka/providers/message_provider.dart';
 import 'package:chataloka/providers/user_provider.dart';
+import 'package:chataloka/theme/custom_theme.dart';
 import 'package:chataloka/utilities/global_methods.dart';
 import 'package:chataloka/widgets/chat_input.dart';
 import 'package:flutter/material.dart';
@@ -118,6 +119,8 @@ class _BottomChatFieldState extends State<BottomChatField> {
 
   @override
   Widget build(BuildContext context) {
+    final CustomTheme customTheme = Theme.of(context).extension<CustomTheme>()!;
+
     return Consumer<MessageProvider>(
       builder: (context, messageProvider, child) {
         final messageReply = messageProvider.messageReplyModel;
@@ -158,8 +161,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
                                           ? 'You'
                                           : messageReply.senderName,
                                       style: GoogleFonts.openSans(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w600,
+                                        color: customTheme.text.light,
                                       ),
                                     ),
                                   ),
@@ -174,14 +176,34 @@ class _BottomChatFieldState extends State<BottomChatField> {
                                 ],
                               ),
                               const SizedBox(height: 5),
-                              Text(
-                                // textAlign: TextAlign.right,
-                                messageReply.message,
+                              RichText(
+                                text: TextSpan(
+                                  children: [
+                                    if (messageReply. messageType ==
+                                        MessageEnum.image)
+                                      WidgetSpan(
+                                        alignment: PlaceholderAlignment.middle,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                            right: 4,
+                                          ),
+                                          child: Icon(
+                                            Icons.image,
+                                            size: 16,
+                                            color: customTheme.text.light,
+                                          ),
+                                        ),
+                                      ),
+                                    TextSpan(
+                                      text: messageReply.message,
+                                      style: GoogleFonts.openSans(
+                                        color: customTheme.text.light,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.openSans(
-                                  color: Colors.black,
-                                ),
                               ),
                             ],
                           ),

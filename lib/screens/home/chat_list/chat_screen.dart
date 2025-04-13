@@ -160,7 +160,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                           ),
                                           textAlign: TextAlign.center,
                                           style: GoogleFonts.openSans(
-                                            color: customTheme.text,
+                                            color: customTheme.text.dark,
                                             fontSize: 12,
                                           ),
                                         ),
@@ -197,6 +197,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                     senderImage: messageModel.senderImage,
                                     message: messageModel.message,
                                     messageType: messageModel.messageType,
+                                    fileUrl: messageModel.fileUrl,
                                     isMe: isMe,
                                   );
                                   messageProvider.setMessageReplyModel(
@@ -210,6 +211,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                     senderImage: messageModel.senderImage,
                                     message: messageModel.message,
                                     messageType: messageModel.messageType,
+                                    fileUrl: messageModel.fileUrl,
                                     isMe: isMe,
                                   );
                                   messageProvider.setMessageReplyModel(

@@ -16,6 +16,7 @@ class MessageConstants {
   static const String repliedMessage = 'repliedMessage';
   static const String repliedMessageType = 'repliedMessageType';
   static const String repliedTo = 'repliedTo';
+  static const String repliedFileUrl = 'repliedFileUrl';
   static const String senderImage = 'senderImage';
   static const String senderName = 'senderName';
   static const String senderUID = 'senderUID';

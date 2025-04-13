@@ -169,7 +169,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Text(
                   'Send Code',
                   style: TextStyle(
-                    color: customTheme.text,
+                    color: customTheme.text.dark,
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),

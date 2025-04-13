@@ -6,6 +6,7 @@ class MessageReplyModel {
   final String senderImage;
   final String message;
   final MessageEnum messageType;
+  final String? fileUrl;
 
   final bool isMe;
 
@@ -15,6 +16,7 @@ class MessageReplyModel {
     required this.senderImage,
     required this.message,
     required this.messageType,
+    required this.fileUrl,
 
     required this.isMe,
   });
@@ -26,6 +28,7 @@ class MessageReplyModel {
       MessageConstants.senderImage: senderImage,
       MessageConstants.message: message,
       MessageConstants.messageType: messageType.name,
+      MessageConstants.fileUrl: fileUrl,
 
       MessageConstants.isMe: isMe,
     };
@@ -38,6 +41,7 @@ class MessageReplyModel {
       senderImage: map[MessageConstants.senderImage] ?? '',
       message: map[MessageConstants.message] ?? '',
       messageType: map[MessageConstants.messageType].toString().toMessageEnum(),
+      fileUrl: map[MessageConstants.fileUrl] ?? '',
 
       isMe: map[MessageConstants.isMe] ?? false,
     );

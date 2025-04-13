@@ -167,7 +167,7 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
                                 customTheme.button.light,
                             child: Icon(
                               Icons.camera_alt,
-                              color: customTheme.text,
+                              color: customTheme.text.dark,
                               size: 20,
                             ),
                           ),
@@ -194,7 +194,7 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
                                 customTheme.button.light,
                             child: Icon(
                               Icons.camera_alt,
-                              color: customTheme.text,
+                              color: customTheme.text.dark,
                               size: 20,
                             ),
                           ),
@@ -228,7 +228,7 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
                   child: Text(
                     'Continue',
                     style: TextStyle(
-                      color: customTheme.text,
+                      color: customTheme.text.dark,
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                     ),

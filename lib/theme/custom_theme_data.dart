@@ -8,16 +8,24 @@ class CustomThemeData {
     extensions: [
       CustomTheme(
         primaryCard: PairCustomThemeColor(
+          light: Colors.deepPurple[500]!,
+          dark: Colors.deepPurple[600]!,
+        ),
+        secondaryCard: PairCustomThemeColor(
+          light: Colors.blue[300]!,
+          dark: Colors.blue[400]!,
+        ),
+        primaryBorder: PairCustomThemeColor(
           light: Colors.deepPurple[600]!,
           dark: Colors.deepPurple[700]!,
         ),
-        secondaryCard: PairCustomThemeColor(
-          light: Colors.grey[300]!,
-          dark: Colors.grey[400]!,
+        secondaryBorder: PairCustomThemeColor(
+          light: Colors.blue[400]!,
+          dark: Colors.blue[500]!,
         ),
-        text: Colors.white,
-        primaryChatText: Colors.white70,
-        secondaryChatText: Colors.black,
+        text: PairCustomThemeColor(light: Colors.black, dark: Colors.white),
+        primaryChatText: Colors.white,
+        secondaryChatText: Colors.white,
         button: PairCustomThemeColor(
           light: Colors.blue[500]!,
           dark: Colors.blue[700]!,
@@ -38,7 +46,18 @@ class CustomThemeData {
           light: Color(0xFF4D4D4D),
           dark: Color(0xFF3C3C3C),
         ),
-        text: Colors.black,
+        primaryBorder: PairCustomThemeColor(
+          light: Colors.deepPurple[600]!,
+          dark: Colors.deepPurple[700]!,
+        ),
+        secondaryBorder: PairCustomThemeColor(
+          light: Colors.blue[300]!,
+          dark: Colors.blue[400]!,
+        ),
+        text: PairCustomThemeColor(
+          light: Colors.white,
+          dark: Colors.black,
+        ),
         primaryChatText: Colors.white70,
         secondaryChatText: Colors.white70,
         button: PairCustomThemeColor(

@@ -51,6 +51,7 @@ class MessageProvider extends ChangeNotifier {
               : _messageReplyModel!.senderName;
       MessageEnum repliedMessageType =
           _messageReplyModel?.messageType ?? MessageEnum.text;
+      String? repliedFileUrl = _messageReplyModel?.fileUrl;
 
       final ref =
           '${MessageConstants.chatFiles}/${messageType.name}/${sender.uid}/${contactUID}/${messageUID}';
@@ -73,6 +74,7 @@ class MessageProvider extends ChangeNotifier {
         repliedMessage: repliedMessage,
         repliedTo: repliedTo,
         repliedMessageType: repliedMessageType,
+        repliedFileUrl: repliedFileUrl,
         fileUrl: fileUrl,
       );
 
