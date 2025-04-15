@@ -3,6 +3,7 @@ import 'package:chataloka/constants/message_constants.dart';
 import 'package:chataloka/models/message_model.dart';
 import 'package:chataloka/theme/custom_theme.dart';
 import 'package:chataloka/utilities/assets_manager.dart';
+import 'package:chataloka/widgets/fullscreen_image_page.dart';
 import 'package:chataloka/widgets/sent_mark.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -184,15 +185,33 @@ class MessageBubble extends StatelessWidget {
                           maxWidth: MediaQuery.of(context).size.width * 0.7,
                           maxHeight: 250,
                         ),
-                        child: CachedNetworkImage(
-                          fit: BoxFit.cover,
-                          imageUrl: messageModel.fileUrl!,
-                          placeholder:
-                              (context, url) =>
-                                  Center(child: CircularProgressIndicator()),
-                          errorWidget:
-                              (context, url, error) =>
-                                  Image.asset(AssetsManager.imageError),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (_) => FullscreenImagePage(
+                                      message: messageModel.message,
+                                      imageUrl: messageModel.fileUrl!,
+                                    ),
+                              ),
+                            );
+                          },
+                          child: Hero(
+                            tag: messageModel.fileUrl!, // tag harus unik
+                            child: CachedNetworkImage(
+                              fit: BoxFit.cover,
+                              imageUrl: messageModel.fileUrl!,
+                              placeholder:
+                                  (context, url) => Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                              errorWidget:
+                                  (context, url, error) =>
+                                      Image.asset(AssetsManager.imageError),
+                            ),
+                          ),
                         ),
                       ),
                     ),
