@@ -48,6 +48,7 @@ class MessageModel {
       MessageConstants.repliedTo: repliedTo,
       MessageConstants.repliedMessageType: repliedMessageType.name,
       MessageConstants.fileUrl: fileUrl,
+      MessageConstants.repliedFileUrl: repliedFileUrl,
     };
   }
 
@@ -90,3 +91,5 @@ class MessageModel {
     );
   }
 }
+
+

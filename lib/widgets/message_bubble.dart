@@ -141,6 +141,33 @@ class MessageBubble extends StatelessWidget {
                             ),
                           ),
                         ),
+                        if (messageModel.repliedFileUrl != null &&
+                            messageModel.repliedFileUrl!.isNotEmpty) ...[
+                          SizedBox(width: 18),
+                          Container(
+                            constraints: BoxConstraints(
+                              maxWidth: 54,
+                              maxHeight: 54,
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.only(
+                                bottomRight: Radius.circular(3),
+                                topRight: Radius.circular(3),
+                              ),
+                              child: CachedNetworkImage(
+                                fit: BoxFit.cover,
+                                imageUrl: messageModel.repliedFileUrl!,
+                                placeholder:
+                                    (context, url) => Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                errorWidget:
+                                    (context, url, error) =>
+                                        Image.asset(AssetsManager.imageError),
+                              ),
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ),

@@ -1,10 +1,12 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chataloka/constants/message_constants.dart';
 import 'package:chataloka/models/user_model.dart';
 import 'package:chataloka/providers/message_provider.dart';
 import 'package:chataloka/providers/user_provider.dart';
 import 'package:chataloka/theme/custom_theme.dart';
+import 'package:chataloka/utilities/assets_manager.dart';
 import 'package:chataloka/utilities/global_methods.dart';
 import 'package:chataloka/widgets/chat_input.dart';
 import 'package:flutter/material.dart';
@@ -145,65 +147,112 @@ class _BottomChatFieldState extends State<BottomChatField> {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Container(
-                          padding: const EdgeInsets.all(8),
+                          width: double.infinity,
                           decoration: BoxDecoration(
                             color: Colors.grey[200],
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          child: Stack(
                             children: [
                               Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Expanded(
-                                    child: Text(
-                                      messageReply.isMe
-                                          ? 'You'
-                                          : messageReply.senderName,
-                                      style: GoogleFonts.openSans(
-                                        color: customTheme.text.light,
-                                      ),
-                                    ),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      messageProvider.setMessageReplyModel(
-                                        null,
-                                      );
-                                    },
-                                    child: const Icon(Icons.close, size: 14),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 5),
-                              RichText(
-                                text: TextSpan(
-                                  children: [
-                                    if (messageReply. messageType ==
-                                        MessageEnum.image)
-                                      WidgetSpan(
-                                        alignment: PlaceholderAlignment.middle,
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                            right: 4,
-                                          ),
-                                          child: Icon(
-                                            Icons.image,
-                                            size: 16,
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          messageReply.isMe
+                                              ? 'You'
+                                              : messageReply.senderName,
+                                          style: GoogleFonts.openSans(
                                             color: customTheme.text.light,
                                           ),
                                         ),
+                                        const SizedBox(height: 5),
+                                        RichText(
+                                          text: TextSpan(
+                                            children: [
+                                              if (messageReply.messageType ==
+                                                  MessageEnum.image)
+                                                WidgetSpan(
+                                                  alignment:
+                                                      PlaceholderAlignment
+                                                          .middle,
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                          right: 4,
+                                                        ),
+                                                    child: Icon(
+                                                      Icons.image,
+                                                      size: 16,
+                                                      color:
+                                                          customTheme
+                                                              .text
+                                                              .light,
+                                                    ),
+                                                  ),
+                                                ),
+                                              TextSpan(
+                                                text: messageReply.message,
+                                                style: GoogleFonts.openSans(
+                                                  color: customTheme.text.light,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  if (messageReply.fileUrl != null &&
+                                      messageReply.fileUrl!.isNotEmpty) ...[
+                                    SizedBox(width: 18),
+                                    Container(
+                                      constraints: BoxConstraints(
+                                        maxWidth: 60,
+                                        maxHeight: 60,
                                       ),
-                                    TextSpan(
-                                      text: messageReply.message,
-                                      style: GoogleFonts.openSans(
-                                        color: customTheme.text.light,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.only(bottomRight: Radius.circular(10), topRight: Radius.circular(10)),
+                                        child: CachedNetworkImage(
+                                          fit: BoxFit.cover,
+                                          imageUrl: messageReply.fileUrl!,
+                                          placeholder:
+                                              (context, url) => Center(
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              ),
+                                          errorWidget:
+                                              (context, url, error) =>
+                                                  Image.asset(
+                                                    AssetsManager.imageError,
+                                                  ),
+                                        ),
                                       ),
                                     ),
                                   ],
+                                ],
+                              ),
+                              Positioned(
+                                top: 2,
+                                right: 2,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    messageProvider.setMessageReplyModel(null);
+                                  },
+                                  child: Container(decoration: BoxDecoration(
+                                    color: Colors.white70,
+                                    borderRadius: BorderRadius.circular(40)
+                                  ),child: const Icon(Icons.close, size: 14)),
                                 ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
                               ),
                             ],
                           ),
