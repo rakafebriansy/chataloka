@@ -126,6 +126,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               }).toList();
 
                           return GroupedListView<dynamic, DateTime>(
+                            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                             reverse: true,
                             elements: messagesList,
                             controller: _scrollController,

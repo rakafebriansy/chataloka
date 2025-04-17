@@ -3,8 +3,7 @@ import 'package:chataloka/constants/message_constants.dart';
 import 'package:chataloka/models/message_model.dart';
 import 'package:chataloka/theme/custom_theme.dart';
 import 'package:chataloka/utilities/assets_manager.dart';
-import 'package:chataloka/widgets/fullscreen_image_page.dart';
-import 'package:chataloka/widgets/sent_mark.dart';
+import 'package:chataloka/widgets/message_renderer.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:swipe_to/swipe_to.dart';
@@ -174,76 +173,7 @@ class MessageBubble extends StatelessWidget {
                   ),
                   SizedBox(height: 8),
                 ],
-                if (messageModel.fileUrl != null &&
-                    messageModel.fileUrl!.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Container(
-                        constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width * 0.7,
-                          maxHeight: 250,
-                        ),
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (_) => FullscreenImagePage(
-                                      message: messageModel.message,
-                                      imageUrl: messageModel.fileUrl!,
-                                    ),
-                              ),
-                            );
-                          },
-                          child: Hero(
-                            tag: messageModel.fileUrl!, // tag harus unik
-                            child: CachedNetworkImage(
-                              fit: BoxFit.cover,
-                              imageUrl: messageModel.fileUrl!,
-                              placeholder:
-                                  (context, url) => Center(
-                                    child: CircularProgressIndicator(),
-                                  ),
-                              errorWidget:
-                                  (context, url, error) =>
-                                      Image.asset(AssetsManager.imageError),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                messageModel.message.length < 30
-                    ? Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          messageModel.message,
-                          style: GoogleFonts.openSans(color: textColor),
-                        ),
-                        const SizedBox(width: 8),
-                        if (isMe)
-                          SentMark(model: messageModel, textColor: textColor),
-                      ],
-                    )
-                    : Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          messageModel.message,
-                          style: GoogleFonts.openSans(color: textColor),
-                        ),
-                        const SizedBox(height: 5),
-                        if (isMe)
-                          SentMark(model: messageModel, textColor: textColor),
-                      ],
-                    ),
+                MessageRenderer(messageModel: messageModel, textColor: textColor, isMe: isMe)
               ],
             ),
           ),
