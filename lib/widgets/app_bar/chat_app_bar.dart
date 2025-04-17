@@ -1,22 +1,23 @@
 import 'package:chataloka/models/user_model.dart';
 import 'package:chataloka/providers/user_provider.dart';
 import 'package:chataloka/utilities/global_methods.dart';
-import 'package:chataloka/widgets/user_image_button.dart';
+import 'package:chataloka/widgets/profile/user_image_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:get_time_ago/get_time_ago.dart';
 
-class GroupChatAppBar extends StatefulWidget {
-  const GroupChatAppBar({super.key, required this.friendGroupUID});
+class ChatAppBar extends StatefulWidget {
+  const ChatAppBar({super.key, required this.contactUID});
 
-  final String friendGroupUID;
+  final String contactUID;
 
   @override
-  State<GroupChatAppBar> createState() => _GroupChatAppBarState();
+  State<ChatAppBar> createState() => _ChatAppBarState();
 }
 
-class _GroupChatAppBarState extends State<GroupChatAppBar> {
+class _ChatAppBarState extends State<ChatAppBar> {
   late final Stream<DocumentSnapshot>? _userStream;
   late final UserProvider userProvider;
 
@@ -25,7 +26,7 @@ class _GroupChatAppBarState extends State<GroupChatAppBar> {
     super.initState();
     try {
       userProvider = context.read<UserProvider>();
-      _userStream = userProvider.getUserStream(userId: widget.friendGroupUID);
+      _userStream = userProvider.getUserStream(userId: widget.contactUID);
     } catch (error) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         showErrorSnackbar(context, error);
@@ -49,7 +50,7 @@ class _GroupChatAppBarState extends State<GroupChatAppBar> {
           return const Center(child: SizedBox.shrink());
         }
 
-        final UserModel groupModel = UserModel.fromMap(
+        final UserModel userModel = UserModel.fromMap(
           snapshot.data?.data() as Map<String, dynamic>,
         );
 
@@ -61,19 +62,13 @@ class _GroupChatAppBarState extends State<GroupChatAppBar> {
 
         return Row(
           children: [
-            UserImageButton(side: 44, onTap: () {}, imageUrl: groupModel.image),
+            UserImageButton(side: 44, onTap: () {}, imageUrl: userModel.image),
             const SizedBox(width: 10),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  groupModel.name,
-                  style: GoogleFonts.openSans(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Text('Online', style: GoogleFonts.openSans(fontSize: 12)),
+                Text(userModel.name, style: GoogleFonts.openSans(fontSize: 18, fontWeight: FontWeight.w600)),
+                Text(userModel.isOnline ? 'Online' : 'Last seen ${GetTimeAgo.parse(userModel.lastSeen)}', style: GoogleFonts.openSans(fontSize: 12, color: userModel.isOnline ? Colors.green : Colors.grey.shade600)),
               ],
             ),
           ],

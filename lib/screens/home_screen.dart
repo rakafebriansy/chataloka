@@ -3,7 +3,7 @@ import 'package:chataloka/providers/user_provider.dart';
 import 'package:chataloka/screens/home/chat_list_screen.dart';
 import 'package:chataloka/screens/home/groups_screen.dart';
 import 'package:chataloka/screens/home/friends_screen.dart';
-import 'package:chataloka/widgets/user_image_button.dart';
+import 'package:chataloka/widgets/profile/user_image_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

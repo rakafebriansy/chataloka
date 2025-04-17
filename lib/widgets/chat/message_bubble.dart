@@ -3,7 +3,7 @@ import 'package:chataloka/constants/message_constants.dart';
 import 'package:chataloka/models/message_model.dart';
 import 'package:chataloka/theme/custom_theme.dart';
 import 'package:chataloka/utilities/assets_manager.dart';
-import 'package:chataloka/widgets/message_renderer.dart';
+import 'package:chataloka/widgets/chat/message_renderer.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:swipe_to/swipe_to.dart';

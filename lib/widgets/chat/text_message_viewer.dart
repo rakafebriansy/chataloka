@@ -1,5 +1,5 @@
 import 'package:chataloka/models/message_model.dart';
-import 'package:chataloka/widgets/sent_mark.dart';
+import 'package:chataloka/widgets/chat/sent_mark.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 

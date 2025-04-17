@@ -5,7 +5,7 @@ import 'package:chataloka/models/user_model.dart';
 import 'package:chataloka/providers/user_provider.dart';
 import 'package:chataloka/theme/custom_theme.dart';
 import 'package:chataloka/utilities/global_methods.dart';
-import 'package:chataloka/widgets/app_bar_back_button.dart';
+import 'package:chataloka/widgets/app_bar/app_bar_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:provider/provider.dart';

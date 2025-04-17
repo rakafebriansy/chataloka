@@ -6,7 +6,7 @@ import 'package:chataloka/providers/message_provider.dart';
 import 'package:chataloka/providers/user_provider.dart';
 import 'package:chataloka/theme/custom_theme.dart';
 import 'package:chataloka/utilities/global_methods.dart';
-import 'package:chataloka/widgets/sent_mark.dart';
+import 'package:chataloka/widgets/chat/sent_mark.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

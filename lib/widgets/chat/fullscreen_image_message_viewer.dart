@@ -4,21 +4,21 @@ import 'package:chataloka/utilities/assets_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class FullscreenImagePage extends StatefulWidget {
+class FullscreenImageMessageViewer extends StatefulWidget {
   final String imageUrl;
   final String message;
 
-  const FullscreenImagePage({
+  const FullscreenImageMessageViewer({
     Key? key,
     required this.imageUrl,
     required this.message,
   }) : super(key: key);
 
   @override
-  State<FullscreenImagePage> createState() => _FullscreenImagePageState();
+  State<FullscreenImageMessageViewer> createState() => _FullscreenImageMessageViewerState();
 }
 
-class _FullscreenImagePageState extends State<FullscreenImagePage> {
+class _FullscreenImageMessageViewerState extends State<FullscreenImageMessageViewer> {
   bool open = false;
 
   @override

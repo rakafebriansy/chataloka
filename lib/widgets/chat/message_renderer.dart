@@ -2,9 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chataloka/constants/message_constants.dart';
 import 'package:chataloka/models/message_model.dart';
 import 'package:chataloka/utilities/assets_manager.dart';
-import 'package:chataloka/widgets/audio_message_player.dart';
-import 'package:chataloka/widgets/fullscreen_image_page.dart';
-import 'package:chataloka/widgets/text_message_viewer.dart';
+import 'package:chataloka/widgets/chat/audio_message_player.dart';
+import 'package:chataloka/widgets/chat/fullscreen_image_message_viewer.dart';
+import 'package:chataloka/widgets/chat/text_message_viewer.dart';
 import 'package:flutter/material.dart';
 
 class MessageRenderer extends StatelessWidget {
@@ -44,7 +44,7 @@ class MessageRenderer extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder:
-                              (_) => FullscreenImagePage(
+                              (_) => FullscreenImageMessageViewer(
                                 message: messageModel.message,
                                 imageUrl: messageModel.fileUrl!,
                               ),
