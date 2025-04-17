@@ -59,8 +59,14 @@ class DisplayMessageType extends StatelessWidget {
             ),
           ],
         );
-      case MessageEnum.video:
       case MessageEnum.audio:
+        return Text(
+          'audio: ${message}',
+          style: GoogleFonts.openSans(color: color),
+          maxLines: maxLines,
+          overflow: overflow,
+        );
+      case MessageEnum.video:
       case MessageEnum.text:
         return Text(
           message,
