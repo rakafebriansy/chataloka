@@ -22,11 +22,14 @@ class AudioMessagePlayer extends StatefulWidget {
 }
 
 class _AudioMessagePlayerState extends State<AudioMessagePlayer> {
-  AudioPlayer audioPlayer = AudioPlayer();
+  late final AudioPlayer audioPlayer;
+  late final MessageProvider messageProvider;
+
   Duration duration = const Duration();
   Duration position = const Duration();
   bool isPlaying = false;
   bool isStartPressed = false;
+  bool isInitialized = false;
 
   Future<void> seekToPosition(double seconds) async {
     final newPosition = Duration(seconds: seconds.toInt());
@@ -36,19 +39,26 @@ class _AudioMessagePlayerState extends State<AudioMessagePlayer> {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await audioPlayer.setSourceUrl(widget.audioUrl);
-      final newDuration = await audioPlayer.getDuration();
+    super.initState();
 
-      if (newDuration != null) {
-        setState(() {
-          duration = newDuration;
-        });
-      }
-    });
+    initAudio();
+  }
+
+  Future<void> initAudio() async {
+    messageProvider = context.read<MessageProvider>();
+    audioPlayer = AudioPlayer();
+    await audioPlayer.setSourceUrl(widget.audioUrl);
+    final newDuration = await audioPlayer.getDuration();
+
+    if (newDuration != null) {
+      setState(() {
+        duration = newDuration;
+      });
+    }
 
     // listen to changes in player state
     audioPlayer.onPlayerStateChanged.listen((event) {
+      if (!mounted) return;
       if (event == PlayerState.playing) {
         setState(() {
           isPlaying = true;
@@ -67,6 +77,7 @@ class _AudioMessagePlayerState extends State<AudioMessagePlayer> {
 
     // listen to changes in player position
     audioPlayer.onPositionChanged.listen((newPosition) {
+      if (!mounted) return;
       setState(() {
         position = newPosition;
         if (position == duration || position > duration) {
@@ -77,23 +88,26 @@ class _AudioMessagePlayerState extends State<AudioMessagePlayer> {
 
     // listen to changes in player duration
     audioPlayer.onDurationChanged.listen((newDuration) {
+      if (!mounted) return;
       setState(() {
         duration = newDuration;
       });
     });
 
-    super.initState();
+    setState(() {
+      isInitialized = true;
+    });
   }
 
   @override
   void dispose() {
+    messageProvider.setActivePlayer(null);
     audioPlayer.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    MessageProvider messageProvider = context.read<MessageProvider>();
     return Row(
       children: [
         CircleAvatar(

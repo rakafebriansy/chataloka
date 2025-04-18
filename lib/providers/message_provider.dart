@@ -32,9 +32,18 @@ class MessageProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future <void> setActivePlayer(AudioPlayer? activePlayer) async {
-    await _activePlayer?.pause();
-    _activePlayer = activePlayer;
+  Future<void> setActivePlayer(AudioPlayer? newPlayer) async {
+    if (_activePlayer != null && _activePlayer != newPlayer) {
+      try {
+        await _activePlayer!.pause();
+        _activePlayer = newPlayer;
+      } catch (e) {
+        debugPrint("Failed to pause previous player: $e");
+      }
+    }
+
+    _activePlayer ??= newPlayer;
+
     notifyListeners();
   }
 
