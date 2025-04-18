@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chataloka/constants/message_constants.dart';
 import 'package:chataloka/models/user_model.dart';
@@ -48,7 +49,6 @@ class _BottomChatFieldState extends State<BottomChatField> {
   String? filePath;
 
   FlutterSoundRecord? _soundRecord;
-  bool isRecordingFinished = false;
   Timer? _recordingTimer;
   Duration _recordingDuration = Duration.zero;
 
@@ -136,6 +136,25 @@ class _BottomChatFieldState extends State<BottomChatField> {
     }
   }
 
+  Future<Duration?> getAudioDuration(String filePath) async {
+    final player = AudioPlayer();
+    try {
+      await player.setSourceDeviceFile(filePath);
+      await player.resume();
+
+      await Future.delayed(Duration.zero);
+
+      final duration = await player.getDuration();
+      await player.stop();
+      return duration;
+    } catch (error) {
+      showErrorSnackbar(context, error);
+      return null;
+    } finally {
+      await player.dispose();
+    }
+  }
+
   Future<void> sendMessage() async {
     try {
       if (_textEditingController == null) {
@@ -147,6 +166,11 @@ class _BottomChatFieldState extends State<BottomChatField> {
       if (currentUser == null) {
         throw Exception('User not found. Please re-login!');
       }
+
+      Duration? audioDuration =
+          messageType == MessageEnum.audio
+              ? await getAudioDuration(filePath!)
+              : null;
 
       if (messageType == null && file == null) {
         await messageProvider.sendMessageToFirebase(
@@ -166,7 +190,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
           contactImage: widget.contactImage,
           message:
               messageType == MessageEnum.audio
-                  ? 'Audio'
+                  ? formatDuration(audioDuration ?? Duration())
                   : _textEditingController.text,
           messageType: messageType!,
           groupUID: widget.groupUID,

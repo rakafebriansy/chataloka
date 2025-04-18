@@ -8,7 +8,7 @@ import 'package:chataloka/widgets/chat/text_message_viewer.dart';
 import 'package:flutter/material.dart';
 
 class MessageRenderer extends StatelessWidget {
-  MessageRenderer({
+  const MessageRenderer({
     super.key,
     required this.messageModel,
     required this.backgroundColor,
@@ -88,7 +88,7 @@ class MessageRenderer extends StatelessWidget {
                 Text('Audio message error.'),
               ],
             )
-            : AudioMessagePlayer(audioUrl: messageModel.fileUrl!, textColor: textColor, backgroundColor: backgroundColor);
+            : AudioMessagePlayer(audioUrl: messageModel.fileUrl!, textColor: textColor, backgroundColor: backgroundColor, formattedTotalDuration: messageModel.message,);
       case MessageEnum.video:
       case MessageEnum.text:
         return TextMessageViewer(

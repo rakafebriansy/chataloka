@@ -9,11 +9,13 @@ class AudioMessagePlayer extends StatefulWidget {
   const AudioMessagePlayer({
     super.key,
     required this.audioUrl,
+    required this.formattedTotalDuration,
     required this.textColor,
     required this.backgroundColor,
   });
 
   final String audioUrl;
+  final String formattedTotalDuration;
   final Color textColor;
   final Color backgroundColor;
 
@@ -40,21 +42,8 @@ class _AudioMessagePlayerState extends State<AudioMessagePlayer> {
   @override
   void initState() {
     super.initState();
-
-    initAudio();
-  }
-
-  Future<void> initAudio() async {
     messageProvider = context.read<MessageProvider>();
     audioPlayer = AudioPlayer();
-    await audioPlayer.setSourceUrl(widget.audioUrl);
-    final newDuration = await audioPlayer.getDuration();
-
-    if (newDuration != null) {
-      setState(() {
-        duration = newDuration;
-      });
-    }
 
     // listen to changes in player state
     audioPlayer.onPlayerStateChanged.listen((event) {
@@ -92,10 +81,6 @@ class _AudioMessagePlayerState extends State<AudioMessagePlayer> {
       setState(() {
         duration = newDuration;
       });
-    });
-
-    setState(() {
-      isInitialized = true;
     });
   }
 
@@ -152,7 +137,9 @@ class _AudioMessagePlayerState extends State<AudioMessagePlayer> {
           ),
         ),
         Text(
-          isStartPressed ? formatDuration(position) : formatDuration(duration),
+          isStartPressed
+              ? formatDuration(position)
+              : widget.formattedTotalDuration,
           style: GoogleFonts.openSans(color: widget.textColor),
         ),
       ],
