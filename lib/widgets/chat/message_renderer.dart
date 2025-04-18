@@ -11,6 +11,7 @@ class MessageRenderer extends StatelessWidget {
   MessageRenderer({
     super.key,
     required this.messageModel,
+    required this.backgroundColor,
     required this.textColor,
     required this.isMe,
     this.maxLines,
@@ -20,11 +21,13 @@ class MessageRenderer extends StatelessWidget {
   final MessageModel messageModel;
   final int? maxLines;
   final TextOverflow? overflow;
+  final Color backgroundColor;
   final Color textColor;
   final bool isMe;
 
   @override
   Widget build(BuildContext context) {
+    
     switch (messageModel.messageType) {
       case (MessageEnum.image):
         return Column(
@@ -85,7 +88,7 @@ class MessageRenderer extends StatelessWidget {
                 Text('Audio message error.'),
               ],
             )
-            : AudioMessagePlayer(audioUrl: messageModel.fileUrl!);
+            : AudioMessagePlayer(audioUrl: messageModel.fileUrl!, textColor: textColor, backgroundColor: backgroundColor);
       case MessageEnum.video:
       case MessageEnum.text:
         return TextMessageViewer(

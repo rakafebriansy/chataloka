@@ -126,15 +126,17 @@ class _BottomChatFieldState extends State<BottomChatField> {
           file = File(filePath!);
         }
       });
+      await sendMessage();
+      print('success');
     } catch (error) {
+      print('error');
       showErrorSnackbar(context, error);
     }
   }
 
   Future<void> sendMessage() async {
     try {
-      if (_textEditingController == null ||
-          _textEditingController.text.isEmpty) {
+      if (_textEditingController == null) {
         return;
       }
       final UserModel? currentUser = context.read<UserProvider>().userModel;
@@ -177,6 +179,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
       setState(() {
         if (file != null) file = null;
         if (messageType != null) messageType = null;
+        if (filePath != null) filePath = null;
       });
       isShowSendButton = false;
     }
@@ -333,7 +336,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
                         return FadeTransition(opacity: animation, child: child);
                       },
                       child:
-                          file != null
+                          file != null && messageType != MessageEnum.audio
                               ? Stack(
                                 children: [
                                   Container(

@@ -28,6 +28,8 @@ class MessageBubble extends StatelessWidget {
 
     final Color textColor =
         isMe ? customTheme.primaryChatText : customTheme.secondaryChatText;
+    final Color backgroundColor =
+        isMe ? customTheme.primaryCard.light : customTheme.secondaryCard.light;
     final bool isReplying = messageModel.repliedTo.isNotEmpty;
 
     return SwipeTo(
@@ -42,10 +44,7 @@ class MessageBubble extends StatelessWidget {
           margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
           padding: EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color:
-                isMe
-                    ? customTheme.primaryCard.light
-                    : customTheme.secondaryCard.light,
+            color: backgroundColor,
             borderRadius:
                 isMe
                     ? BorderRadius.only(
@@ -173,7 +172,7 @@ class MessageBubble extends StatelessWidget {
                   ),
                   SizedBox(height: 8),
                 ],
-                MessageRenderer(messageModel: messageModel, textColor: textColor, isMe: isMe)
+                MessageRenderer(messageModel: messageModel, isMe: isMe, backgroundColor: backgroundColor, textColor: textColor,),
               ],
             ),
           ),

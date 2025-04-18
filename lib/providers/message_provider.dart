@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:chataloka/constants/message_constants.dart';
 import 'package:chataloka/constants/user_constants.dart';
 import 'package:chataloka/models/last_message_model.dart';
@@ -20,10 +21,20 @@ class MessageProvider extends ChangeNotifier {
   MessageReplyModel? _messageReplyModel;
   MessageReplyModel? get messageReplyModel => _messageReplyModel;
 
+  AudioPlayer? _activePlayer;
+
+  AudioPlayer? get activePlayer => _activePlayer;
+
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   void setMessageReplyModel(MessageReplyModel? messageReplyModel) {
     _messageReplyModel = messageReplyModel;
+    notifyListeners();
+  }
+
+  Future <void> setActivePlayer(AudioPlayer? activePlayer) async {
+    await _activePlayer?.pause();
+    _activePlayer = activePlayer;
     notifyListeners();
   }
 
