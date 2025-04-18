@@ -117,8 +117,6 @@ class MessageBubble extends StatelessWidget {
                                 RichText(
                                   text: TextSpan(
                                     children: [
-                                      if (messageModel.repliedMessageType ==
-                                          MessageEnum.image)
                                         WidgetSpan(
                                           alignment:
                                               PlaceholderAlignment.middle,
@@ -127,14 +125,16 @@ class MessageBubble extends StatelessWidget {
                                               right: 4,
                                             ),
                                             child: Icon(
-                                              Icons.image,
+                                              messageModel.repliedMessageType ==
+                                          MessageEnum.audio ? Icons.mic : messageModel.repliedMessageType ==
+                                          MessageEnum.image ? Icons.image : null,
                                               size: 16,
                                               color: textColor,
                                             ),
                                           ),
                                         ),
                                       TextSpan(
-                                        text: messageModel.repliedMessage,
+                                        text: messageModel.repliedMessageType == MessageEnum.audio ? 'Audio message (${messageModel.repliedMessage})' : messageModel.repliedMessage,
                                         style: GoogleFonts.openSans(
                                           color: textColor,
                                         ),
@@ -183,7 +183,9 @@ class MessageBubble extends StatelessWidget {
                               ),
                               builder: (context, snapshot) {
                                 return Text(
-                                  formatDuration(snapshot as Duration? ?? Duration()),
+                                  formatDuration(
+                                    snapshot as Duration? ?? Duration(),
+                                  ),
                                 );
                               },
                             ),

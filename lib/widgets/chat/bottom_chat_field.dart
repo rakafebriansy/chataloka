@@ -81,6 +81,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
         file = File(croppedFile.path);
         messageType = MessageEnum.image;
       });
+      messageProvider.setIsShowSendButton(true);
     } catch (error) {
       showErrorSnackbar(context, error);
     }
@@ -91,6 +92,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
       file = null;
       messageType = null;
     });
+      messageProvider.setIsShowSendButton(false);
   }
 
   Future<bool> checkMicrophonePermission() async {
@@ -286,29 +288,35 @@ class _BottomChatFieldState extends State<BottomChatField> {
                                         RichText(
                                           text: TextSpan(
                                             children: [
-                                              if (messageReply.messageType ==
-                                                  MessageEnum.image)
-                                                WidgetSpan(
-                                                  alignment:
-                                                      PlaceholderAlignment
-                                                          .middle,
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                          right: 4,
-                                                        ),
-                                                    child: Icon(
-                                                      Icons.image,
-                                                      size: 16,
-                                                      color:
-                                                          customTheme
-                                                              .text
-                                                              .light,
-                                                    ),
+                                              WidgetSpan(
+                                                alignment:
+                                                    PlaceholderAlignment.middle,
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                        right: 4,
+                                                      ),
+                                                  child: Icon(
+                                                    messageReply.messageType ==
+                                                            MessageEnum.audio
+                                                        ? Icons.mic
+                                                        : messageReply
+                                                                .messageType ==
+                                                            MessageEnum.image
+                                                        ? Icons.image
+                                                        : null,
+                                                    size: 16,
+                                                    color:
+                                                        customTheme.text.light,
                                                   ),
                                                 ),
+                                              ),
                                               TextSpan(
-                                                text: messageReply.message,
+                                                text:
+                                                    messageReply.messageType ==
+                                                            MessageEnum.audio
+                                                        ? 'Audio message (${messageReply.message})'
+                                                        : messageReply.message,
                                                 style: GoogleFonts.openSans(
                                                   color: customTheme.text.light,
                                                 ),
@@ -324,32 +332,34 @@ class _BottomChatFieldState extends State<BottomChatField> {
                                   if (messageReply.fileUrl != null &&
                                       messageReply.fileUrl!.isNotEmpty) ...[
                                     SizedBox(width: 18),
-                                    Container(
-                                      constraints: BoxConstraints(
-                                        maxWidth: 60,
-                                        maxHeight: 60,
-                                      ),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.only(
-                                          bottomRight: Radius.circular(10),
-                                          topRight: Radius.circular(10),
+                                    if (messageReply.messageType ==
+                                        MessageEnum.image)
+                                      Container(
+                                        constraints: BoxConstraints(
+                                          maxWidth: 60,
+                                          maxHeight: 60,
                                         ),
-                                        child: CachedNetworkImage(
-                                          fit: BoxFit.cover,
-                                          imageUrl: messageReply.fileUrl!,
-                                          placeholder:
-                                              (context, url) => Center(
-                                                child:
-                                                    CircularProgressIndicator(),
-                                              ),
-                                          errorWidget:
-                                              (context, url, error) =>
-                                                  Image.asset(
-                                                    AssetsManager.imageError,
-                                                  ),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.only(
+                                            bottomRight: Radius.circular(10),
+                                            topRight: Radius.circular(10),
+                                          ),
+                                          child: CachedNetworkImage(
+                                            fit: BoxFit.cover,
+                                            imageUrl: messageReply.fileUrl!,
+                                            placeholder:
+                                                (context, url) => Center(
+                                                  child:
+                                                      CircularProgressIndicator(),
+                                                ),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    Image.asset(
+                                                      AssetsManager.imageError,
+                                                    ),
+                                          ),
                                         ),
                                       ),
-                                    ),
                                   ],
                                 ],
                               ),

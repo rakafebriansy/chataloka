@@ -106,15 +106,71 @@ class _ChatListScreenState extends State<ChatListScreen> {
                                     lastMessageModel.contactName,
                                     style: GoogleFonts.openSans(),
                                   ),
-                                  subtitle: Text(
-                                    isMe
-                                        ? 'You: ${lastMessageModel.message}'
-                                        : lastMessageModel.message,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.openSans(),
+                                  subtitle: Row(
+                                    children: [
+                                      RichText(
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        text: TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text: isMe ? 'You: ' : '',
+                                              style: GoogleFonts.openSans(
+                                                color: customTheme.text.light,
+                                              ),
+                                            ),
+                                            WidgetSpan(
+                                              alignment:
+                                                  PlaceholderAlignment.middle,
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                  right: 4,
+                                                ),
+                                                child: Icon(
+                                                  lastMessageModel
+                                                              .messageType ==
+                                                          MessageEnum.audio
+                                                      ? Icons.mic
+                                                      : lastMessageModel
+                                                              .messageType ==
+                                                          MessageEnum.image
+                                                      ? Icons.image
+                                                      : null,
+                                                  size: 16,
+                                                  color: customTheme.text.light,
+                                                ),
+                                              ),
+                                            ),
+                                            TextSpan(
+                                              text:
+                                                  lastMessageModel
+                                                              .messageType ==
+                                                          MessageEnum.audio
+                                                      ? 'Audio message (${lastMessageModel.message})'
+                                                      : lastMessageModel
+                                                          .message
+                                                          .isNotEmpty
+                                                      ? lastMessageModel.message
+                                                      : lastMessageModel
+                                                          .messageType
+                                                          .name
+                                                          .toUpperCase(),
+                                              style: GoogleFonts.openSans(
+                                                color: customTheme.text.light,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  trailing: SentMark(model: lastMessageModel, textColor: isMe ? customTheme.secondaryChatText : customTheme.primaryChatText),
+                                  trailing: SentMark(
+                                    model: lastMessageModel,
+                                    textColor:
+                                        isMe
+                                            ? customTheme.secondaryChatText
+                                            : customTheme.primaryChatText,
+                                  ),
                                   onTap: () {
                                     Navigator.of(context).pushNamed(
                                       RouteConstant.chatScreen,
