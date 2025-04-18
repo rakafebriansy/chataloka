@@ -1,8 +1,10 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chataloka/constants/message_constants.dart';
 import 'package:chataloka/models/message_model.dart';
 import 'package:chataloka/theme/custom_theme.dart';
 import 'package:chataloka/utilities/assets_manager.dart';
+import 'package:chataloka/utilities/global_methods.dart';
 import 'package:chataloka/widgets/chat/message_renderer.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -21,6 +23,12 @@ class MessageBubble extends StatelessWidget {
   final bool isMe;
   final GestureDragUpdateCallback? onRightSwipe;
   final GestureDragUpdateCallback? onLeftSwipe;
+
+  Future<Duration?> loadAudioDuration(String audioUrl) async {
+    final audioPlayer = AudioPlayer();
+    await audioPlayer.setSourceUrl(audioUrl);
+    return await audioPlayer.getDuration();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -143,36 +151,54 @@ class MessageBubble extends StatelessWidget {
                         if (messageModel.repliedFileUrl != null &&
                             messageModel.repliedFileUrl!.isNotEmpty) ...[
                           SizedBox(width: 18),
-                          Container(
-                            constraints: BoxConstraints(
-                              maxWidth: 54,
-                              maxHeight: 54,
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.only(
-                                bottomRight: Radius.circular(3),
-                                topRight: Radius.circular(3),
+                          if (messageModel.repliedMessageType ==
+                              MessageEnum.image)
+                            Container(
+                              constraints: BoxConstraints(
+                                maxWidth: 54,
+                                maxHeight: 54,
                               ),
-                              child: CachedNetworkImage(
-                                fit: BoxFit.cover,
-                                imageUrl: messageModel.repliedFileUrl!,
-                                placeholder:
-                                    (context, url) => Center(
-                                      child: CircularProgressIndicator(),
-                                    ),
-                                errorWidget:
-                                    (context, url, error) =>
-                                        Image.asset(AssetsManager.imageError),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.only(
+                                  bottomRight: Radius.circular(3),
+                                  topRight: Radius.circular(3),
+                                ),
+                                child: CachedNetworkImage(
+                                  fit: BoxFit.cover,
+                                  imageUrl: messageModel.repliedFileUrl!,
+                                  placeholder:
+                                      (context, url) => Center(
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                  errorWidget:
+                                      (context, url, error) =>
+                                          Image.asset(AssetsManager.imageError),
+                                ),
                               ),
                             ),
-                          ),
+                          if (messageModel.messageType == MessageEnum.audio)
+                            FutureBuilder(
+                              future: loadAudioDuration(
+                                messageModel.repliedFileUrl!,
+                              ),
+                              builder: (context, snapshot) {
+                                return Text(
+                                  formatDuration(snapshot as Duration? ?? Duration()),
+                                );
+                              },
+                            ),
                         ],
                       ],
                     ),
                   ),
                   SizedBox(height: 8),
                 ],
-                MessageRenderer(messageModel: messageModel, isMe: isMe, backgroundColor: backgroundColor, textColor: textColor,),
+                MessageRenderer(
+                  messageModel: messageModel,
+                  isMe: isMe,
+                  backgroundColor: backgroundColor,
+                  textColor: textColor,
+                ),
               ],
             ),
           ),

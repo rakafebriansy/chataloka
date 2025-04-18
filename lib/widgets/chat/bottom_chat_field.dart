@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -8,6 +9,8 @@ import 'package:chataloka/providers/user_provider.dart';
 import 'package:chataloka/theme/custom_theme.dart';
 import 'package:chataloka/utilities/assets_manager.dart';
 import 'package:chataloka/utilities/global_methods.dart';
+import 'package:chataloka/widgets/chat/pulse_recording_icon.dart';
+import 'package:chataloka/widgets/chat/send_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound_record/flutter_sound_record.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -36,7 +39,6 @@ class BottomChatField extends StatefulWidget {
 
 class _BottomChatFieldState extends State<BottomChatField> {
   late final MessageProvider messageProvider;
-  bool isShowSendButton = false;
   MessageEnum? messageType;
 
   late final TextEditingController? _textEditingController;
@@ -46,24 +48,23 @@ class _BottomChatFieldState extends State<BottomChatField> {
   String? filePath;
 
   FlutterSoundRecord? _soundRecord;
-  bool isRecording = false;
   bool isRecordingFinished = false;
+  Timer? _recordingTimer;
+  Duration _recordingDuration = Duration.zero;
 
-  @override
-  void initState() {
-    super.initState();
-    messageProvider = context.read<MessageProvider>();
-    _textEditingController = TextEditingController();
-    _focusNode = FocusNode();
-    _soundRecord = FlutterSoundRecord();
+  void startRecordingTimer() {
+    _recordingDuration = Duration.zero;
+    _recordingTimer = Timer.periodic(Duration(milliseconds: 100), (timer) {
+      setState(() {
+        _recordingDuration += Duration(milliseconds: 100);
+      });
+    });
   }
 
-  @override
-  void dispose() {
-    _textEditingController?.dispose();
-    _focusNode?.dispose();
-    _soundRecord?.dispose();
-    super.dispose();
+  void stopRecordingTimer() {
+    _recordingTimer?.cancel();
+    _recordingTimer = null;
+    _recordingDuration = Duration.zero;
   }
 
   Future<void> selectImage(bool fromCamera) async {
@@ -101,6 +102,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
 
   Future<void> startRecording() async {
     try {
+      messageProvider.setIsRecording(true);
       final hasPermission = await checkMicrophonePermission();
       if (hasPermission) {
         final Directory tempDir = await getTemporaryDirectory();
@@ -110,6 +112,7 @@ class _BottomChatFieldState extends State<BottomChatField> {
         }
         await _soundRecord!.start(path: filePath);
       }
+      startRecordingTimer();
     } catch (error) {
       showErrorSnackbar(context, error);
     }
@@ -119,17 +122,16 @@ class _BottomChatFieldState extends State<BottomChatField> {
     try {
       await _soundRecord!.stop();
       setState(() {
-        isRecording = false;
-        isShowSendButton = true;
         messageType = MessageEnum.audio;
         if (filePath != null) {
           file = File(filePath!);
         }
       });
+      messageProvider.setIsShowSendButton(true);
+      messageProvider.setIsRecording(false);
+      stopRecordingTimer();
       await sendMessage();
-      print('success');
     } catch (error) {
-      print('error');
       showErrorSnackbar(context, error);
     }
   }
@@ -181,8 +183,25 @@ class _BottomChatFieldState extends State<BottomChatField> {
         if (messageType != null) messageType = null;
         if (filePath != null) filePath = null;
       });
-      isShowSendButton = false;
+      messageProvider.setIsShowSendButton(false);
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    messageProvider = context.read<MessageProvider>();
+    _textEditingController = TextEditingController();
+    _focusNode = FocusNode();
+    _soundRecord = FlutterSoundRecord();
+  }
+
+  @override
+  void dispose() {
+    _textEditingController?.dispose();
+    _focusNode?.dispose();
+    _soundRecord?.dispose();
+    super.dispose();
   }
 
   @override
@@ -378,71 +397,90 @@ class _BottomChatFieldState extends State<BottomChatField> {
                               )
                               : SizedBox.shrink(),
                     ),
+
                     Row(
                       children: [
-                        IconButton(
-                          onPressed: () {
-                            showModalBottomSheet(
-                              context: context,
-                              builder: (context) {
-                                return Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    ListTile(
-                                      leading: const Icon(Icons.camera_alt),
-                                      title: const Text('Camera'),
-                                      onTap: () {
-                                        selectImage(true);
-                                      },
-                                    ),
-                                    ListTile(
-                                      leading: const Icon(Icons.image),
-                                      title: const Text('Images'),
-                                      onTap: () {
-                                        selectImage(false);
-                                      },
-                                    ),
-                                    ListTile(
-                                      leading: const Icon(Icons.video_library),
-                                      title: const Text('Video'),
-                                      onTap: () {},
-                                    ),
-                                    ListTile(
-                                      leading: const Icon(Icons.image),
-                                      title: const Text('Gallery'),
-                                      onTap: () {
-                                        selectImage(false);
-                                      },
-                                    ),
-                                    ListTile(
-                                      leading: const Icon(Icons.audio_file),
-                                      title: const Text('Audio'),
-                                      onTap: () {},
-                                    ),
-                                  ],
+                        messageProvider.isRecording
+                            ? Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: PulseRecordingIcon(),
+                            )
+                            : IconButton(
+                              onPressed: () {
+                                showModalBottomSheet(
+                                  context: context,
+                                  builder: (context) {
+                                    return Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        ListTile(
+                                          leading: const Icon(Icons.camera_alt),
+                                          title: const Text('Camera'),
+                                          onTap: () {
+                                            selectImage(true);
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading: const Icon(Icons.image),
+                                          title: const Text('Images'),
+                                          onTap: () {
+                                            selectImage(false);
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading: const Icon(
+                                            Icons.video_library,
+                                          ),
+                                          title: const Text('Video'),
+                                          onTap: () {},
+                                        ),
+                                        ListTile(
+                                          leading: const Icon(Icons.image),
+                                          title: const Text('Gallery'),
+                                          onTap: () {
+                                            selectImage(false);
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading: const Icon(Icons.audio_file),
+                                          title: const Text('Audio'),
+                                          onTap: () {},
+                                        ),
+                                      ],
+                                    );
+                                  },
                                 );
                               },
-                            );
-                          },
-                          icon: const Icon(Icons.attachment),
-                        ),
-                        Expanded(
-                          child: TextFormField(
-                            onChanged: (_) {
-                              if (_textEditingController != null) {
-                                setState(() {
-                                  isShowSendButton =
-                                      _textEditingController.text.isNotEmpty;
-                                });
-                              }
-                            },
-                            focusNode: _focusNode,
-                            controller: _textEditingController,
-                            decoration: const InputDecoration(
-                              border: InputBorder.none,
-                              hintText: 'Type a message',
+                              icon: const Icon(Icons.attachment),
                             ),
-                          ),
+                        Expanded(
+                          child:
+                              messageProvider.isRecording
+                                  ? Text(
+                                    '${formatDuration(_recordingDuration)}',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  )
+                                  : TextFormField(
+                                    onChanged: (_) {
+                                      if (_textEditingController != null) {
+                                        setState(() {
+                                          messageProvider.setIsShowSendButton(
+                                            _textEditingController
+                                                .text
+                                                .isNotEmpty,
+                                          );
+                                        });
+                                      }
+                                    },
+                                    focusNode: _focusNode,
+                                    controller: _textEditingController,
+                                    decoration: const InputDecoration(
+                                      border: InputBorder.none,
+                                      hintText: 'Type a message',
+                                    ),
+                                  ),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(4),
@@ -452,47 +490,10 @@ class _BottomChatFieldState extends State<BottomChatField> {
                                     scale: 0.5,
                                     child: CircularProgressIndicator(),
                                   )
-                                  : GestureDetector(
-                                    onTap:
-                                        isShowSendButton ? sendMessage : null,
-                                    onLongPress:
-                                        isShowSendButton
-                                            ? null
-                                            : startRecording,
-                                    onLongPressUp: stopRecording,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Theme.of(context).primaryColor,
-                                        borderRadius: BorderRadius.circular(30),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(12),
-                                        child: AnimatedSwitcher(
-                                          duration: Duration(milliseconds: 200),
-                                          transitionBuilder: (
-                                            child,
-                                            animation,
-                                          ) {
-                                            return ScaleTransition(
-                                              scale: animation,
-                                              child: child,
-                                            );
-                                          },
-                                          child:
-                                              isShowSendButton
-                                                  ? const Icon(
-                                                    Icons.send,
-                                                    color: Colors.white,
-                                                    size: 16,
-                                                  )
-                                                  : const Icon(
-                                                    Icons.mic,
-                                                    color: Colors.white,
-                                                    size: 16,
-                                                  ),
-                                        ),
-                                      ),
-                                    ),
+                                  : SendButton(
+                                    sendMessage: sendMessage,
+                                    startRecording: startRecording,
+                                    stopRecording: stopRecording,
                                   ),
                         ),
                       ],

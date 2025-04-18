@@ -15,15 +15,19 @@ import 'package:uuid/uuid.dart';
 class MessageProvider extends ChangeNotifier {
   bool _isLoading = false;
   bool _isSuccess = false;
+  bool _isShowSendButton = false;
+  bool _isRecording = false;
   bool get isLoading => _isLoading;
   bool get isSuccess => _isSuccess;
+  bool get isShowSendButton => _isShowSendButton;
+  bool get isRecording => _isRecording;
 
   MessageReplyModel? _messageReplyModel;
   MessageReplyModel? get messageReplyModel => _messageReplyModel;
 
   AudioPlayer? _activePlayer;
-
   AudioPlayer? get activePlayer => _activePlayer;
+
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -44,6 +48,21 @@ class MessageProvider extends ChangeNotifier {
 
     _activePlayer ??= newPlayer;
 
+    notifyListeners();
+  }
+
+  void setIsShowSendButton(bool value) {
+    _isShowSendButton = value;
+    notifyListeners();
+  }
+
+  void setIsRecording(bool value) {
+    _isRecording = value;
+    notifyListeners();
+  }
+
+  void toggleRecording() {
+    _isRecording = !_isRecording;
     notifyListeners();
   }
 
